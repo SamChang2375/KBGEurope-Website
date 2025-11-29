@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Bestellen & Abholen – Korean BBQ Grill{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --kbg-green: #2e7a55;
+    --kbg-blue: #3f7dbb;
+    --kbg-orange: #c88a27;
+    --kbg-uber: #2e6a57;  /* grünlicher Ton wie im Screenshot */
+    --kbg-btn-radius: 14px;
+    --kbg-btn-padding: 14px 38px;
+    --kbg-font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .kbg-order-page {
+    font-family: var(--kbg-font-main);
+    width: 100%;
+  }
+
+  .kbg-order-hero {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    background-image: url("{% static 'img/order/order-bg.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .kbg-order-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 300px;
+  }
+
+  .kbg-order-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: var(--kbg-btn-padding);
+    border-radius: var(--kbg-btn-radius);
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+  }
+
+  .kbg-btn-pickup {
+    background: var(--kbg-green);
+  }
+
+  .kbg-btn-wolt {
+    background: var(--kbg-blue);
+  }
+
+  .kbg-btn-lieferando {
+    background: var(--kbg-orange);
+  }
+
+  .kbg-btn-ubereats {
+    background: var(--kbg-uber);
+  }
+
+  @media (max-width: 600px) {
+    .kbg-order-hero {
+      height: 300px;
+    }
+    .kbg-order-buttons {
+      width: 260px;
+    }
+  }
+</style>
+
+<div class="kbg-order-page">
+
+  <!-- Hintergrund mit Buttons -->
+  <section class="kbg-order-hero">
+
+    <div class="kbg-order-buttons">
+      <!-- Abholen -->
+      <a class="kbg-order-btn kbg-btn-pickup" href="#" target="_blank">
+        Abholen
+      </a>
+
+      <!-- Wolt -->
+      <a class="kbg-order-btn kbg-btn-wolt" href="https://wolt.com" target="_blank">
+        Wolt
+      </a>
+
+      <!-- Lieferando -->
+      <a class="kbg-order-btn kbg-btn-lieferando" href="https://lieferando.de" target="_blank">
+        Lieferando
+      </a>
+
+      <!-- Uber Eats -->
+      <a class="kbg-order-btn kbg-btn-ubereats" href="https://ubereats.com" target="_blank">
+        Uber Eats
+      </a>
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}

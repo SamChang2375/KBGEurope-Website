@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="hero-section">
+    <div class="hero-bg">
+        <!-- später Video oder Slider; jetzt Platzhalterbild -->
+        <img src="{% static 'img/hero-placeholder.jpg' %}" alt="KBG Hero">
+    </div>
+    <div class="hero-overlay">
+        <p class="hero-subtitle">So schmeckt zusammen</p>
+        <p class="hero-korean">다함께 맛있게</p>
+        <p class="hero-tagline">The Taste of Together</p>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container two-column">
+        <div class="col">
+            <h3 class="section-kicker">KBG-Bonn</h3>
+            <h2 class="section-title">Wer wir sind</h2>
+            <p>KBG ist ein schnelles Casual-Restaurant im Herzen von Bonn. Direkt am Bonn Hauptbahnhof im Maximilian Center.</p>
+            <p>Zu jeder Zeit gibt es viele Angebote und Geschenke für Sie. Kommen Sie vorbei und erleben Sie die gesunde und frische koreanische Küche.</p>
+            <p>Sie finden uns unten im Maximilian Center zwischen U-Bahnsteig und Busbahnhof.</p>
+
+            <a href="#kontakt" class="btn btn-primary">Finden Sie uns hier</a>
+        </div>
+        <div class="col">
+            <img class="rounded-img" src="{% static 'img/section-placeholder.jpg' %}" alt="Maximilian Center">
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container section-center">
+        <h3 class="section-kicker">Menü</h3>
+        <h2 class="section-title">Genießen Sie die koreanische Vielfalt</h2>
+        <p>Unsere Speisen werden täglich frisch zubereitet.</p>
+        <a href="#" class="btn btn-primary">Entdecken Sie unser Menü</a>
+    </div>
+
+    <div class="container three-column gallery-row">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 1" class="rounded-img">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 2" class="rounded-img">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 3" class="rounded-img">
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container section-center">
+        <h2 class="section-title">Unser Catering</h2>
+        <h3 class="section-kicker green">Verwöhnt mit koreanischen Köstlichkeiten</h3>
+        <p>Ihr Meeting oder Ihre Konferenz dauert etwas länger und der Magen knurrt? Wie wäre es mit gesundem, leckerem koreanischen Essen?</p>
+        <p>Dann lassen Sie sich doch von uns etwas liefern!</p>
+        <a href="#" class="btn btn-primary">Hier geht es zum Catering!</a>
+    </div>
+
+    <div class="container four-column gallery-row">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 1" class="rounded-img">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 2" class="rounded-img">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 3" class="rounded-img">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 4" class="rounded-img">
+    </div>
+</section>
+
+<section class="section testimonials-section">
+    <div class="testimonials-bg">
+        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Kundenstimmen Hintergrund">
+    </div>
+    <div class="testimonials-overlay">
+        <h2 class="section-title">Kundenstimmen</h2>
+        <p class="testimonial-quote">
+            "Sehr freundliche Bedienung und leckere Speisen … maximale Empfehlung!"
+        </p>
+        <p class="testimonial-author">- Daniel B. -</p>
+    </div>
+</section>
+
+{% endblock %}
