@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kontakt – Korean BBQ Grill{% endblock %}
+
+{% block content %}
+
+{# 1. Streifen – „Über uns“ mit Bild-Hintergrund #}
+<section class="section contact-about-hero"
+         style="background-image: url('{% static "img/contact/contact-top-pattern.jpg" %}');">
+    <div class="container contact-about-inner">
+        <div class="section-kicker green">Über uns</div>
+        <h1 class="section-title">Korea to Bonn</h1>
+        <p>
+            KBG Korean BBQ &amp; Grill ist ein schnelles Casual-Restaurant in Bonn.
+            Wir glauben daran, dass wir mit einem modernen Ansatz zeigen können,
+            wie vielseitig koreanische Küche ist.
+        </p>
+        <p>
+            Unser Ziel ist es, authentisch zu bleiben und dennoch neue Kombinationen
+            zu schaffen – frisch, gesund und einfach lecker.
+        </p>
+    </div>
+</section>
+
+{# 2. Streifen – Philosophie, Weißer Hintergrund, Bild links / Text rechts #}
+<section class="section contact-section-white">
+    <div class="container two-column contact-two-column">
+        <div class="contact-two-column-img">
+            <img src="{% static 'img/contact/philosophie-bowl.jpg' %}"
+                 alt="Koreanisches Essen"
+                 class="rounded-img">
+        </div>
+        <div class="contact-text-block">
+            <div class="section-kicker green">Philosophie</div>
+            <h2 class="section-title">So isst man zusammen</h2>
+            <p>
+                Das gemeinsame Essen bringt Menschen zusammen – Familie, Freunde
+                und Kolleg*innen. Viele kleine Schalen werden geteilt, alle probieren
+                sich durch und gönnen sich eine Auszeit vom Alltag.
+            </p>
+            <p>
+                Dieses Motiv steckt auch hinter unseren Gerichten: verschiedene
+                Beilagen, frische Zutaten und hausgemachte Saucen ergeben jedes Mal
+                eine neue, individuelle Kreation.
+            </p>
+        </div>
+    </div>
+</section>
+
+{# 3. Streifen – Mission, Beiger Hintergrund, Text links / Bild rechts #}
+<section class="section contact-section-beige">
+    <div class="container two-column contact-two-column">
+        <div class="contact-text-block">
+            <div class="section-kicker green">Mission</div>
+            <h2 class="section-title">Harmonie aus der Natur</h2>
+            <p>
+                Wir bringen frische, hochwertige, nährstoffreiche Zutaten in Ihre Schale.
+                Traditionelle Fermentation, viel Gemüse und abgestimmte Gewürze – so
+                entsteht eine Küche, die gut schmeckt und gut tut.
+            </p>
+            <p>
+                Unsere Gerichte sind ausgewogen, bieten viele pflanzliche Komponenten
+                und lassen sich an Ihre persönlichen Vorlieben anpassen.
+            </p>
+        </div>
+        <div class="contact-two-column-img">
+            <img src="{% static 'img/contact/mission-spices.jpg' %}"
+                 alt="Gewürze und Zutaten"
+                 class="rounded-img">
+        </div>
+    </div>
+</section>
+
+{# 4. Streifen – Kontaktformular auf großem Bild-Hintergrund #}
+<section class="contact-form-hero"
+         style="background-image: url('{% static "img/contact/contact-bottom-hero.jpg" %}');">
+    <div class="contact-form-overlay">
+        <div class="container contact-form-layout">
+
+            <div class="contact-form-text">
+                <h2>Kontaktieren Sie uns</h2>
+                <p>
+                    Wenn Sie Fragen haben, ein Catering planen oder eine Reservierung
+                    vornehmen möchten, schreiben Sie uns gern.
+                </p>
+                <p>
+                    Wir melden uns so schnell wie möglich bei Ihnen zurück.
+                </p>
+            </div>
+
+            <div class="contact-form-card">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-row">
+                        <label for="id_name">Vor- und Nachname*</label>
+                        <input id="id_name"
+                               type="text"
+                               name="name"
+                               placeholder="z.B. Max Mustermann"
+                               required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="id_email">E-Mail*</label>
+                        <input id="id_email"
+                               type="email"
+                               name="email"
+                               placeholder="z.B. max.mustermann@gmail.com"
+                               required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="id_message">Ihre Nachricht an uns*</label>
+                        <textarea id="id_message"
+                                  name="message"
+                                  rows="6"
+                                  placeholder="Geben Sie hier Ihre Nachricht ein."
+                                  required></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary btn-full">
+                        Nachricht senden
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,250 +1,148 @@
 {% extends "base.html" %}
 {% load static %}
 
-<title>{% block title %}KBG Europe – Korean BBQ Grill{% endblock %}</title>
+{% block title %}Menü – Korean BBQ Grill{% endblock %}
 
 {% block content %}
+
 <style>
-  :root {
-    --kbg-orange: #f28c1a;
-    --kbg-green: #2c7c4f;
-    --kbg-text: #222;
-    --kbg-muted: #666;
-    --kbg-bg-light: #f5f5f0;
-    --kbg-max-width: 1200px;
-    --kbg-font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
-    /* NEU: Standard-Streifenfarben */
-    --kbg-block-white: #ffffff;
-    --kbg-block-beige: #f5f5f0;
-  }
-
-
-
-  .kbg-menu-page {
-    font-family: var(--kbg-font-main);
-    color: var(--kbg-text);
-  }
-
-  /* Hero Ramyun oben */
-  .kbg-hero {
-    position: relative;
-    color: #fff;
-    overflow: hidden;
-  }
-
-  .kbg-hero-media {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-    display: block;
-  }
-
-  .kbg-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.6)
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .kbg-hero-title {
-    font-size: clamp(2rem, 3vw, 2.8rem);
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-  }
-
-  .kbg-hero-subtitle {
-    font-size: 1rem;
-    opacity: 0.9;
-  }
-
-  .kbg-main {
-    max-width: var(--kbg-max-width);
-    margin: 0 auto;
-    padding: 3rem 1.5rem 4rem;
-  }
-
-  .kbg-section-intro {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-
-  .kbg-section-intro small {
-    color: var(--kbg-green);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-
-  .kbg-section-intro h1 {
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
-    margin-bottom: 0.4rem;
-  }
-
-  .kbg-section-intro p {
-    color: var(--kbg-muted);
-    font-size: 0.95rem;
-  }
-
-  /* Menü-Blöcke */
-
-  .kbg-menu-block {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
-    gap: 2.5rem;
-    padding: 2.5rem 2rem;
-    margin-bottom: 1.5rem;
-    align-items: center;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-  }
-
-  .kbg-menu-block-inner {
-    position: relative;
-    z-index: 1;
-  }
-
-  .kbg-menu-block img.kbg-dish-image {
-    width: 100%;
-    max-width: 420px;
-    border-radius: 8px;
-    display: block;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-  }
-
-  .kbg-dish-header {
-    margin-bottom: 0.5rem;
-  }
-
-  .kbg-dish-id {
-    color: var(--kbg-orange);
-    font-weight: 700;
-    font-size: 1.6rem;
-    margin-right: 0.4rem;
-  }
-
-  .kbg-dish-name {
-    font-size: 1.6rem;
-    font-weight: 700;
-  }
-
-  .kbg-dish-subtitle {
-    color: var(--kbg-muted);
-    font-weight: 500;
-    margin-bottom: 0.7rem;
-  }
-
-  .kbg-dish-description {
-    margin-bottom: 0.4rem;
-  }
-
-  .kbg-dish-description .en {
-    font-style: italic;
-    color: var(--kbg-muted);
-    font-size: 0.9rem;
-  }
-
-  .kbg-options-list {
-    margin-top: 0.75rem;
-    font-size: 0.95rem;
-  }
-
-  .kbg-option-item {
-    margin-bottom: 0.2rem;
-  }
-
-  /* 1A / 1B / 11A / 11B etc – Orange + italic */
-  .kbg-option-code {
-    color: var(--kbg-orange);
-    font-style: italic;
-    font-weight: 600;
-    margin-right: 0.3rem;
-  }
-
-  .kbg-option-label span.icon {
-    margin-left: 0.2rem;
-  }
-
-  /* Overlay bei Hintergrundbildern */
-  .kbg-menu-block.has-bg-image::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.92),
-      rgba(255, 255, 255, 0.97)
-    );
-    z-index: 0;
-  }
-
-  @media (max-width: 900px) {
-    .kbg-menu-block {
-      grid-template-columns: 1fr;
-      padding: 2rem 1.5rem;
+    /* Intro oben */
+    .menu-intro {
+        text-align: center;
     }
-    .kbg-hero-media {
-      height: 240px;
+    .menu-intro p {
+        margin-top: 0.4rem;
+        color: #666;
+        font-size: 0.95rem;
     }
-  }
+    .section-white {
+        background-color: #f5f5f5;  /* gleich wie body, kannst du ändern */
+    }
 
-  @media (max-width: 600px) {
-    .kbg-main {
-      padding-inline: 1rem;
+    /* --- Streifen / Menüblöcke --- */
+
+    .menu-strip {
+        padding: 3rem 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
     }
-    .kbg-menu-block {
-      padding-inline: 1rem;
+
+    /* Wenn ein Hintergrundbild gesetzt ist, legen wir ein helles Overlay drüber,
+       damit der Text lesbar bleibt. */
+    .menu-strip.has-bg-image::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.94),
+            rgba(255, 255, 255, 0.97)
+        );
+        z-index: 0;
     }
-  }
+
+    .menu-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);  /* links Bild, rechts Text */
+        gap: 2.5rem;
+        align-items: center;
+        position: relative;
+        z-index: 1; /* über dem Overlay */
+    }
+
+    .menu-dish-image {
+        width: 100%;
+        max-width: 420px;
+        border-radius: 8px;
+        display: block;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .menu-dish-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-dish-id {
+        color: #f28c1a;            /* dein Orange */
+        font-weight: 700;
+        font-size: 1.6rem;
+        margin-right: 0.4rem;
+    }
+
+    .menu-dish-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .menu-dish-subtitle {
+        color: #666;
+        font-weight: 500;
+        margin-bottom: 0.7rem;
+    }
+
+    .menu-dish-description {
+        margin-bottom: 0.4rem;
+    }
+
+    .menu-dish-description .en {
+        font-style: italic;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .menu-options-list {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .menu-option-item {
+        margin-bottom: 0.2rem;
+    }
+
+    /* 1A / 1B / 11A / 11B etc – Orange + italic */
+    .menu-option-code {
+        color: #f28c1a;
+        font-style: italic;
+        font-weight: 600;
+        margin-right: 0.3rem;
+    }
+
+    @media (max-width: 900px) {
+        .menu-row {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
-<div class="kbg-menu-page">
-
-  <!-- Hero-Ramyun (Navbar und Footer kommen schon aus base.html) -->
-  <section class="kbg-hero">
-    <img
-      src="{% static 'img/menu/ramyun-hero.jpg' %}"
-      alt="Ramyun"
-      class="kbg-hero-media"
-    />
-    <div class="kbg-hero-overlay">
-      <div class="kbg-hero-title">Ramyun</div>
-      <div class="kbg-hero-subtitle">Lieblingsgericht weltweit</div>
+<!-- Hero oben (nutzt dein globales hero-section CSS) -->
+<section class="hero-section">
+    <div class="hero-bg">
+        <img src="{% static 'img/menu/ramyun-hero.jpg' %}" alt="Ramyun">
     </div>
-  </section>
+    <div class="hero-overlay">
+        <div class="hero-subtitle">Ramyun</div>
+        <div class="hero-tagline">Lieblingsgericht weltweit</div>
+    </div>
+</section>
 
-  <main class="kbg-main">
-    <section class="kbg-section-intro">
-      <small>Unser Menü</small>
-      <h1>Genießen Sie die koreanische Vielfalt</h1>
-      <p>Unsere Speisen werden täglich frisch zubereitet!</p>
-    </section>
+<!-- Intro "Unser Menü" -->
+<section class="section section-white">
+    <div class="container menu-intro">
+        <div class="section-kicker green">Unser Menü</div>
+        <h1 class="section-title">Genießen Sie die koreanische Vielfalt</h1>
+        <p>Unsere Speisen werden täglich frisch zubereitet!</p>
+    </div>
+</section>
 
-    <div id="kbg-menu-container"></div>
-  </main>
-
-</div>
+<!-- Hier kommen die Streifen rein (volle Seitenbreite) -->
+<div id="kbg-menu-strips"></div>
 
 <script>
-  // Menü-Daten – jedes Objekt ist ein Block
-  // background: optional
-  //  - weggelassen  -> automatische Streifen (weiß / beige)
-  //  - "#xxxxxx"    -> feste Farbe für diesen Block
-  //  - "irgendwas.jpg" -> Hintergrundbild
-
+  // JSON-Daten; backgroundColor / backgroundImage sind optional.
+  // Wenn beides fehlt:
+  //   -> automatisch: 1. Block weiß, 2. Block beige, 3. wieder weiß ...
   const kbgMenuData = [
     {
       id: 1,
@@ -253,7 +151,8 @@
       descriptionDe: "Reis, frisches Gemüse, Spiegelei, 1 Topping nach Wahl",
       descriptionEn: "rice, fresh vegetables, fried egg, 1 topping of your choice",
       image: "{% static 'img/menu/1-bibimbap.jpg' %}",
-      // background: weggelassen -> nimmt automatisch weiß (erster Block)
+      // backgroundColor: "#ffffff",
+      // backgroundImage: "{% static 'img/...'%}",
       options: [
         { code: "1A", label: "Bulgogi Beef" },
         { code: "1B", label: "Teriyaki Lachs" },
@@ -269,7 +168,6 @@
       descriptionDe: "Reis, Gemüsestreifen, Fleisch nach Wahl",
       descriptionEn: "rice, vegetable stripes, meat of your choice",
       image: "{% static 'img/menu/2-bbq-bowl.jpg' %}",
-      // background: weggelassen -> nimmt automatisch beige (zweiter Block)
       options: [
         { code: "2A", label: "Bulgogi Beef" },
         { code: "2B", label: "Jeyuk Pork 🌶" },
@@ -283,8 +181,7 @@
       descriptionDe: "Glasnudel mit frischem Gemüse und 1 Topping nach Wahl",
       descriptionEn: "glass noodle with fresh vegetables and 1 topping of your choice",
       image: "{% static 'img/menu/3-chapchae.jpg' %}",
-      // Beispiel mit Bild-Hintergrund
-      background: "{% static 'img/menu/bg-chapchae.jpg' %}",
+      backgroundImage: "{% static 'img/menu/bg-chapchae.jpg' %}",
       options: [
         { code: "3A", label: "Bulgogi Beef" },
         { code: "3B", label: "Jeyuk Pork 🌶" },
@@ -300,7 +197,6 @@
       descriptionDe: "Nudelsuppe mit frischem Gemüse und Ei, 1 Topping nach Wahl",
       descriptionEn: "noodle soup with fresh vegetables and egg, 1 topping of your choice",
       image: "{% static 'img/menu/4-ramyun-soup.jpg' %}",
-      // background: "#f5f5f0",  // Beispiel: feste Farbe, wenn du willst
       options: [
         { code: "4A", label: "Mandu 🌱" },
         { code: "4B", label: "Käse" },
@@ -318,7 +214,7 @@
       descriptionEn:
         "gimbap, fried mandu, chapchae, salad, rice, miso soup, 1 meat of your choice (or tofu)",
       image: "{% static 'img/menu/11-kbg-deluxe.jpg' %}",
-      background: "#e5dfcf",  // hier z.B. spezieller Beige-Ton
+      backgroundColor: "#e5dfcf",
       options: [
         { code: "11A", label: "Bulgogi Beef" },
         { code: "11B", label: "Jeyuk Pork 🌶" },
@@ -329,115 +225,107 @@
     }
   ];
 
-  const kbgMenuContainer = document.getElementById("kbg-menu-container");
+  const root = document.getElementById("kbg-menu-strips");
 
-  function createMenuBlock(item, index) {
-    const block = document.createElement("section");
-    block.className = "kbg-menu-block";
+  function createStrip(item, index) {
+    const section = document.createElement("section");
+    section.className = "menu-strip";
 
-    // Default: Streifen weiß / beige
-    let bgColor = index % 2 === 0
-      ? "var(--kbg-block-white)"
-      : "var(--kbg-block-beige)";
+    // Standard-Streifen: 1 = weiß, 2 = beige, 3 = weiß, ...
+    let bgColor = index % 2 === 0 ? "#ffffff" : "#f5f5f0";
+    let hasBgImage = false;
 
-    let hasImage = false;
-
-    // Wenn background gesetzt ist:
-    if (item.background) {
-      if (
-        item.background.startsWith("#") ||
-        item.background.startsWith("rgb")
-      ) {
-        // explizite Farbe im JSON überschreibt Standard-Streifenfarbe
-        bgColor = item.background;
-      } else {
-        // sonst behandeln wir es als Bild-URL
-        hasImage = true;
-      }
+    // Farbe / Bild aus JSON überschreibt Standard
+    if (item.backgroundColor) {
+      bgColor = item.backgroundColor;
+    }
+    if (item.backgroundImage) {
+      hasBgImage = true;
     }
 
-    // Farbe setzen
-    block.style.backgroundColor = bgColor;
+    section.style.backgroundColor = bgColor;
 
-    // Hintergrundbild + Overlay (wie vorher)
-    if (hasImage) {
-      block.classList.add("has-bg-image");
-      block.style.backgroundImage = `url('${item.background}')`;
+    if (hasBgImage) {
+      section.classList.add("has-bg-image");
+      section.style.backgroundImage = `url('${item.backgroundImage}')`;
     }
 
-    const imageWrapper = document.createElement("div");
-    imageWrapper.className = "kbg-menu-block-inner";
+    const container = document.createElement("div");
+    container.className = "container";
+
+    const row = document.createElement("div");
+    row.className = "menu-row";
+
+    // Bild-Spalte
+    const imageCol = document.createElement("div");
     const img = document.createElement("img");
     img.src = item.image;
     img.alt = item.name;
-    img.className = "kbg-dish-image";
-    imageWrapper.appendChild(img);
+    img.className = "menu-dish-image";
+    imageCol.appendChild(img);
 
-    const textWrapper = document.createElement("div");
-    textWrapper.className = "kbg-menu-block-inner";
+    // Text-Spalte
+    const textCol = document.createElement("div");
 
     const header = document.createElement("div");
-    header.className = "kbg-dish-header";
+    header.className = "menu-dish-header";
 
     const idSpan = document.createElement("span");
-    idSpan.className = "kbg-dish-id";
+    idSpan.className = "menu-dish-id";
     idSpan.textContent = item.id;
 
     const nameSpan = document.createElement("span");
-    nameSpan.className = "kbg-dish-name";
+    nameSpan.className = "menu-dish-name";
     nameSpan.textContent = " " + item.name;
 
     header.appendChild(idSpan);
     header.appendChild(nameSpan);
 
     const subtitle = document.createElement("div");
-    subtitle.className = "kbg-dish-subtitle";
+    subtitle.className = "menu-dish-subtitle";
     subtitle.textContent = item.subtitle || "";
 
     const desc = document.createElement("div");
-    desc.className = "kbg-dish-description";
-    desc.innerHTML = `
-      ${item.descriptionDe || ""}<br/>
-      <span class="en">${item.descriptionEn || ""}</span>
-    `;
+    desc.className = "menu-dish-description";
+    desc.innerHTML = `${item.descriptionDe || ""}<br><span class="en">${item.descriptionEn || ""}</span>`;
 
-    textWrapper.appendChild(header);
-    textWrapper.appendChild(subtitle);
-    textWrapper.appendChild(desc);
+    textCol.appendChild(header);
+    textCol.appendChild(subtitle);
+    textCol.appendChild(desc);
 
     if (item.options && item.options.length) {
-      const optionsList = document.createElement("div");
-      optionsList.className = "kbg-options-list";
+      const list = document.createElement("div");
+      list.className = "menu-options-list";
 
-      item.options.forEach((opt) => {
+      item.options.forEach(opt => {
         const line = document.createElement("div");
-        line.className = "kbg-option-item";
+        line.className = "menu-option-item";
 
         const code = document.createElement("span");
-        code.className = "kbg-option-code";
+        code.className = "menu-option-code";
         code.textContent = opt.code;
 
         const label = document.createElement("span");
-        label.className = "kbg-option-label";
+        label.className = "menu-option-label";
         label.textContent = " " + opt.label;
 
         line.appendChild(code);
         line.appendChild(label);
-        optionsList.appendChild(line);
+        list.appendChild(line);
       });
 
-      textWrapper.appendChild(optionsList);
+      textCol.appendChild(list);
     }
 
-    block.appendChild(imageWrapper);
-    block.appendChild(textWrapper);
-
-    return block;
+    row.appendChild(imageCol);
+    row.appendChild(textCol);
+    container.appendChild(row);
+    section.appendChild(container);
+    return section;
   }
 
   kbgMenuData.forEach((item, index) => {
-    const block = createMenuBlock(item, index);
-    kbgMenuContainer.appendChild(block);
+    root.appendChild(createStrip(item, index));
   });
 </script>
 

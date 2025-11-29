@@ -1,8 +1,11 @@
+/* ========== GLOBAL ========== */
+
 body {
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: #333;
-    background-color: #f5f5f5;
+    /* WICHTIG: kein grauer Rahmen mehr */
+    background-color: #ffffff;
 }
 
 a {
@@ -16,7 +19,7 @@ a {
     padding: 0 1.5rem;
 }
 
-/* HEADER */
+/* ========== HEADER ========== */
 
 .site-header {
     position: sticky;
@@ -47,7 +50,7 @@ a {
     text-decoration: underline;
 }
 
-/* HERO */
+/* ========== HERO ========== */
 
 .hero-section {
     position: relative;
@@ -88,14 +91,24 @@ a {
     font-size: 1.6rem;
 }
 
-/* SECTIONS */
+/* ========== GENERISCHE SECTIONS (für ALLE Seiten) ========== */
 
 .section {
     padding: 4rem 0;
 }
 
+/* hellgrau wie bisher z.B. für Startseite */
 .section-light {
     background-color: #f5f5f5;
+}
+
+/* neue Helper für volle Hintergrund-Farben */
+.section-white {
+    background-color: #ffffff;
+}
+
+.section-beige {
+    background-color: #f5f5f0;
 }
 
 .section-center {
@@ -119,7 +132,7 @@ a {
     margin: 0 0 1rem 0;
 }
 
-/* LAYOUT-GRIDS */
+/* ========== LAYOUT-GRIDS ========== */
 
 .two-column {
     display: grid;
@@ -153,7 +166,7 @@ a {
     object-fit: cover;
 }
 
-/* BUTTON */
+/* ========== BUTTONS ========== */
 
 .btn {
     display: inline-block;
@@ -172,7 +185,7 @@ a {
     background-color: #256628;
 }
 
-/* TESTIMONIALS */
+/* ========== TESTIMONIALS ========== */
 
 .testimonials-section {
     position: relative;
@@ -210,7 +223,7 @@ a {
     font-weight: 600;
 }
 
-/* FOOTER */
+/* ========== FOOTER ========== */
 
 .site-footer {
     background-color: #44403c; /* dunkles Braun / Grau */
@@ -241,18 +254,6 @@ a {
     text-decoration: underline;
 }
 
-.social-icons span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 999px;
-    background-color: #33312f;
-    margin-right: 0.5rem;
-    font-size: 0.8rem;
-}
-
 .footer-map iframe {
     width: 100%;
     min-height: 260px;
@@ -266,7 +267,122 @@ a {
     text-align: center;
 }
 
-/* RESPONSIVE */
+/* ========== MENU-SEITE (global, für alle Menüs verwendbar) ========== */
+
+/* Intro-Bereich "Unser Menü" */
+.menu-intro {
+    text-align: center;
+}
+
+.menu-intro p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Vollbreite Streifen – WEISS / BEIGE etc. */
+.menu-strip {
+    padding: 3rem 0;
+}
+
+.menu-strip--white {
+    background-color: #ffffff;
+}
+
+.menu-strip--beige {
+    background-color: #f5f5f0;
+}
+
+/* falls du pro Block eine eigene Farbe setzt, wird die hier einfach überschrieben */
+
+/* optional: Hintergrundbild + Overlay */
+.menu-strip.has-bg-image {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.menu-strip.has-bg-image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.92),
+        rgba(255, 255, 255, 0.97)
+    );
+}
+
+.menu-strip.has-bg-image > .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Inhalt innerhalb eines Menüstreichens */
+.menu-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.menu-dish-image {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.menu-dish-header {
+    margin-bottom: 0.5rem;
+}
+
+.menu-dish-id {
+    color: #f28c1a;
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-right: 0.4rem;
+}
+
+.menu-dish-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.menu-dish-subtitle {
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 0.7rem;
+}
+
+.menu-dish-description {
+    margin-bottom: 0.4rem;
+}
+
+.menu-dish-description .en {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.menu-options-list {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.menu-option-item {
+    margin-bottom: 0.2rem;
+}
+
+.menu-option-code {
+    color: #f28c1a;
+    font-style: italic;
+    font-weight: 600;
+    margin-right: 0.3rem;
+}
+
+/* ========== RESPONSIVE ========== */
 
 @media (max-width: 900px) {
     .header-inner {
@@ -300,7 +416,13 @@ a {
     .testimonials-section {
         height: auto;
     }
+
+    .menu-row {
+        grid-template-columns: 1fr;
+    }
 }
+
+/* ========== SOCIAL ICONS (Footer) ========== */
 
 .social-icons {
     margin-top: 1rem;
@@ -313,11 +435,265 @@ a {
     width: 26px;
     height: 26px;
     display: block;
-    filter: invert(1); /* weiß auf dunklem Footer-Hintergrund, falls nötig */
+    filter: invert(1); /* weiß auf dunklem Footer-Hintergrund */
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .social-icons a:hover img {
     transform: scale(1.05);
     opacity: 0.85;
+}
+
+/* =======================
+   CATERING
+   ======================= */
+
+.catering-intro p {
+    max-width: 720px;
+    margin: 0.25rem auto;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.catering-hero {
+    height: 280px;
+}
+
+.catering-bottom-image {
+    height: 240px;
+}
+
+.catering-form-section {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+}
+
+.catering-form-layout {
+    align-items: flex-start; /* statt center – Formular oben ausrichten */
+    gap: 3rem;
+}
+
+.catering-form-text p {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Formularkarte rechts */
+
+.catering-form-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 520px;
+    margin-left: auto;
+}
+
+.catering-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.catering-form .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.catering-form label {
+    font-weight: 500;
+}
+
+.catering-form input,
+.catering-form textarea {
+    border-radius: 8px;
+    border: 1px solid #d4d4d4;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    background-color: #f9fafb;
+}
+
+.catering-form input::placeholder,
+.catering-form textarea::placeholder {
+    color: #a0a0a0;
+}
+
+.catering-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.catering-form .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.catering-form input[type="checkbox"] {
+    margin-top: 0.15rem;
+}
+
+.catering-form .form-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.catering-form .form-label-inline {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-submit {
+    margin-top: 0.75rem;
+    align-self: flex-end;
+}
+
+/* responsive für Handy */
+
+@media (max-width: 900px) {
+    .catering-hero {
+        height: 220px;
+    }
+
+    .catering-bottom-image {
+        height: 200px;
+    }
+
+    .catering-form-card {
+        margin-left: 0;
+    }
+}
+
+/* -------------------------------------------------------
+   KONTAKTSEITE – 4 Streifen wie im Layout-Screenshot
+-------------------------------------------------------- */
+
+/* 1. Streifen – Über uns, Bild + leicht grünlicher Hintergrund */
+.contact-about-hero {
+    background-color: #eef2eb;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.contact-about-inner {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.contact-about-inner p {
+    line-height: 1.7;
+    margin-bottom: 0.7rem;
+}
+
+/* 2. & 3. Streifen – Farbflächen + 2-Spalten-Layout */
+.contact-section-white {
+    background-color: #ffffff;
+}
+
+.contact-section-beige {
+    background-color: #f5f5ef;
+}
+
+.contact-two-column {
+    align-items: center;
+}
+
+.contact-two-column-img img {
+    width: 100%;
+    max-width: 420px;
+    display: block;
+    border-radius: 16px;
+}
+
+.contact-text-block p {
+    line-height: 1.7;
+    margin-bottom: 0.7rem;
+}
+
+/* 4. Streifen – Kontaktformular auf großem Hintergrundbild */
+.contact-form-hero {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #ffffff;
+}
+
+.contact-form-overlay {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.7)
+    );
+    padding: 4rem 0;
+}
+
+.contact-form-layout {
+    display: grid;
+    gap: 2.75rem;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+    align-items: flex-start;
+}
+
+.contact-form-text h2 {
+    margin-bottom: 0.8rem;
+}
+
+.contact-form-text p {
+    line-height: 1.7;
+    margin-bottom: 0.7rem;
+}
+
+/* Formularkarte */
+.contact-form-card {
+    background-color: #ffffff;
+    color: #111827;
+    border-radius: 18px;
+    padding: 2rem 2.25rem;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.contact-form-card .form-row {
+    margin-bottom: 1.1rem;
+}
+
+.contact-form-card label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.contact-form-card input,
+.contact-form-card textarea {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #d4d4d4;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.contact-form-card textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .contact-form-layout {
+        grid-template-columns: 1fr;
+    }
 }

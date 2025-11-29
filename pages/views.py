@@ -8,3 +8,9 @@ def menu_view(request):
 
 def bestellen_view(request):
     return render(request, "pages/bestellen.html")
+
+def catering_view(request):
+    return render(request, "pages/catering.html")
+
+def kontakt_view(request):
+    return render(request, "pages/kontakt.html")

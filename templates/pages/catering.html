@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Catering – Korean BBQ Grill{% endblock %}
+
+{% block content %}
+
+<!-- Intro oben -->
+<section class="section section-white section-center catering-intro">
+    <div class="container">
+        <div class="section-kicker green">Catering</div>
+        <h1 class="section-title">Ihr Partner für jeden Anlass</h1>
+
+        <p>Laden Sie Ihre Gäste ein und bieten gesunde und schmackhafte Mahlzeiten an!</p>
+        <p>Perfekt für jede Zeit, die Sie für Ihre Veranstaltung oder Ihr Meeting ein Grib-and-Go-Mittagessen benötigen.</p>
+        <p>Auf Wunsch stellen wir auch Menüs für jede Veranstaltung und jedes Treffen zusammen.</p>
+    </div>
+</section>
+
+<!-- Hero-Bild -->
+<section class="hero-section catering-hero">
+    <div class="hero-bg">
+        <!-- ersetze den Dateinamen mit deinem echten Bild -->
+        <img src="{% static 'img/catering/catering-hero.jpg' %}" alt="KBG Catering">
+    </div>
+</section>
+
+<!-- Anfrageformular -->
+<section class="section section-light catering-form-section">
+    <div class="container two-column catering-form-layout">
+        <!-- linke Spalte: Text -->
+        <div class="catering-form-text">
+            <div class="section-kicker green">KBG-Catering</div>
+            <h2 class="section-title">Anfrageformular</h2>
+
+            <p>Bitte teilen Sie uns Ihre Wünsche mit Personenzahl und Speisen mit.</p>
+            <p>Gerne erstellen wir ein individuelles Angebot für Sie!</p>
+        </div>
+
+        <!-- rechte Spalte: Formular -->
+        <div class="catering-form-card">
+            <form class="catering-form" action="#" method="post">
+                {% csrf_token %}
+
+                <div class="form-field">
+                    <label for="contact_person">Ansprechpartner*</label>
+                    <input type="text" id="contact_person" name="contact_person" required
+                           placeholder="Vorname und Nachname">
+                </div>
+
+                <div class="form-field">
+                    <label for="company">Firma / Gesellschaft</label>
+                    <input type="text" id="company" name="company"
+                           placeholder="z.B. Muster­gesellschaft GmbH">
+                </div>
+
+                <div class="form-field">
+                    <label for="email">E-Mail*</label>
+                    <input type="email" id="email" name="email" required
+                           placeholder="z.B. maxmustermann@gmail.com">
+                </div>
+
+                <div class="form-field">
+                    <label for="phone">Telefonnummer*</label>
+                    <input type="tel" id="phone" name="phone" required
+                           placeholder="z.B. 0123 456789">
+                </div>
+
+                <div class="form-field">
+                    <label for="address">Lieferadresse</label>
+                    <input type="text" id="address" name="address"
+                           placeholder="z.B. Musterstraße 1, 12345 Musterstadt">
+                </div>
+
+                <div class="form-field">
+                    <label for="message">Nachricht*</label>
+                    <textarea id="message" name="message" required
+                              placeholder="Geben Sie hier Ihre Teilnehmerzahl, Datum, Uhrzeit und sonstige Wünsche an."></textarea>
+                </div>
+
+                <div class="form-field">
+                    <span class="form-label-inline">Datenschutz*</span>
+                    <label for="privacy" class="checkbox-label">
+                        <input type="checkbox" id="privacy" name="privacy" required>
+                        <span>
+                            Ich erkläre mich damit einverstanden, dass meine Daten zur
+                            Bearbeitung meines Anliegens verwendet werden.
+                        </span>
+                    </label>
+                    <small class="form-hint">
+                        Weitere Informationen und Widerrufs­hinweise finden Sie in der Datenschutzerklärung.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary form-submit">
+                    Anfrage senden
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- unteres Dekobild (optional) -->
+<section class="hero-section catering-bottom-image">
+    <div class="hero-bg">
+        <!-- ersetze den Dateinamen mit deinem echten Bild -->
+        <img src="{% static 'img/catering/catering-bottom.jpg' %}" alt="Korean BBQ">
+    </div>
+</section>
+
+{% endblock %}
