@@ -1,17 +1,318 @@
-<!-- templates/admin_dashboard/dashboard_home.html -->
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
-</head>
-<body>
-    <div class="dashboard-container">
-        <h1>Willkommen im Admin Dashboard</h1>
-        <p>Hier kannst du deine Daten verwalten.</p>
-        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+{% extends "base.html" %}
+{% block title %}Dashboard | KBG Europe{% endblock %}
+
+{% block content %}
+<section class="section section-light">
+    <div class="container">
+
+        <h1 class="section-title">Dashboard</h1>
+        <p>Willkommen im internen Bereich.</p>
+
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            <a class="btn btn-primary" href="{% url 'logout' %}">Abmelden</a>
+            <a class="btn" href="{% url 'home' %}">Zurück zur Startseite</a>
+        </div>
+
+        <!-- Tabs + Inhalt -->
+        <div class="dashboard-layout" style="margin-top: 2rem;">
+
+            <!-- Horizontale Tabs -->
+            <nav class="dashboard-tabs" aria-label="Dashboard-Bereiche">
+                <button type="button" class="dashboard-tab-btn" data-tab-target="statistiken">
+                    Statistiken
+                </button>
+                <button type="button" class="dashboard-tab-btn" data-tab-target="anfragen">
+                    Anfragen
+                </button>
+                <button type="button" class="dashboard-tab-btn" data-tab-target="medien">
+                    Medien
+                </button>
+                <button type="button" class="dashboard-tab-btn" data-tab-target="seo">
+                    SEO
+                </button>
+                {% if user.is_superuser %}
+                <button type="button" class="dashboard-tab-btn" data-tab-target="benutzer">
+                    Benutzer-Management
+                </button>
+                {% endif %}
+            </nav>
+
+            <!-- Panels -->
+            <div class="dashboard-panels">
+
+                <!-- Statistiken -->
+                <div class="dashboard-panel" data-tab-panel="statistiken">
+                    <h2>Statistiken</h2>
+                    <p>Übersicht über Traffic und Performance. Hier kannst du z.&nbsp;B. Google Analytics oder ähnliche Tools einbinden.</p>
+
+                    <div class="card" style="padding: 1rem; border-radius: 6px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                        <p style="margin-bottom: .5rem;"><strong>Google Traffic Embed</strong></p>
+                        <p style="font-size: .9rem; color: #555;">
+                            Hier könnte ein iframe o. Ä. eingefügt werden, z.&nbsp;B.:
+                        </p>
+                        <pre style="font-size: .8rem; white-space: pre-wrap; background:#f7f7f7; padding:.75rem; border-radius:4px;">
+&lt;iframe src="DEIN_GOOGLE_EMBED_URL" width="100%" height="400" frameborder="0"&gt;&lt;/iframe&gt;
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Anfragen -->
+                <div class="dashboard-panel" data-tab-panel="anfragen">
+                    <h2>Anfragen</h2>
+                    <p>Verwalte Catering- und Kontaktanfragen und beantworte sie direkt aus dem Dashboard.</p>
+
+                    <h3 style="margin-top: 1.5rem;">Catering-Anfragen</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Name</th>
+                                <th>E-Mail</th>
+                                <th>Status</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01.01.2025</td>
+                                <td>Max Mustermann</td>
+                                <td>max@example.com</td>
+                                <td>Offen</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm">Antworten</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 style="margin-top: 1.5rem;">Kontakt-Anfragen</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Name</th>
+                                <th>E-Mail</th>
+                                <th>Betreff</th>
+                                <th>Status</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>02.01.2025</td>
+                                <td>Erika Musterfrau</td>
+                                <td>erika@example.com</td>
+                                <td>Frage zum Menü</td>
+                                <td>Offen</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm">Antworten</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Medien -->
+                <div class="dashboard-panel" data-tab-panel="medien">
+                    <h2>Medien</h2>
+                    <p>Verwalte Bilder für die Website, z.&nbsp;B. Speisekarten, Menüfotos oder Headerbilder.</p>
+
+                    <form method="post" enctype="multipart/form-data" action="">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="id_image">Neues Bild hochladen</label><br>
+                            <input type="file" name="image" id="id_image" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="id_alt_text">Alt-Text / Beschreibung</label><br>
+                            <input type="text" name="alt_text" id="id_alt_text" class="form-control" placeholder="z.B. &quot;KBG Menü – Vorspeisen&quot;">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Bild hochladen</button>
+                    </form>
+
+                    <hr style="margin: 2rem 0;">
+
+                    <h3>Aktive Bilder</h3>
+                    <p style="font-size: .9rem; color: #555;">
+                        Hier könntest du die aktuell verwendeten Bilder aus der Datenbank anzeigen und ggf. ersetzen oder löschen.
+                    </p>
+
+                    <ul>
+                        <li>menue_header.jpg – <a href="#">Ansehen</a> · <a href="#">Löschen/Ersetzen</a></li>
+                    </ul>
+                </div>
+
+                <!-- SEO -->
+                <div class="dashboard-panel" data-tab-panel="seo">
+                    <h2>SEO</h2>
+                    <p>Bearbeite Meta-Titel und Meta-Beschreibungen, z.&nbsp;B. für die Startseite oder spezielle Landingpages.</p>
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="id_meta_title">Meta-Titel</label><br>
+                            <input type="text" name="meta_title" id="id_meta_title" class="form-control" placeholder="KBG Europe – Premium Catering in ...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="id_meta_description">Meta-Beschreibung</label><br>
+                            <textarea name="meta_description" id="id_meta_description" class="form-control" rows="3" placeholder="Kurzer Text, der in der Google-Snippet-Vorschau angezeigt wird."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                    </form>
+
+                    <div style="margin-top: 2rem;">
+                        <h3>Vorschau Google-Snippet (Beispiel)</h3>
+                        <div style="background:#fff; border-radius:6px; padding:1rem; box-shadow:0 1px 3px rgba(0,0,0,.08); font-size:.9rem;">
+                            <p style="color:#1a0dab; margin-bottom:0;">KBG Europe – Premium Catering in Beispielstadt</p>
+                            <p style="color:#006621; margin:0.25rem 0;">www.kbg-europe.de/</p>
+                            <p style="color:#4d5156; margin:0;">Hier siehst du eine Vorschau, wie Titel und Meta-Description ungefähr in der Google-Suche aussehen könnten.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benutzer-Management (nur Admin) -->
+                {% if user.is_superuser %}
+                <div class="dashboard-panel" data-tab-panel="benutzer">
+                    <h2>Benutzer-Management</h2>
+                    <p>Nur für Administratoren sichtbar. Hier kannst du Benutzer einsehen, hinzufügen und löschen.</p>
+
+                    <h3>Benutzerübersicht</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Benutzername</th>
+                                <th>E-Mail</th>
+                                <th>Rolle</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.is_superuser %}
+                                        Admin
+                                    {% else %}
+                                        Benutzer
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm">Bearbeiten</button>
+                                    <button type="button" class="btn btn-sm">Löschen</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 style="margin-top: 1.5rem;">Neuen Benutzer anlegen</h3>
+                    <p style="font-size:.9rem; color:#555;">
+                        Die genaue Funktionalität (Passwort-Handling, Einladungs-Mails usw.) kannst du später in den Views/Forms implementieren.
+                    </p>
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-bottom: .75rem;">
+                            <label for="id_new_username">Benutzername</label><br>
+                            <input type="text" id="id_new_username" name="new_username" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: .75rem;">
+                            <label for="id_new_email">E-Mail</label><br>
+                            <input type="email" id="id_new_email" name="new_email" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: .75rem;">
+                            <label for="id_new_password">Passwort</label><br>
+                            <input type="password" id="id_new_password" name="new_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Benutzer erstellen</button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
     </div>
-</body>
-</html>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const tabButtons = document.querySelectorAll("[data-tab-target]");
+    const panels = document.querySelectorAll("[data-tab-panel]");
+
+    function activateTab(name) {
+        panels.forEach(panel => {
+            panel.classList.toggle("dashboard-panel-active", panel.dataset.tabPanel === name);
+        });
+        tabButtons.forEach(btn => {
+            btn.classList.toggle("dashboard-tab-active", btn.dataset.tabTarget === name);
+        });
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => activateTab(btn.dataset.tabTarget));
+    });
+
+    if (tabButtons.length > 0) {
+        activateTab(tabButtons[0].dataset.tabTarget);
+    }
+});
+</script>
+
+<style>
+    .dashboard-tabs {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 1rem;
+        gap: 0; /* Tabs direkt aneinander */
+    }
+
+    .dashboard-tab-btn {
+        flex: 1 1 0;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-right: 1px solid #e0e0e0;
+        background: #f5f5f5;
+        cursor: pointer;
+        font-size: 0.95rem;
+        text-align: center;
+        transition: background 0.15s ease, color 0.15s ease, border-bottom 0.15s ease;
+    }
+
+    .dashboard-tab-btn:last-child {
+        border-right: none;
+    }
+
+    .dashboard-tab-btn.dashboard-tab-active {
+        background: #ffffff;
+        color: #2f7d32;
+        font-weight: 600;
+        border-bottom: 3px solid #2f7d32;
+    }
+
+    .dashboard-panels {
+        padding-top: 1rem;
+    }
+
+    .dashboard-panel {
+        display: none;
+    }
+
+    .dashboard-panel.dashboard-panel-active {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-tabs {
+            flex-direction: column;
+        }
+        .dashboard-tab-btn {
+            border-right: none;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .dashboard-tab-btn.dashboard-tab-active {
+            border-bottom-width: 3px;
+        }
+    }
+</style>
+{% endblock %}
