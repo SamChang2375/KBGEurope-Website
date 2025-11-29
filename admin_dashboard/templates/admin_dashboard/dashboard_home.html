@@ -1,0 +1,17 @@
+<!-- templates/admin_dashboard/dashboard_home.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Willkommen im Admin Dashboard</h1>
+        <p>Hier kannst du deine Daten verwalten.</p>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</body>
+</html>

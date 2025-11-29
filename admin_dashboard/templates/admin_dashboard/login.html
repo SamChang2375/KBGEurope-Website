@@ -1,0 +1,32 @@
+<!-- templates/admin_dashboard/login.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login zum Admin Dashboard</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <label for="username">Benutzername</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Passwort</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">Einloggen</button>
+        </form>
+        {% if error_message %}
+            <div class="error-message">{{ error_message }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
