@@ -4,21 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Benutzermanagement erstellt, push auf main">
-      <change afterPath="$PROJECT_DIR$/admin_dashboard/middleware.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/includes/media_row.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/context_processors.py" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Alles mal bisschen hübscher gemacht. &#10;Medien Upload Funktioniert. &#10;Webseite Statistiken eingerichtet. &#10;Iframe und Social-Media-Icons Fehler behoben. Login und Admin Seite hübsch gemnacht.">
+      <change afterPath="$PROJECT_DIR$/nextsteps.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/force_password_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/force_password_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764463763647</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Alles mal bisschen hübscher gemacht. &#10;Medien Upload Funktioniert. &#10;Webseite Statistiken eingerichtet. &#10;Iframe und Social-Media-Icons Fehler behoben. Login und Admin Seite hübsch gemnacht.">
+      <option name="closed" value="true" />
+      <created>1764508200154</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764508200154</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -159,6 +155,7 @@
     <MESSAGE value="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt" />
     <MESSAGE value="Benutzermanagement erstellt." />
     <MESSAGE value="Benutzermanagement erstellt, push auf main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Benutzermanagement erstellt, push auf main" />
+    <MESSAGE value="Alles mal bisschen hübscher gemacht. &#10;Medien Upload Funktioniert. &#10;Webseite Statistiken eingerichtet. &#10;Iframe und Social-Media-Icons Fehler behoben. Login und Admin Seite hübsch gemnacht." />
+    <option name="LAST_COMMIT_MESSAGE" value="Alles mal bisschen hübscher gemacht. &#10;Medien Upload Funktioniert. &#10;Webseite Statistiken eingerichtet. &#10;Iframe und Social-Media-Icons Fehler behoben. Login und Admin Seite hübsch gemnacht." />
   </component>
 </project>
