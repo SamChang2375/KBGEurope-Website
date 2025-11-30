@@ -7,7 +7,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}KBG Europe – Korean BBQ Grill{% endblock %}</title>
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- CSS laden (mit Versions-Trick gegen Cache) -->
+    <link href="{% static 'css/style.css' %}?v=3" rel="stylesheet">
+
+    <!-- HEADER ANPASSUNGEN (Größe & Logo) -->
+    <style>
+        /* Header höher machen (+ ca. 15-20px) */
+        .header-inner {
+            height: 90px !important;
+        }
+        /* Logo vergrößern */
+        .logo img {
+            height: 55px !important;
+            width: auto;
+        }
+    </style>
 </head>
 <body>
     <header class="site-header">
@@ -51,12 +65,10 @@
                     <h2>Wo finden Sie uns?</h2>
 
                     <h3>Öffnungszeiten</h3>
-                    <!-- VARIABLEN STATT HARDCODE -->
                     <p>Adresse: {{ site_settings.address }}</p>
                     <p>Öffnungszeiten: {{ site_settings.opening_hours }}</p>
 
                     <h3>Kontakt</h3>
-                    <!-- VARIABLEN STATT HARDCODE -->
                     <p>Telefonnummer: <a href="tel:{{ site_settings.phone|cut:' ' }}">{{ site_settings.phone }}</a></p>
                     <p>E-Mail: <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
 
@@ -66,7 +78,6 @@
                     </p>
 
                     <div class="social-icons">
-                        <!-- Hier nutzen wir auch die Email aus den Settings -->
                         <a href="{{ global_social_icons.instagram_url }}" target="_blank" rel="noopener">
                             {% if global_social_icons.instagram_icon %}
                                 <img src="{{ global_social_icons.instagram_icon.url }}" alt="Instagram">
@@ -86,12 +97,23 @@
 
                 <!-- Rechte Spalte: MAP IFRAME -->
                 <div class="footer-map">
-                   <!-- ... (Dein Google Maps Iframe Code) ... -->
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2525.3205515385193!2d7.094813577371475!3d50.73254327164749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bee171ed33712f%3A0xa7dada2bd8ce5093!2sKorean%20BBQ%20Grill!5e0!3m2!1sen!2sde!4v1764531373453!5m2!1sen!2sde"
+                           width="100%"
+                           height="100%"
+                           style="border:0; min-height: 300px; border-radius: 12px;"
+                           allowfullscreen=""
+                           loading="lazy"
+                           referrerpolicy="no-referrer-when-downgrade">
+                   </iframe>
                 </div>
 
             </div>
         </div>
-        <!-- ... Footer Bottom ... -->
+        <div class="footer-bottom">
+            <div class="container">
+                © 2024 KBG Europe GmbH. All rights reserved.
+            </div>
+        </div>
     </footer>
 
     <!-- Social Tabs -->
