@@ -1,4 +1,4 @@
-2. Die restlichen Seiten ergänzen und Medien hochladen (20.30-21.30)
-3. Header bisschen breiter (21.30-21.45)
-4. RESPONSIVE DESIGN (0-1.30)
-5. Abschlussarbeiten - u.a. CSS alles in eins, SEO Optimierung Rubrik überlegen - wie? (1.30-2.30)
+Heute noch:
+1. Über uns Seite
+2. Karriere und Jobs
+3. Responsive Design

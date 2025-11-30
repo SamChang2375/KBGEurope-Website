@@ -501,7 +501,20 @@
                     <!-- KONTAKT TAB -->
                     <div id="media-kontakt" class="media-subpanel">
                         <h3>Kontakt Seite</h3>
-                        {% include "admin_dashboard/includes/media_row.html" with key="contact_top_bg" label="Kontakt Header" desc="Hintergrundbild oben." img_obj=site_images.contact_top_bg %}
+
+                        {% include "admin_dashboard/includes/media_row.html" with key="contact_top_bg" label="Top Banner (Über uns)" desc="Hintergrundbild ganz oben." img_obj=site_images.contact_top_bg %}
+
+                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
+
+                        {% include "admin_dashboard/includes/media_row.html" with key="contact_philosophie_img" label="Bild: Philosophie" desc="Bild links neben 'So isst man zusammen'." img_obj=site_images.contact_philosophie_img %}
+
+                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
+
+                        {% include "admin_dashboard/includes/media_row.html" with key="contact_mission_img" label="Bild: Mission" desc="Bild rechts neben 'Harmonie aus der Natur'." img_obj=site_images.contact_mission_img %}
+
+                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
+
+                        {% include "admin_dashboard/includes/media_row.html" with key="contact_bottom_bg" label="Hintergrund Kontaktformular" desc="Bild hinter dem Formular unten." img_obj=site_images.contact_bottom_bg %}
                     </div>
 
                     <!-- LAYOUT TAB -->
