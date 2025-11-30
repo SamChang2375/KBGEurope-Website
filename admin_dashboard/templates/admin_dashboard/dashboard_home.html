@@ -1,793 +1,714 @@
 {% extends "base.html" %}
+{% load static %}
+{% load media_tags %}
+
 {% block title %}Dashboard | KBG Europe{% endblock %}
 
 {% block content %}
-<section class="section section-light">
+<!-- Chart.js Bibliothek laden -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Modal für Bildvorschau -->
+<div id="imageModal" class="image-modal" onclick="closeModal()">
+    <span class="close-modal">&times;</span>
+    <img class="modal-content" id="modalImg">
+    <div id="caption"></div>
+</div>
+
+<section class="section section-light" style="min-height: 80vh;">
     <div class="container">
 
-        <h1 class="section-title">Dashboard</h1>
-        <p>Willkommen im internen Bereich.</p>
-
-        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                    Abmelden
-                </button>
-            </form>
-
-            <a class="btn" href="{% url 'home' %}">Zurück zur Startseite</a>
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="section-title" style="margin-bottom: 0;">Dashboard</h1>
+                <p style="color: #666;">Willkommen im internen Bereich.</p>
+            </div>
+            <div class="header-actions">
+                <a class="btn" href="{% url 'home' %}" style="background: #fff; border: 1px solid #ddd; color: #333;">Zurück zur Website</a>
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Abmelden</button>
+                </form>
+            </div>
         </div>
 
+        <!-- LAYOUT -->
+        <div class="dashboard-layout">
 
-        <!-- Tabs + Inhalt -->
-        <div class="dashboard-layout" style="margin-top: 2rem;">
-
-            <!-- Horizontale Tabs -->
+            <!-- TABS -->
             <nav class="dashboard-tabs" aria-label="Dashboard-Bereiche">
-                <button type="button" class="dashboard-tab-btn" data-tab-target="statistiken">
-                    Statistiken
-                </button>
-                <button type="button" class="dashboard-tab-btn" data-tab-target="anfragen">
-                    Anfragen
-                </button>
-                <button type="button" class="dashboard-tab-btn" data-tab-target="medien">
-                    Medien
-                </button>
-                <button type="button" class="dashboard-tab-btn" data-tab-target="seo">
-                    SEO
-                </button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('statistiken')">Statistiken</button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('anfragen')">Anfragen</button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('medien')">Medien</button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('seo')">SEO</button>
                 {% if user.is_superuser %}
-                <button type="button" class="dashboard-tab-btn" data-tab-target="benutzer">
-                    Benutzer-Management
-                </button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('benutzer')">Benutzer-Management</button>
                 {% endif %}
             </nav>
 
-            <!-- Panels -->
+            <!-- PANELS -->
             <div class="dashboard-panels">
 
-                <!-- Statistiken -->
-                <div class="dashboard-panel" data-tab-panel="statistiken">
-                    <h2>Statistiken</h2>
-                    <p>Übersicht über Traffic und Performance. Hier kannst du z.&nbsp;B. Google Analytics oder ähnliche Tools einbinden.</p>
+                <!-- 1. STATISTIKEN -->
+                <div id="statistiken" class="dashboard-panel">
+                    <div class="stats-header mb-4">
+                        <h2>Website Performance</h2>
+                        <p style="color:#777; font-size:0.9rem;">Daten der letzten 30 Tage (Live-Berechnung)</p>
+                    </div>
 
-                    <div class="card" style="padding: 1rem; border-radius: 6px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                        <p style="margin-bottom: .5rem;"><strong>Google Traffic Embed</strong></p>
-                        <p style="font-size: .9rem; color: #555;">
-                            Hier könnte ein iframe o. Ä. eingefügt werden, z.&nbsp;B.:
-                        </p>
-                        <pre style="font-size: .8rem; white-space: pre-wrap; background:#f7f7f7; padding:.75rem; border-radius:4px;">
-&lt;iframe src="DEIN_GOOGLE_EMBED_URL" width="100%" height="400" frameborder="0"&gt;&lt;/iframe&gt;
-                        </pre>
+                    <!-- A) Key Metrics Cards -->
+                    <div class="stats-grid-top">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#e0f2f1; color:#007755;">👥</div>
+                            <div class="stat-info">
+                                <h3>{{ stats.total_visits|default:"0" }}</h3>
+                                <p>Seitenaufrufe</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#e8f5e9; color:#2e7d32;">🖱️</div>
+                            <div class="stat-info">
+                                <h3>{{ stats.unique_visitors|default:"0" }}</h3>
+                                <p>Eindeutige Besucher</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#fff3e0; color:#f57c00;">📅</div>
+                            <div class="stat-info">
+                                <h3>{{ stats.today_visits|default:"0" }}</h3>
+                                <p>Aufrufe heute</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- B) DIAGRAMM -->
+                    <div class="card p-4 mt-4 mb-4">
+                        <h4 style="margin-bottom: 1rem;">Besucher-Trend (30 Tage)</h4>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="trafficChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- C) Top Pages Tabelle -->
+                    <div class="card p-4">
+                        <h4>Beliebteste Seiten</h4>
+                        <table class="simple-table mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Seite (Pfad)</th>
+                                    <th>Aufrufe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if stats.top_pages %}
+                                    {% for page in stats.top_pages %}
+                                    <tr>
+                                        <td>{{ page.path }}</td>
+                                        <td><strong>{{ page.count }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="2">Noch keine Daten verfügbar.</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Anfragen -->
-                <div class="dashboard-panel" data-tab-panel="anfragen">
-                    <h2>Anfragen</h2>
-                    <p>Verwalte Catering- und Kontaktanfragen und beantworte sie direkt aus dem Dashboard.</p>
+                <!-- 2. ANFRAGEN -->
+                <div id="anfragen" class="dashboard-panel">
+                    <h2>Anfragen Verwaltung</h2>
 
-                    <h3 style="margin-top: 1.5rem;">Catering-Anfragen</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Name</th>
-                                <th>E-Mail</th>
-                                <th>Status</th>
-                                <th>Aktion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for req in catering_requests %}
-                            <tr>
-                                <td>{{ req.created_at|date:"d.m.Y H:i" }}</td>
-                                <td>{{ req.contact_person }}</td>
-                                <td>{{ req.email }}</td>
-                                <td>
-                                    {% if req.status == "open" %}
-                                        Offen
-                                    {% else %}
-                                        Beantwortet
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <button type="button"
-                                            class="btn btn-primary btn-sm"
-                                            data-toggle-reply="catering-{{ req.id }}">
-                                        Antworten
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr id="reply-row-catering-{{ req.id }}" class="request-reply-row" style="display:none;">
-                                <td colspan="5">
-                                    <form method="post" action="{% url 'answer_catering_request' req.id %}">
-                                        {% csrf_token %}
-                                        <label>Antwort an {{ req.email }}:</label>
-                                        <textarea name="reply_text" rows="3" class="form-control">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                        <div style="margin-top:.5rem;">
-                                            <button type="submit" class="btn btn-primary btn-sm">E-Mail senden</button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5">Noch keine Catering-Anfragen.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <!-- Catering Tabelle -->
+                    <div class="table-section">
+                        <h3>Catering-Anfragen</h3>
+                        <div class="table-responsive">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Name</th>
+                                        <th>E-Mail</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in catering_requests %}
+                                    <tr>
+                                        <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
+                                        <td><strong>{{ req.contact_person }}</strong></td>
+                                        <td><a href="mailto:{{ req.email }}">{{ req.email }}</a></td>
+                                        <td>
+                                            {% if req.status == "open" %}
+                                                <span class="badge badge-open">Offen</span>
+                                            {% else %}
+                                                <span class="badge badge-done">Beantwortet</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <button type="button" class="btn-icon" onclick="toggleReply('catering-{{ req.id }}')">
+                                                ↩ Antworten
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr id="reply-row-catering-{{ req.id }}" class="reply-row" style="display:none;">
+                                        <td colspan="5">
+                                            <div class="reply-box">
+                                                <form method="post" action="{% url 'answer_catering_request' req.id %}">
+                                                    {% csrf_token %}
+                                                    <label>Antwort an {{ req.email }}:</label>
+                                                    <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
+                                                    <div style="margin-top:.5rem; text-align: right;">
+                                                        <button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Catering-Anfragen vorhanden.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-                    <h3 style="margin-top: 1.5rem;">Kontakt-Anfragen</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Name</th>
-                                <th>E-Mail</th>
-                                <th>Betreff</th>
-                                <th>Status</th>
-                                <th>Aktion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for req in contact_requests %}
-                            <tr>
-                                <td>{{ req.created_at|date:"d.m.Y H:i" }}</td>
-                                <td>{{ req.name }}</td>
-                                <td>{{ req.email }}</td>
-                                <td>{{ req.message|truncatechars:40 }}</td>
-                                <td>
-                                    {% if req.status == "open" %}
-                                        Offen
-                                    {% else %}
-                                        Beantwortet
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <button type="button"
-                                            class="btn btn-primary btn-sm"
-                                            data-toggle-reply="contact-{{ req.id }}">
-                                        Antworten
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr id="reply-row-contact-{{ req.id }}" class="request-reply-row" style="display:none;">
-                                <td colspan="6">
-                                    <form method="post" action="{% url 'answer_contact_request' req.id %}">
-                                        {% csrf_token %}
-                                        <label>Antwort an {{ req.email }}:</label>
-                                        <textarea name="reply_text" rows="3" class="form-control">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                        <div style="margin-top:.5rem;">
-                                            <button type="submit" class="btn btn-primary btn-sm">E-Mail senden</button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6">Noch keine Kontakt-Anfragen.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-
-                    </table>
+                    <!-- Kontakt Tabelle -->
+                    <div class="table-section mt-5">
+                        <h3>Kontakt-Anfragen</h3>
+                        <div class="table-responsive">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Name</th>
+                                        <th>Betreff / Nachricht</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in contact_requests %}
+                                    <tr>
+                                        <!-- Datum MIT Uhrzeit -->
+                                        <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
+                                        <td>{{ req.name }}<br><small>{{ req.email }}</small></td>
+                                        <td><div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ req.message }}</div></td>
+                                        <td>
+                                            {% if req.status == "open" %}
+                                                <span class="badge badge-open">Offen</span>
+                                            {% else %}
+                                                <span class="badge badge-done">Beantwortet</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <button type="button" class="btn-icon" onclick="toggleReply('contact-{{ req.id }}')">
+                                                ↩ Antworten
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr id="reply-row-contact-{{ req.id }}" class="reply-row" style="display:none;">
+                                        <td colspan="5">
+                                            <div class="reply-box">
+                                                <form method="post" action="{% url 'answer_contact_request' req.id %}">
+                                                    {% csrf_token %}
+                                                    <label>Antwort an {{ req.email }}:</label>
+                                                    <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
+                                                    <div style="margin-top:.5rem; text-align: right;">
+                                                        <button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Kontakt-Anfragen vorhanden.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Medien -->
-                <div class="dashboard-panel" data-tab-panel="medien">
-                    <h2>Medien</h2>
-                    <p>Verwalte Bilder für die Website, z.&nbsp;B. Logo, Startseite, Menü oder Kontaktseite.</p>
+                <!-- 3. MEDIEN -->
+                <div id="medien" class="dashboard-panel">
+                    <div class="media-header">
+                        <h2>Medien Verwaltung</h2>
+                        <button type="button" class="btn btn-primary" onclick="saveAllMedia()">
+                            💾 Alle Änderungen speichern
+                        </button>
+                    </div>
 
-                    <!-- Unter-Tabs für Seiten -->
                     <nav class="media-subtabs">
-                        <button type="button" class="media-subtab-btn" data-media-target="media-home">Home</button>
-                        <button type="button" class="media-subtab-btn" data-media-target="media-menu">Menü</button>
-                        <button type="button" class="media-subtab-btn" data-media-target="media-catering">Catering</button>
-                        <button type="button" class="media-subtab-btn" data-media-target="media-kontakt">Kontakt</button>
-                        <button type="button" class="media-subtab-btn" data-media-target="media-layout">Layout / Logo</button>
+                        <button type="button" class="media-subtab-btn active" onclick="openMediaSubTab('media-home')">Home</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-menu')">Menü</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-catering')">Catering</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-kontakt')">Kontakt</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-layout')">Layout / Logo</button>
                     </nav>
 
-                    <div class="media-panels">
+                    <!-- HOME TAB -->
+                    <div id="media-home" class="media-subpanel active">
+                        <h3>Startseite</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_hero" label="Hero Bild" desc="Großes Bild ganz oben." img_obj=site_images.home_hero %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_about_image" label="Wer wir sind (Slider 1)" desc="Slider Bild 1." img_obj=site_images.home_about_image %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_about_image_2" label="Wer wir sind (Slider 2)" desc="Slider Bild 2." img_obj=site_images.home_about_image_2 %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_menu_1" label="Menü Links" desc="Bild links (25%)." img_obj=site_images.home_menu_1 %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_menu_2" label="Menü Rechts" desc="Bild rechts (25%)." img_obj=site_images.home_menu_2 %}
+                        <h4 class="mt-4">Catering Galerie</h4>
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_catering_1" label="Catering 1" desc="Spalte 1" img_obj=site_images.home_catering_1 %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_catering_2" label="Catering 2" desc="Spalte 2" img_obj=site_images.home_catering_2 %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_catering_3" label="Catering 3" desc="Spalte 3" img_obj=site_images.home_catering_3 %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_catering_4" label="Catering 4" desc="Spalte 4" img_obj=site_images.home_catering_4 %}
+                        <h4 class="mt-4">Kundenstimmen</h4>
+                        {% include "admin_dashboard/includes/media_row.html" with key="home_testimonials_bg" label="Hintergrund" desc="Hinter dem Slider." img_obj=site_images.home_testimonials_bg %}
+                    </div>
 
-                        {# ---------- HOME ---------- #}
-                        <div class="media-panel" data-media-panel="media-home">
-                            <h3>Startseite</h3>
+                    <!-- MENU TAB -->
+                    <div id="media-menu" class="media-subpanel">
+                        <h3>Menü Seite</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="menu_hero" label="Menu Hero" desc="Header Bild." img_obj=site_images.menu_hero %}
+                    </div>
 
-                            {# Helper-Block für Dictionary-Lookup #}
-                            {% with img=site_images.home_hero %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Home – Hero-Bild</h4>
-                                    <p>Großes Bild ganz oben auf der Startseite.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}
-                                            <a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}
-                                            <em>Standard-Platzhalter wird verwendet.</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="home_hero">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
+                    <!-- CATERING TAB -->
+                    <div id="media-catering" class="media-subpanel">
+                        <h3>Catering Seite</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="catering_hero" label="Catering Hero" desc="Bild oben." img_obj=site_images.catering_hero %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="catering_bottom" label="Catering Unten" desc="Dekobild unten." img_obj=site_images.catering_bottom %}
+                    </div>
 
-                            {% with img=site_images.home_about_image %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Home – „Wer wir sind“-Bild</h4>
-                                    <p>Bild rechts neben dem Textblock „Wer wir sind“.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}
-                                            <a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}
-                                            <em>Standard-Platzhalter.</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="home_about_image">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
+                    <!-- KONTAKT TAB -->
+                    <div id="media-kontakt" class="media-subpanel">
+                        <h3>Kontakt Seite</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="contact_top_bg" label="Kontakt Header" desc="Hintergrundbild oben." img_obj=site_images.contact_top_bg %}
+                    </div>
 
-                            {% with img=site_images.home_menu_1 %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Home – Menü-Galerie Bild 1</h4>
-                                    <p>Erstes Bild in der dreispaltigen Menü-Galerie.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="home_menu_1">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {% with img=site_images.home_menu_2 %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Home – Menü-Galerie Bild 2</h4>
-                                    <p>Zweites Bild in der dreispaltigen Menü-Galerie.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="home_menu_2">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {% with img=site_images.home_menu_3 %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Home – Menü-Galerie Bild 3</h4>
-                                    <p>Drittes Bild in der dreispaltigen Menü-Galerie.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="home_menu_3">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {# ... analog: home_catering_1..4, home_testimonials_bg #}
-                        </div>
-
-                        {# ---------- MENÜ ---------- #}
-                        <div class="media-panel" data-media-panel="media-menu">
-                            <h3>Menü-Seite</h3>
-
-                            {% with img=site_images.menu_hero %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Menü – Hero-Bild</h4>
-                                    <p>Großes Bild oben (Ramyun-Hintergrund).</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="menu_hero">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {# hier kannst du analogue Blöcke für menu_1_bibimbap, menu_2_bbq_bowl, ... anlegen #}
-                        </div>
-
-                        {# ---------- CATERING ---------- #}
-                        <div class="media-panel" data-media-panel="media-catering">
-                            <h3>Catering-Seite</h3>
-
-                            {% with img=site_images.catering_hero %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Catering – Hero-Bild</h4>
-                                    <p>Großes Bild oben auf der Catering-Seite.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="catering_hero">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {% with img=site_images.catering_bottom %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Catering – Unteres Dekobild</h4>
-                                    <p>Bild ganz unten auf der Catering-Seite.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="catering_bottom">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-                        </div>
-
-                        {# ---------- KONTAKT ---------- #}
-                        <div class="media-panel" data-media-panel="media-kontakt">
-                            <h3>Kontaktseite</h3>
-
-                            {% with img=site_images.contact_top_bg %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Kontakt – Oberes Hintergrundbild</h4>
-                                    <p>Hintergrund im Streifen „Über uns“.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="contact_top_bg">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-
-                            {# weitere Slots: contact_philosophie, contact_mission, contact_bottom_bg #}
-                        </div>
-
-                        {# ---------- LAYOUT / LOGO ---------- #}
-                        <div class="media-panel" data-media-panel="media-layout">
-                            <h3>Layout &amp; Logo</h3>
-
-                            {% with img=site_images.global_logo %}
-                            <div class="media-slot">
-                                <div class="media-slot-info">
-                                    <h4>Logo im Header</h4>
-                                    <p>Logo oben links in der Navigation.</p>
-                                    <p>
-                                        Aktuell:
-                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
-                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="media-slot-form">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="media_key" value="global_logo">
-                                        <input type="file" name="image" required>
-                                        <input type="text" name="alt_text"
-                                               placeholder="Alt-Text"
-                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
-                                    </form>
-                                </div>
-                            </div>
-                            {% endwith %}
-                        </div>
-
+                    <!-- LAYOUT TAB -->
+                    <div id="media-layout" class="media-subpanel">
+                        <h3>Layout & Logos</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="global_logo" label="Logo Header" desc="Hauptlogo." img_obj=site_images.global_logo %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="instagram_icon" label="Instagram Icon" desc="Für Footer & Tabs." img_obj=site_images.instagram_icon %}
+                        {% include "admin_dashboard/includes/media_row.html" with key="email_icon" label="Email Icon" desc="Für Footer & Tabs." img_obj=site_images.email_icon %}
                     </div>
                 </div>
 
-
-                <!-- SEO -->
-                <div class="dashboard-panel" data-tab-panel="seo">
-                    <h2>SEO</h2>
-                    <p>Bearbeite Meta-Titel und Meta-Beschreibungen, z.&nbsp;B. für die Startseite oder spezielle Landingpages.</p>
-
+                <!-- 4. SEO -->
+                <div id="seo" class="dashboard-panel">
+                    <h2>SEO Einstellungen</h2>
                     <form method="post" action="">
                         {% csrf_token %}
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label for="id_meta_title">Meta-Titel</label><br>
-                            <input type="text" name="meta_title" id="id_meta_title" class="form-control" placeholder="KBG Europe – Premium Catering in ...">
+                        <div class="form-group mb-3">
+                            <label>Meta-Titel</label>
+                            <input type="text" name="meta_title" class="form-control" placeholder="Titel der Website...">
                         </div>
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label for="id_meta_description">Meta-Beschreibung</label><br>
-                            <textarea name="meta_description" id="id_meta_description" class="form-control" rows="3" placeholder="Kurzer Text, der in der Google-Snippet-Vorschau angezeigt wird."></textarea>
+                        <div class="form-group mb-3">
+                            <label>Meta-Beschreibung</label>
+                            <textarea name="meta_description" class="form-control" rows="3"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                        <button type="submit" class="btn btn-primary">Speichern</button>
                     </form>
+                </div>
 
-                    <div style="margin-top: 2rem;">
-                        <h3>Vorschau Google-Snippet (Beispiel)</h3>
-                        <div style="background:#fff; border-radius:6px; padding:1rem; box-shadow:0 1px 3px rgba(0,0,0,.08); font-size:.9rem;">
-                            <p style="color:#1a0dab; margin-bottom:0;">KBG Europe – Premium Catering in Beispielstadt</p>
-                            <p style="color:#006621; margin:0.25rem 0;">www.kbg-europe.de/</p>
-                            <p style="color:#4d5156; margin:0;">Hier siehst du eine Vorschau, wie Titel und Meta-Description ungefähr in der Google-Suche aussehen könnten.</p>
+                <!-- 5. BENUTZER MANAGEMENT -->
+                {% if user.is_superuser %}
+                <div id="benutzer" class="dashboard-panel">
+                    <h2>Benutzer Management</h2>
+
+                    <div class="user-layout">
+                        <!-- Linke Seite: Tabelle (2/3) -->
+                        <div class="user-list">
+                            <h3>Registrierte Benutzer</h3>
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Benutzername</th>
+                                        <th>E-Mail</th>
+                                        <th>Rolle</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for u in users %}
+                                    <tr>
+                                        <td>{{ u.username }}</td>
+                                        <td>{{ u.email }}</td>
+                                        <td>
+                                            {% if u.is_superuser %}
+                                                <span class="badge badge-admin">Admin</span>
+                                            {% else %}
+                                                <span class="badge badge-user">User</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align:right;">
+                                            {% if u != user %}
+                                                <form method="post" action="{% url 'dashboard_delete_user' u.id %}" onsubmit="return confirm('Wirklich löschen?');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn-icon delete big-delete" title="Benutzer löschen">
+                                                        🗑
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span style="font-size:0.8rem; color:#aaa;">(Du)</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Rechte Seite: Erstellen (1/3) -->
+                        <div class="user-create">
+                            <div class="card p-4">
+                                <h3>Neuen Benutzer anlegen</h3>
+                                <p style="font-size:0.85rem; color:#666;">Passwort wird automatisch generiert und per E-Mail gesendet.</p>
+
+                                <form method="post" action="{% url 'dashboard_create_user' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group mb-3">
+                                        <label>Benutzername</label>
+                                        <input type="text" name="new_username" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>E-Mail</label>
+                                        <input type="email" name="new_email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label>Rolle</label>
+                                        <select name="new_role" class="form-control">
+                                            <option value="common">Standard User</option>
+                                            <option value="admin">Administrator</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width:100%;">Benutzer erstellen</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-               {% if user.is_superuser %}
-               <div class="dashboard-panel" data-tab-panel="benutzer">
-                    <h2>Benutzer-Management</h2>
-                    <p>Nur für Administratoren sichtbar. Hier kannst du Benutzer einsehen, hinzufügen und löschen.</p>
-
-                    <h3>Benutzerübersicht</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Benutzername</th>
-                                <th>E-Mail</th>
-                                <th>Rolle</th>
-                                <th>Aktionen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for u in users %}
-                            <tr>
-                                <td>{{ u.username }}</td>
-                                <td>{{ u.email }}</td>
-                                <td>
-                                    {% if u.is_superuser %}
-                                        Admin User
-                                    {% else %}
-                                        Common User
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if u != user %}
-                                        <form method="post"
-                                              action="{% url 'dashboard_delete_user' u.id %}"
-                                              style="display:inline;">
-                                            {% csrf_token %}
-                                            <button type="submit"
-                                                    class="btn btn-sm"
-                                                    onclick="return confirm('Benutzer wirklich löschen?');">
-                                                Löschen
-                                            </button>
-                                        </form>
-                                    {% else %}
-                                        <span style="font-size:.85rem; color:#777;">(Du selbst)</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4">Noch keine Benutzer angelegt.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-
-                    <h3 style="margin-top: 1.5rem;">Neuen Benutzer anlegen</h3>
-                    <p style="font-size:.9rem; color:#555;">
-                        Das Passwort wird automatisch generiert und per E-Mail verschickt.
-                        Beim ersten Login muss der Benutzer ein eigenes Passwort setzen.
-                    </p>
-
-                    <form method="post" action="{% url 'dashboard_create_user' %}">
-                        {% csrf_token %}
-                        <div class="form-group" style="margin-bottom: .75rem;">
-                            <label for="id_new_username">Benutzername</label><br>
-                            <input type="text" id="id_new_username" name="new_username" class="form-control" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: .75rem;">
-                            <label for="id_new_email">E-Mail</label><br>
-                            <input type="email" id="id_new_email" name="new_email" class="form-control" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: .75rem;">
-                            <label for="id_new_role">Rolle</label><br>
-                            <select id="id_new_role" name="new_role" class="form-control">
-                                <option value="common">Common User</option>
-                                <option value="admin">Admin User</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Benutzer erstellen</button>
-                    </form>
-                </div>
                 {% endif %}
+
             </div>
         </div>
 
     </div>
 </section>
 
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast">Einstellungen gespeichert!</div>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const tabButtons = document.querySelectorAll("[data-tab-target]");
-    const panels = document.querySelectorAll("[data-tab-panel]");
+// --- 1. TABS LOGIK & PERSISTENZ ---
+document.addEventListener("DOMContentLoaded", function() {
+    const lastTab = localStorage.getItem("activeDashboardTab") || "statistiken";
+    openTab(lastTab);
 
-    function activateTab(name) {
-        panels.forEach(panel => {
-            panel.classList.toggle("dashboard-panel-active", panel.dataset.tabPanel === name);
-        });
-        tabButtons.forEach(btn => {
-            btn.classList.toggle("dashboard-tab-active", btn.dataset.tabTarget === name);
-        });
-    }
+    const lastMediaTab = localStorage.getItem("activeMediaTab") || "media-home";
+    openMediaSubTab(lastMediaTab);
 
-    tabButtons.forEach(btn => {
-        btn.addEventListener("click", () => activateTab(btn.dataset.tabTarget));
-    });
+    // --- CHART.JS INITIALISIERUNG (CRASH PROOF) ---
+    const ctx = document.getElementById('trafficChart');
 
-    if (tabButtons.length > 0) {
-        activateTab(tabButtons[0].dataset.tabTarget);
-    }
+    // Wir holen die Daten "safe" mit Default-Werten, falls das Backend noch nicht soweit ist.
+    // Falls 'stats' nicht existiert, wird ein leeres Array genutzt.
+    const chartLabels = {{ stats.chart_labels|default:"[]"|safe }};
+    const chartData = {{ stats.chart_data|default:"[]"|safe }};
 
-    // NEU: Reply-Form-Toggle
-    document.querySelectorAll("[data-toggle-reply]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-toggle-reply");
-            const row = document.getElementById(`reply-row-${id}`);
-            if (row) {
-                row.style.display = row.style.display === "none" || row.style.display === "" ? "table-row" : "none";
+    if(ctx && chartLabels.length > 0) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Seitenaufrufe',
+                    data: chartData,
+                    borderColor: '#007755',
+                    backgroundColor: 'rgba(0, 119, 85, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#007755',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: '#fff',
+                        titleColor: '#333',
+                        bodyColor: '#333',
+                        borderColor: '#eee',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 10, color: '#888' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f0f0f0' },
+                        ticks: { color: '#888' }
+                    }
+                }
             }
         });
-    });
+    } else if (ctx) {
+        // Fallback Meldung im Canvas Container
+        ctx.style.display = 'none';
+        const container = ctx.parentElement;
+        const msg = document.createElement('div');
+        msg.innerHTML = '<p style="text-align:center; color:#999; padding-top:100px;">Keine Statistik-Daten verfügbar.<br><small>Bitte views.py und middleware.py aktualisieren.</small></p>';
+        container.appendChild(msg);
+    }
 });
 
-// Sub-Tabs im Medien-Bereich
-const mediaButtons = document.querySelectorAll("[data-media-target]");
-const mediaPanels = document.querySelectorAll("[data-media-panel]");
+function openTab(tabId) {
+    document.querySelectorAll('.dashboard-panel').forEach(p => p.style.display = 'none');
+    document.getElementById(tabId).style.display = 'block';
 
-function activateMediaTab(name) {
-    mediaPanels.forEach(panel => {
-        panel.classList.toggle("media-panel-active", panel.dataset.mediaPanel === name);
+    document.querySelectorAll('.dashboard-tab-btn').forEach(b => b.classList.remove('active'));
+    const btns = document.querySelectorAll('.dashboard-tab-btn');
+    btns.forEach(btn => {
+        if(btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
     });
-    mediaButtons.forEach(btn => {
-        btn.classList.toggle("media-subtab-active", btn.dataset.mediaTarget === name);
+
+    localStorage.setItem("activeDashboardTab", tabId);
+}
+
+function openMediaSubTab(tabId) {
+    document.querySelectorAll('.media-subpanel').forEach(p => p.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+
+    document.querySelectorAll('.media-subtab-btn').forEach(b => b.classList.remove('active'));
+    const btns = document.querySelectorAll('.media-subtab-btn');
+    btns.forEach(btn => {
+        if(btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
+    });
+
+    localStorage.setItem("activeMediaTab", tabId);
+}
+
+// --- 2. ANFRAGEN REPLY TOGGLE ---
+function toggleReply(id) {
+    const row = document.getElementById(`reply-row-${id}`);
+    if (row.style.display === "none") row.style.display = "table-row";
+    else row.style.display = "none";
+}
+
+// --- 3. AJAX SAVE FOR MEDIA ---
+function saveAllMedia() {
+    const activeSubTab = document.querySelector('.media-subpanel.active');
+    if(!activeSubTab) return;
+
+    const forms = activeSubTab.querySelectorAll('.media-upload-form');
+    let changedForms = [];
+
+    forms.forEach(form => {
+        const fileInput = form.querySelector('input[type="file"]');
+        const altInput = form.querySelector('input[name="alt_text"]');
+        const originalAlt = altInput.getAttribute('data-original');
+
+        if (fileInput.files.length > 0 || altInput.value !== originalAlt) {
+            changedForms.push(form);
+        }
+    });
+
+    if (changedForms.length === 0) {
+        showToast("Keine Änderungen erkannt.", "info");
+        return;
+    }
+
+    const btn = document.querySelector('.media-header .btn');
+    const originalText = btn.innerText;
+    btn.innerText = "Speichere...";
+    btn.disabled = true;
+
+    const promises = changedForms.map(form => {
+        const formData = new FormData(form);
+        return fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(response => {
+            if(response.ok) {
+                const altInput = form.querySelector('input[name="alt_text"]');
+                altInput.setAttribute('data-original', altInput.value);
+                form.querySelector('input[type="file"]').value = "";
+                return true;
+            }
+            return false;
+        });
+    });
+
+    Promise.all(promises).then(results => {
+        btn.innerText = originalText;
+        btn.disabled = false;
+        showToast("Erfolgreich gespeichert!");
+        setTimeout(() => location.reload(), 1000);
     });
 }
 
-mediaButtons.forEach(btn => {
-    btn.addEventListener("click", () => activateMediaTab(btn.dataset.mediaTarget));
-});
+function showToast(msg, type="success") {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.className = "toast show";
+    if(type === "info") toast.style.backgroundColor = "#333";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+}
 
-if (mediaButtons.length > 0) {
-    activateMediaTab(mediaButtons[0].dataset.mediaTarget);
+// --- 4. MODAL VORSCHAU ---
+function openModal(src, title) {
+    if(!src || src === "") return;
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const captionText = document.getElementById("caption");
+
+    modal.style.display = "flex";
+    modalImg.src = src;
+    captionText.innerHTML = title || "";
+}
+
+function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
 }
 </script>
 
 <style>
-    .dashboard-tabs {
-        display: flex;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 1rem;
-        gap: 0; /* Tabs direkt aneinander */
+    /* === GLOBAL COLORS & VARS === */
+    :root {
+        --kbg-green: #007755;
+        --kbg-green-hover: #005a41;
+        --kbg-green-light: #e0f2f1;
     }
 
-    .dashboard-tab-btn {
-        flex: 1 1 0;
-        padding: 0.75rem 1rem;
-        border: none;
-        border-right: 1px solid #e0e0e0;
-        background: #f5f5f5;
-        cursor: pointer;
-        font-size: 0.95rem;
-        text-align: center;
-        transition: background 0.15s ease, color 0.15s ease, border-bottom 0.15s ease;
-    }
+    .btn-primary { background-color: var(--kbg-green) !important; border-color: var(--kbg-green) !important; color: #fff; }
+    .btn-primary:hover { background-color: var(--kbg-green-hover) !important; }
 
-    .dashboard-tab-btn:last-child {
-        border-right: none;
-    }
+    /* === GLOBAL DASHBOARD === */
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+    .header-actions { display: flex; gap: 1rem; }
 
-    .dashboard-tab-btn.dashboard-tab-active {
-        background: #ffffff;
-        color: #2f7d32;
-        font-weight: 600;
-        border-bottom: 3px solid #2f7d32;
-    }
+    /* === TABS === */
+    .dashboard-tabs { display: flex; gap: 5px; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
+    .dashboard-tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1rem; cursor: pointer; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+    .dashboard-tab-btn:hover { color: var(--kbg-green); background: #f9f9f9; }
+    .dashboard-tab-btn.active { color: var(--kbg-green); border-bottom: 2px solid var(--kbg-green); font-weight: bold; }
+    .dashboard-panel { display: none; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .dashboard-panels {
-        padding-top: 1rem;
-    }
+    /* === STATISTICS CUSTOM UI === */
+    .stats-grid-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .stat-card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 1rem; }
+    .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .stat-info h3 { margin: 0; font-size: 1.6rem; color: #333; }
+    .stat-info p { margin: 0; color: #777; font-size: 0.85rem; }
 
-    .dashboard-panel {
-        display: none;
-    }
+    .stats-grid-bottom { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    .simple-table { width: 100%; border-collapse: collapse; }
+    .simple-table th { text-align: left; border-bottom: 1px solid #eee; padding: 8px 0; color: #555; font-size: 0.9rem; }
+    .simple-table td { border-bottom: 1px solid #f9f9f9; padding: 8px 0; font-size: 0.95rem; color: #333; }
 
-    .dashboard-panel.dashboard-panel-active {
-        display: block;
-    }
+    /* === MEDIA SUBTABS === */
+    .media-subtabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .media-subtab-btn { background: #eee; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; color: #555; }
+    .media-subtab-btn.active { background: var(--kbg-green); color: #fff; }
+    .media-subpanel { display: none; }
+    .media-subpanel.active { display: block; }
 
-    @media (max-width: 768px) {
-        .dashboard-tabs {
-            flex-direction: column;
-        }
-        .dashboard-tab-btn {
-            border-right: none;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .dashboard-tab-btn.dashboard-tab-active {
-            border-bottom-width: 3px;
-        }
-    }
-
-        .media-subtabs {
-        display: flex;
-        gap: 0.5rem;
-        margin: 1rem 0;
-        border-bottom: 1px solid #ddd;
-        flex-wrap: wrap;
-    }
-
-    .media-subtab-btn {
-        border: none;
-        background: #f3f3f3;
-        padding: 0.45rem 0.9rem;
-        border-radius: 4px 4px 0 0;
-        cursor: pointer;
-        font-size: 0.9rem;
-    }
-
-    .media-subtab-btn.media-subtab-active {
-        background: #ffffff;
-        border-bottom: 3px solid #2f7d32;
-        font-weight: 600;
-        color: #2f7d32;
-    }
-
-    .media-panels {
-        border-radius: 4px;
+    /* === MEDIA ROW LAYOUT (GRID - FIXED) === */
+    .media-row-container {
+        display: grid;
+        grid-template-columns: 80px 2fr 1.5fr 1.5fr;
+        gap: 1.5rem;
+        align-items: center;
         background: #fff;
         padding: 1rem;
+        border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+        border: 1px solid #f0f0f0;
     }
 
-    .media-panel { display: none; }
-    .media-panel.media-panel-active { display: block; }
+    /* Order manipulation */
+    .media-thumb { order: -1; }
+    .media-info { order: 1; }
+    .media-alt { order: 2; }
+    .media-file { order: 3; }
 
-    .media-slot {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #eee;
+    .media-info h5 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 600; }
+    .media-info p { margin: 0; font-size: 0.85rem; color: #777; }
+    .media-filename { font-family: monospace; color: #555; font-size: 0.8rem; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+
+    .media-thumb img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #eee; transition: transform 0.2s; }
+    .media-thumb img:hover { transform: scale(1.1); border-color: var(--kbg-green); }
+
+    /* === TABLES (Modern) === */
+    .table-section h3 { font-size: 1.2rem; color: #444; margin-bottom: 1rem; }
+    .table-responsive { background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+    .modern-table { width: 100%; border-collapse: collapse; }
+    .modern-table th { background: #f8f9fa; text-align: left; padding: 12px 15px; font-weight: 600; color: #555; border-bottom: 1px solid #eee; }
+    .modern-table td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    .modern-table tr:last-child td { border-bottom: none; }
+
+    .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+    .badge-open { background: #fff3cd; color: #856404; }
+    .badge-done { background: #d4edda; color: #155724; }
+    .badge-admin { background: #cce5ff; color: #004085; }
+    .badge-user { background: #e2e3e5; color: #383d41; }
+
+    .btn-icon { background: none; border: none; cursor: pointer; font-size: 0.9rem; color: var(--kbg-green); transition: color 0.2s; }
+    .btn-icon:hover { text-decoration: underline; color: var(--kbg-green-hover); }
+
+    /* Bigger Delete Button */
+    .btn-icon.delete.big-delete { color: #d32f2f; background: #ffebee; padding: 6px 10px; border-radius: 4px; font-size: 1.1rem; transition: background 0.2s; }
+    .btn-icon.delete.big-delete:hover { background: #ffcdd2; }
+
+    /* Fix für Reply Textarea Overflow */
+    .reply-row { background: #fafafa; }
+    .reply-box { padding: 1rem; border-left: 3px solid var(--kbg-green); margin: 0 1rem 1rem 1rem; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: calc(100% - 2rem); box-sizing: border-box; }
+    .reply-textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+
+    /* === USER SPLIT LAYOUT === */
+    .user-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .user-list { flex: 2; min-width: 300px; }
+    .user-create { flex: 1; min-width: 280px; }
+
+    /* === MODAL & TOAST === */
+    .image-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+    .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; object-fit: contain; border-radius: 4px; }
+    .close-modal { position: absolute; top: 20px; right: 40px; color: #fff; font-size: 50px; font-weight: bold; cursor: pointer; z-index: 1001; }
+
+    .toast { visibility: hidden; min-width: 250px; background-color: var(--kbg-green); color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+    /* === FORM ELEMENTS === */
+    .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box; }
+    input[type="file"] { font-size: 0.85rem; }
+    .media-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+
+    @media (max-width: 1100px) {
+        .media-row-container { grid-template-columns: 1fr; gap: 1rem; text-align: center; }
+        .media-thumb { order: -1; margin: 0 auto; }
+        .media-info { order: 0; }
+        .media-alt { order: 1; }
+        .media-file { order: 2; }
     }
-
-    .media-slot:last-child {
-        border-bottom: none;
-    }
-
-    .media-slot-info {
-        flex: 1;
-        font-size: 0.9rem;
-    }
-
-    .media-slot-info h4 {
-        margin: 0 0 0.25rem;
-    }
-
-    .media-slot-form {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        align-items: flex-start;
-    }
-
-    .media-slot-form input[type="file"] {
-        font-size: 0.85rem;
-    }
-
-    .media-slot-form input[type="text"] {
-        width: 100%;
-        max-width: 260px;
-    }
-
-    @media (max-width: 768px) {
-        .media-slot {
-            flex-direction: column;
-        }
-        .media-slot-form {
-            width: 100%;
-        }
+    @media (max-width: 900px) {
+        .user-layout { flex-direction: column; }
     }
 </style>
+
 {% endblock %}

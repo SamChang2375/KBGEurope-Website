@@ -1,25 +1,104 @@
 {% extends "base.html" %}
-{% block title %}Login | KBG Europe{% endblock %}
+{% block title %}Admin-Login | KBG Europe{% endblock %}
 
 {% block content %}
-<section class="section section-light">
-    <div class="container" style="max-width: 480px;">
-        <h1 class="section-title">Admin-Login</h1>
-        {% if error_message %}
-            <div class="alert" style="color: #b00020; margin-bottom: 1rem;">{{ error_message }}</div>
-        {% endif %}
-        <form method="post" class="form-card" style="display: grid; gap: 1rem;">
-            {% csrf_token %}
-            <label class="form-label">
-                Benutzername
-                <input type="text" name="username" required class="form-input" autofocus>
-            </label>
-            <label class="form-label">
-                Passwort
-                <input type="password" name="password" required class="form-input">
-            </label>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Anmelden</button>
-        </form>
+<section class="section section-light" style="min-height: 70vh; display: flex; align-items: center;">
+    <div class="container" style="max-width: 420px; width: 100%;">
+
+        <div class="login-card">
+            <h1 class="text-center" style="margin-top: 0; color: #333;">Admin Login</h1>
+            <p class="text-center" style="color: #666; margin-bottom: 2rem;">Bitte melden Sie sich an.</p>
+
+            {% if error_message %}
+                <div class="alert-error">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_username">Benutzername</label>
+                    <input type="text" name="username" id="id_username" required autofocus class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password">Passwort</label>
+                    <input type="password" name="password" id="id_password" required class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-full">Anmelden</button>
+            </form>
+        </div>
+
     </div>
 </section>
+
+<style>
+    /* Spezifisches Styling für Login & Passwort Change */
+    .login-card {
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .text-center { text-align: center; }
+
+    .alert-error {
+        background-color: #fde8e8;
+        color: #c81e1e;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        border: 1px solid #fbd5d5;
+        text-align: center;
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #444;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box; /* Wichtig damit Padding nicht die Breite sprengt */
+        padding: 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #007755;
+        box-shadow: 0 0 0 3px rgba(0, 119, 85, 0.15);
+    }
+
+    .btn-full {
+        width: 100%;
+        background-color: #007755;
+        color: white;
+        border: none;
+        padding: 0.85rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-full:hover {
+        background-color: #005a41;
+    }
+</style>
 {% endblock %}

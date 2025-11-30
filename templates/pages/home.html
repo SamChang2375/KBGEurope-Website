@@ -2,15 +2,13 @@
 {% load static %}
 {% load media_tags %}
 
-
 {% block content %}
 
+<!-- ========== HERO SECTION ========== -->
 <section class="hero-section">
     <div class="hero-bg">
-        <!-- später Video oder Slider; jetzt Platzhalterbild -->
         <img src="{% site_image_url 'home_hero' 'img/hero-placeholder.jpg' %}"
-     alt="{% site_image_alt 'home_hero' 'KBG Hero' %}">
-
+             alt="{% site_image_alt 'home_hero' 'KBG Hero' %}">
     </div>
     <div class="hero-overlay">
         <p class="hero-subtitle">So schmeckt zusammen</p>
@@ -19,7 +17,8 @@
     </div>
 </section>
 
-<section class="section section-light">
+<!-- ========== WER WIR SIND (mit Bild-Slider rechts) ========== -->
+<section class="section section-light" id="about-section">
     <div class="container two-column">
         <div class="col">
             <h3 class="section-kicker">KBG-Bonn</h3>
@@ -28,40 +27,68 @@
             <p>Zu jeder Zeit gibt es viele Angebote und Geschenke für Sie. Kommen Sie vorbei und erleben Sie die gesunde und frische koreanische Küche.</p>
             <p>Sie finden uns unten im Maximilian Center zwischen U-Bahnsteig und Busbahnhof.</p>
 
-            <a href="#kontakt" class="btn btn-primary">Finden Sie uns hier</a>
+            <a href="{% url 'kontakt' %}" class="btn btn-primary">Finden Sie uns hier</a>
         </div>
-        <div class="col">
-            <img class="rounded-img"
-     src="{% site_image_url 'home_about_image' 'img/section-placeholder.jpg' %}"
-     alt="{% site_image_alt 'home_about_image' 'Maximilian Center' %}">
 
+        <!-- Rechter Bereich: Slider -->
+        <div class="col about-slider-wrapper">
+            <div class="about-slider">
+                <!-- Bild 1 (aus Backend) -->
+                <div class="about-slide active">
+                    <img class="rounded-img"
+                         src="{% site_image_url 'home_about_image' 'img/section-placeholder.jpg' %}"
+                         alt="{% site_image_alt 'home_about_image' 'Maximilian Center' %}">
+                </div>
+                <!-- Bild 2 (Platzhalter oder 2. Slot, falls vorhanden) -->
+                <div class="about-slide">
+                    <!-- HINWEIS: Hier könntest du später 'home_about_image_2' einfügen -->
+                    <img class="rounded-img"
+                         src="{% static 'img/hero-placeholder.jpg' %}"
+                         alt="Interior View">
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="section section-light">
-    <div class="container section-center">
-        <h3 class="section-kicker">Menü</h3>
-        <h2 class="section-title">Genießen Sie die koreanische Vielfalt</h2>
-        <p>Unsere Speisen werden täglich frisch zubereitet.</p>
-        <a href="#" class="btn btn-primary">Entdecken Sie unser Menü</a>
-    </div>
+<!-- ========== MENÜ (Split Layout 25/50/25) ========== -->
+<section class="section section-white">
+    <div class="container menu-split-layout">
 
-    <div class="container three-column gallery-row">
-        <img src="{% site_image_url 'home_menu_1' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_1' 'Gericht 1' %}" class="rounded-img">
-        <img src="{% site_image_url 'home_menu_2' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_2' 'Gericht 2' %}" class="rounded-img">
-        <img src="{% site_image_url 'home_menu_3' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_3' 'Gericht 3' %}" class="rounded-img">
+        <!-- Links: 25% -->
+        <div class="menu-side-img">
+            <img src="{% site_image_url 'home_menu_1' 'img/section-placeholder.jpg' %}"
+                 alt="{% site_image_alt 'home_menu_1' 'Gericht 1' %}"
+                 class="rounded-img full-height-img">
+        </div>
+
+        <!-- Mitte: 50% Text -->
+        <div class="menu-center-text section-center">
+            <h3 class="section-kicker">Menü</h3>
+            <h2 class="section-title">Genießen Sie die koreanische Vielfalt</h2>
+            <p>Unsere Speisen werden täglich frisch zubereitet. Entdecken Sie die Vielfalt von Bibimbap, Bulgogi und vielem mehr.</p>
+            <br>
+            <a href="{% url 'menu' %}" class="btn btn-primary">Entdecken Sie unser Menü</a>
+        </div>
+
+        <!-- Rechts: 25% -->
+        <div class="menu-side-img">
+            <img src="{% site_image_url 'home_menu_2' 'img/section-placeholder.jpg' %}"
+                 alt="{% site_image_alt 'home_menu_2' 'Gericht 2' %}"
+                 class="rounded-img full-height-img">
+        </div>
 
     </div>
 </section>
 
+<!-- ========== CATERING (bleibt wie gehabt) ========== -->
 <section class="section section-light">
     <div class="container section-center">
         <h2 class="section-title">Unser Catering</h2>
         <h3 class="section-kicker green">Verwöhnt mit koreanischen Köstlichkeiten</h3>
         <p>Ihr Meeting oder Ihre Konferenz dauert etwas länger und der Magen knurrt? Wie wäre es mit gesundem, leckerem koreanischen Essen?</p>
         <p>Dann lassen Sie sich doch von uns etwas liefern!</p>
-        <a href="#" class="btn btn-primary">Hier geht es zum Catering!</a>
+        <a href="{% url 'catering' %}" class="btn btn-primary">Hier geht es zum Catering!</a>
     </div>
 
     <div class="container four-column gallery-row">
@@ -76,18 +103,196 @@
     </div>
 </section>
 
+<!-- ========== KUNDENSTIMMEN (Dein Slider) ========== -->
 <section class="section testimonials-section">
     <div class="testimonials-bg">
         <img src="{% site_image_url 'home_testimonials_bg' 'img/section-placeholder.jpg' %}"
              alt="{% site_image_alt 'home_testimonials_bg' 'Kundenstimmen Hintergrund' %}">
     </div>
+
+    <!-- Overlay Container für den Slider -->
     <div class="testimonials-overlay">
-        <h2 class="section-title">Kundenstimmen</h2>
-        <p class="testimonial-quote">
-            "Sehr freundliche Bedienung und leckere Speisen … maximale Empfehlung!"
-        </p>
-        <p class="testimonial-author">- Daniel B. -</p>
+        <h2 class="section-title" style="margin-bottom: 2rem; color: #fff;">Kundenstimmen</h2>
+
+        <div class="testimonial-slider-container">
+            <div class="ts-slide active">
+                "Wir haben gestern soooo lecker gegessen wie schon lang nicht mehr. Die Gerichte sind sehr schmackhaft und es bietet sich auch für Kinder an, denn es werden Kinder Menüs angeboten. Wir kommen wieder!"
+                <br><span class="ts-author">- Afrodite T. -</span>
+            </div>
+            <div class="ts-slide">
+                "Sehr freundliche Bedienung und leckere Speisen und der Chapchae Bulgogi war köstlich. Maximale Empfehlung!"
+                <br><span class="ts-author">- Daniel B. -</span>
+            </div>
+            <div class="ts-slide">
+                "Wir haben uns kürzlich zur Jahresabschlussfeier von Korean BBQ Grill verköstigen lassen. Super organisiert, super zuverlässig und mega lecker. Absolut empfehlenswert."
+                <br><span class="ts-author">- Silvio R. -</span>
+            </div>
+        </div>
     </div>
 </section>
+
+
+<!-- ========== INLINE STYLES für die neuen Layouts ========== -->
+<style>
+    /* --- Styles für den Menü-Split (25% | 50% | 25%) --- */
+    .menu-split-layout {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .menu-side-img {
+        flex: 1; /* entspricht ca. 25% Anteil */
+        display: flex;
+        justify-content: center;
+    }
+
+    .menu-center-text {
+        flex: 2; /* entspricht ca. 50% Anteil, da doppelt so breit wie side-img */
+        padding: 0 1rem;
+    }
+
+    .full-height-img {
+        height: 300px; /* Einheitliche Höhe für die Seitenbilder */
+        width: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+        .menu-split-layout {
+            flex-direction: column;
+        }
+        .menu-side-img, .menu-center-text {
+            width: 100%;
+            flex: auto;
+        }
+        .full-height-img {
+            height: 250px;
+        }
+        /* Reihenfolge auf Handy ändern: Text oben, dann Bilder?
+           Optional: order css property nutzen */
+    }
+
+
+    /* --- Styles für den "Wer wir sind" Slider (Fade) --- */
+    .about-slider-wrapper {
+        position: relative;
+        height: 0;
+        padding-bottom: 66%; /* Seitenverhältnis Platzhalter */
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .about-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    .about-slide.active {
+        opacity: 1;
+    }
+
+    .about-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+
+    /* --- Styles für den Testimonial Slider (Dein Code angepasst) --- */
+    .testimonial-slider-container {
+        width: 100%;
+        max-width: 800px; /* Begrenzung der Breite */
+        height: 250px;    /* Feste Höhe damit Text nicht springt */
+        position: relative;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .ts-slide {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 100%; /* Startet rechts */
+        opacity: 0;
+        transition: left 1s ease-in-out, opacity 1s ease-in-out;
+
+        /* Text Styling */
+        font-size: 1.25rem;
+        line-height: 1.6;
+        font-weight: 500;
+        color: #fff;
+        text-align: center;
+    }
+
+    .ts-author {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 700;
+        color: #ffb15a; /* KBG Orange */
+    }
+
+    .ts-slide.active {
+        left: 0;
+        opacity: 1;
+    }
+
+    .ts-slide.exit-left {
+        left: -100%;
+        opacity: 0;
+    }
+</style>
+
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. Script für den "Wer wir sind" Slider (einfacher Crossfade)
+    const aboutSlides = document.querySelectorAll('.about-slide');
+    if (aboutSlides.length > 1) {
+        let currentAbout = 0;
+        setInterval(() => {
+            aboutSlides[currentAbout].classList.remove('active');
+            currentAbout = (currentAbout + 1) % aboutSlides.length;
+            aboutSlides[currentAbout].classList.add('active');
+        }, 4000); // alle 4 Sekunden
+    }
+
+
+    // 2. Script für den Testimonial Slider (Deine Logik)
+    const tsSlides = document.querySelectorAll('.ts-slide');
+    if (tsSlides.length > 0) {
+        let currentTs = 0;
+
+        function showTsSlide(index) {
+            tsSlides.forEach((slide, i) => {
+                slide.classList.remove('active', 'exit-left');
+
+                if (i === currentTs) {
+                    slide.classList.add('exit-left'); // Alte Slide geht nach links raus
+                }
+                if (i === index) {
+                    slide.classList.add('active'); // Neue Slide kommt von rechts rein (durch CSS default left:100%)
+                }
+            });
+            currentTs = index;
+        }
+
+        function nextTsSlide() {
+            const nextIndex = (currentTs + 1) % tsSlides.length;
+            showTsSlide(nextIndex);
+        }
+
+        // Erster Aufruf, damit Klasse 'active' korrekt sitzt falls HTML abweicht
+        // (Im HTML ist die erste Slide schon .active, daher passt es)
+
+        setInterval(nextTsSlide, 5000); // alle 5 Sekunden
+    }
+});
+</script>
 
 {% endblock %}

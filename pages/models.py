@@ -59,7 +59,6 @@ class SiteImage(models.Model):
     key = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to="site_images/")
     alt_text = models.CharField(max_length=255, blank=True)
-
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

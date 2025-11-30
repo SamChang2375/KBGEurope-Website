@@ -14,6 +14,7 @@
         <div class="header-inner container">
             <div class="logo">
                 <a href="{% url 'home' %}">
+                    <!-- Logo aus den Site-Images dynamisch laden -->
                     <img src="{% site_image_url 'global_logo' 'img/logo-placeholder.png' %}" alt="{% site_image_alt 'global_logo' 'KBG Logo' %}">
                 </a>
             </div>
@@ -33,17 +34,19 @@
         {% endblock %}
 
         {% if messages %}
-          <div class="messages">
+        <div class="messages">
             {% for message in messages %}
-              <div class="alert alert-info">{{ message }}</div>
+                <div class="alert alert-info">{{ message }}</div>
             {% endfor %}
-          </div>
+        </div>
         {% endif %}
     </main>
 
     <footer class="site-footer">
         <div class="footer-top" id="kontakt">
             <div class="container footer-grid">
+
+                <!-- Linke Spalte: Text & Icons -->
                 <div class="footer-text">
                     <h2>Wo finden Sie uns?</h2>
 
@@ -61,20 +64,37 @@
                     </p>
 
                     <div class="social-icons">
-                        <a href="https://www.instagram.com/dein_instagram" target="_blank" rel="noopener">
-                            <img src="{% static 'img/icons/instagram.svg' %}" alt="Instagram">
+                        <a href="{{ global_social_icons.instagram_url }}" target="_blank" rel="noopener">
+                            {% if global_social_icons.instagram_icon %}
+                                <img src="{{ global_social_icons.instagram_icon.url }}" alt="Instagram">
+                            {% else %}
+                                <span>Insta</span>
+                            {% endif %}
                         </a>
-                        <a href="https://www.facebook.com/deine_facebook_seite" target="_blank" rel="noopener">
-                            <img src="{% static 'img/icons/facebook.svg' %}" alt="Facebook">
+                        <a href="mailto:{{ global_social_icons.email }}" target="_blank" rel="noopener">
+                            {% if global_social_icons.email_icon %}
+                                <img src="{{ global_social_icons.email_icon.url }}" alt="E-Mail">
+                            {% else %}
+                                <span>Mail</span>
+                            {% endif %}
                         </a>
                     </div>
                 </div>
+
+                <!-- Rechte Spalte: MAP IFRAME (HIER EINFÜGEN) -->
                 <div class="footer-map">
-                    <iframe src="https://www.google.com/maps/embed?pb=..." width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1685.4436098355288!2d7.0992551413976965!3d50.732700899822696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bee171ed33712f%3A0xa7dada2bd8ce5093!2sKorean%20BBQ%20Grill!5e0!3m2!1sen!2sde!4v1764507922284!5m2!1sen!2sde"
+                            width="100%"
+                            height="100%"
+                            style="border:0; min-height: 300px; border-radius: 12px;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
+
             </div>
         </div>
-
         <div class="footer-bottom">
             <div class="container">
                 © 2024 KBG Europe GmbH. All rights reserved.
@@ -85,16 +105,16 @@
     <!-- Social Tabs -->
     <div id="fsmb-social-tabs" aria-label="Schnellzugriff Social Links">
         <a id="fsmb-insta" class="fsmb-tab fsmb-insta"
-           href="https://www.instagram.com/kbg_europe/?hl=de"
+           href="{{ global_social_icons.instagram_url }}"
            target="_blank" rel="noopener"
            aria-label="Instagram" title="Instagram">
-            <img class="fsmb-fill-img" src="{% static 'img/InstaIcon.avif' %}" alt="Instagram">
+            <img class="fsmb-fill-img" src="{{ global_social_icons.instagram_icon.url }}" alt="Instagram">
         </a>
 
         <a id="fsmb-mail" class="fsmb-tab fsmb-gmail"
-           href="mailto:info@kbg-europe.de"
+           href="mailto:{{ global_social_icons.email }}"
            aria-label="E-Mail" title="E-Mail">
-            <img class="fsmb-fill-img" src="{% static 'img/GmailIcon.jpg' %}" alt="E-Mail">
+            <img class="fsmb-fill-img" src="{{ global_social_icons.email_icon.url }}" alt="E-Mail">
         </a>
     </div>
 
@@ -128,13 +148,13 @@
       }
 
       .fsmb-fill-img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
       .fsmb-tab:hover {
         filter: grayscale(18%) brightness(0.97);
@@ -153,10 +173,11 @@
     </style>
 
     <script>
+      // JavaScript für Social Media Button-Verhalten auf mobilen Geräten
       (function() {
         const insta = document.getElementById('fsmb-insta');
         const appURL = 'instagram://user?username=kbg_europe';
-        const webURL = 'https://www.instagram.com/kbg_europe/?hl=de';
+        const webURL = '{{ global_social_icons.instagram_url }}';
 
         function isMobile() {
           return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -173,5 +194,8 @@
         });
       })();
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>

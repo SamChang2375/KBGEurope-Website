@@ -1,0 +1,51 @@
+<!-- media_row.html -->
+<form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}" class="media-upload-form">
+    {% csrf_token %}
+    <input type="hidden" name="media_key" value="{{ key }}">
+
+    <div class="media-row-container">
+
+        <!-- 1. INFO LINKS -->
+        <div class="media-info">
+            <h5>{{ label }}</h5>
+            <p>{{ desc }}</p>
+            {% if img_obj and img_obj.image %}
+                <!-- Zeigt nur den Dateinamen an, z.B. "logo.png" -->
+                <span class="media-filename" title="{{ img_obj.image.name }}">
+                    {{ img_obj.image.name|slice:"12:" }} <!-- simpler trick, schneidet 'site_images/' ab wenn du willst, sonst nimm nur .name -->
+                </span>
+            {% else %}
+                <span class="media-filename" style="color:#999; font-style:italic;">Kein Bild vorhanden</span>
+            {% endif %}
+        </div>
+
+        <!-- 2. ALT TEXT -->
+        <div class="media-alt">
+            <label style="font-size:0.75rem; color:#888;">Alt-Text (SEO)</label>
+            <input type="text" name="alt_text" class="form-control"
+                   value="{% if img_obj %}{{ img_obj.alt_text }}{% endif %}"
+                   data-original="{% if img_obj %}{{ img_obj.alt_text }}{% endif %}"
+                   placeholder="Bildbeschreibung...">
+        </div>
+
+        <!-- 3. DATEI BROWSE -->
+        <div class="media-file">
+            <label style="font-size:0.75rem; color:#888;">Neues Bild wählen</label>
+            <input type="file" name="image" class="form-control">
+        </div>
+
+        <!-- 4. THUMBNAIL RECHTS -->
+        <div class="media-thumb">
+            {% if img_obj and img_obj.image %}
+                <img src="{{ img_obj.image.url }}"
+                     onclick="openModal(this.src, '{{ label }}')"
+                     alt="Vorschau">
+            {% else %}
+                <div style="width:70px; height:70px; background:#f0f0f0; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">
+                    Leer
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</form>

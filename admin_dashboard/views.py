@@ -4,12 +4,15 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.utils.crypto import get_random_string
+from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta
+from .models import PageVisit # Importieren!
 
 
 from pages.models import CateringRequest, ContactRequest, SiteImage
@@ -44,26 +47,62 @@ def login_view(request):
 
 @login_required
 def dashboard_home(request):
-    """
-    Startseite des Dashboards mit Tabs.
-    """
-    # Wenn User sein Passwort noch nicht geändert hat -> zwingend dorthin
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    if profile.must_change_password:
-        return redirect("force_password_change")
+    # ... (Anfragen laden und Bilder laden bleibt gleich) ...
 
-    catering_requests = CateringRequest.objects.order_by("-created_at")[:50]
-    contact_requests = ContactRequest.objects.order_by("-created_at")[:50]
+    # 3. STATISTIKEN BERECHNEN
+    now = timezone.now()
+    last_30_days = now - timedelta(days=30)
 
-    # Alle Nutzer für Benutzer-Management (nur Admins sehen das im Template)
-    users = User.objects.all().order_by("-is_superuser", "username")
+    visits_qs = PageVisit.objects.filter(timestamp__gte=last_30_days)
+
+    # Basis-Stats
+    total_visits = visits_qs.count()
+    unique_visitors = visits_qs.values('session_key').distinct().count()
+    today_visits = PageVisit.objects.filter(timestamp__date=now.date()).count()
+
+    # Top Pages
+    top_pages = (visits_qs.values('path')
+    .annotate(count=Count('id'))
+    .order_by('-count')[:5])
+
+    # --- NEU: DATEN FÜR DIAGRAMM VORBEREITEN ---
+    # Gruppieren nach Tag
+    daily_data = (visits_qs
+                  .annotate(date=TruncDate('timestamp'))
+                  .values('date')
+                  .annotate(count=Count('id'))
+                  .order_by('date'))
+
+    # Dictionary erstellen für schnellen Zugriff: { '2023-10-01': 50, ... }
+    daily_dict = {item['date']: item['count'] for item in daily_data}
+
+    chart_labels = []
+    chart_data = []
+
+    # Schleife über die letzten 30 Tage, um auch Nullen aufzufüllen
+    for i in range(30):
+        # Wir gehen vom ältesten Datum zum heutigen
+        d = (now - timedelta(days=29 - i)).date()
+
+        # Label formatieren (z.B. "30.11.")
+        chart_labels.append(d.strftime("%d.%m."))
+
+        # Daten holen (0 wenn kein Eintrag existiert)
+        chart_data.append(daily_dict.get(d, 0))
+
+    stats = {
+        "total_visits": total_visits,
+        "unique_visitors": unique_visitors,
+        "today_visits": today_visits,
+        "top_pages": top_pages,
+        # Für das Diagramm:
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
+    }
 
     context = {
-        "catering_requests": catering_requests,
-        "contact_requests": contact_requests,
-        "users": users,
-        # falls du site_images o.ä. nutzt, hier auch reinpacken
-        # "site_images": site_images,
+        # ... (restlicher Context bleibt gleich)
+        "stats": stats,
     }
     return render(request, "admin_dashboard/dashboard_home.html", context)
 
@@ -274,3 +313,54 @@ def force_password_change(request):
             return redirect("dashboard_home")
 
     return render(request, "admin_dashboard/force_password_change.html")
+
+
+@login_required
+def dashboard_home(request):
+    # ... (Passwort Check bleibt) ...
+
+    # 1. Anfragen laden (Sortierung: Neueste zuerst)
+    catering_requests = CateringRequest.objects.order_by("-created_at")[:50]
+    contact_requests = ContactRequest.objects.order_by("-created_at")[:50]
+    users = User.objects.all().order_by("-is_superuser", "username")
+
+    # 2. Bilder laden
+    all_images = SiteImage.objects.all()
+    site_images = {img.key: img for img in all_images}
+
+    # 3. ECHTE STATISTIKEN BERECHNEN
+    last_30_days = timezone.now() - timedelta(days=30)
+    today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # Alle Besuche der letzten 30 Tage
+    visits_qs = PageVisit.objects.filter(timestamp__gte=last_30_days)
+
+    total_visits = visits_qs.count()
+
+    # Unique Visitors (basierend auf session_key)
+    unique_visitors = visits_qs.values('session_key').distinct().count()
+
+    # Besuche heute
+    today_visits = PageVisit.objects.filter(timestamp__gte=today_start).count()
+
+    # Top Seiten (Top 5)
+    top_pages = (visits_qs
+    .values('path')
+    .annotate(count=Count('id'))
+    .order_by('-count')[:5])
+
+    stats = {
+        "total_visits": total_visits,
+        "unique_visitors": unique_visitors,
+        "today_visits": today_visits,
+        "top_pages": top_pages,
+    }
+
+    context = {
+        "catering_requests": catering_requests,
+        "contact_requests": contact_requests,
+        "users": users,
+        "site_images": site_images,
+        "stats": stats,  # NEU: Stats übergeben
+    }
+    return render(request, "admin_dashboard/dashboard_home.html", context)

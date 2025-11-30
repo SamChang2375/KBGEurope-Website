@@ -435,7 +435,6 @@ a {
     width: 26px;
     height: 26px;
     display: block;
-    filter: invert(1); /* weiß auf dunklem Footer-Hintergrund */
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
