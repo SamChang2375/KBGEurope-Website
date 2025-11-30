@@ -4,6 +4,11 @@
 
 {% block content %}
 
+<!-- Fonts laden (Julee & Outfit) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Julee&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
 <!-- ========== HERO SECTION ========== -->
 <section class="hero-section">
     <div class="hero-bg">
@@ -11,15 +16,18 @@
              alt="{% site_image_alt 'home_hero' 'KBG Hero' %}">
     </div>
     <div class="hero-overlay">
-        <p class="hero-subtitle">So schmeckt zusammen</p>
-        <p class="hero-korean">다함께 맛있게</p>
-        <p class="hero-tagline">The Taste of Together</p>
+        <!-- Animationen per CSS definiert (siehe unten) -->
+        <h1 class="hero-text-julee anim-1">So schmeckt zusammen</h1>
+        <h2 class="hero-text-korean anim-2">다함께 맛있게</h2>
+        <p class="hero-text-pronounce anim-3">[ Tahamggae Maschigge ]</p>
+        <p class="hero-text-julee anim-4">The Taste of Together</p>
     </div>
 </section>
 
-<!-- ========== WER WIR SIND (mit Bild-Slider rechts) ========== -->
+<!-- ========== WER WIR SIND (mit Sliding-Slider) ========== -->
 <section class="section section-light" id="about-section">
-    <div class="container two-column">
+    <!-- align-items: center sorgt für vertikale Zentrierung -->
+    <div class="container two-column" style="align-items: center;">
         <div class="col">
             <h3 class="section-kicker">KBG-Bonn</h3>
             <h2 class="section-title">Wer wir sind</h2>
@@ -30,22 +38,32 @@
             <a href="{% url 'kontakt' %}" class="btn btn-primary">Finden Sie uns hier</a>
         </div>
 
-        <!-- Rechter Bereich: Slider -->
-        <div class="col about-slider-wrapper">
-            <div class="about-slider">
-                <!-- Bild 1 (aus Backend) -->
-                <div class="about-slide active">
+        <!-- Rechter Bereich: Slider Window -->
+        <div class="col about-slider-window">
+            <!-- Der Track bewegt sich -->
+            <div class="about-slider-track" id="aboutSliderTrack">
+
+                <!-- Bild 1 -->
+                <div class="about-slide-item">
                     <img class="rounded-img"
                          src="{% site_image_url 'home_about_image' 'img/section-placeholder.jpg' %}"
                          alt="{% site_image_alt 'home_about_image' 'Maximilian Center' %}">
                 </div>
-                <!-- Bild 2 (Platzhalter oder 2. Slot, falls vorhanden) -->
-                <div class="about-slide">
-                    <!-- HINWEIS: Hier könntest du später 'home_about_image_2' einfügen -->
-                    <img class="rounded-img"
-                         src="{% static 'img/hero-placeholder.jpg' %}"
-                         alt="Interior View">
+
+                <!-- Bild 2 -->
+                <div class="about-slide-item">
+                    {% if site_images.home_about_image_2 and site_images.home_about_image_2.image %}
+                        <img class="rounded-img"
+                             src="{{ site_images.home_about_image_2.image.url }}"
+                             alt="{{ site_images.home_about_image_2.alt_text }}">
+                    {% else %}
+                        <!-- Fallback -->
+                        <img class="rounded-img"
+                             src="{% site_image_url 'home_about_image' 'img/section-placeholder.jpg' %}"
+                             alt="Interior View Placeholder">
+                    {% endif %}
                 </div>
+
             </div>
         </div>
     </div>
@@ -81,7 +99,7 @@
     </div>
 </section>
 
-<!-- ========== CATERING (bleibt wie gehabt) ========== -->
+<!-- ========== CATERING ========== -->
 <section class="section section-light">
     <div class="container section-center">
         <h2 class="section-title">Unser Catering</h2>
@@ -92,27 +110,23 @@
     </div>
 
     <div class="container four-column gallery-row">
-        <img src="{% site_image_url 'home_catering_1' 'img/section-placeholder.jpg' %}"
-             alt="{% site_image_alt 'home_catering_1' 'Catering 1' %}" class="rounded-img">
-        <img src="{% site_image_url 'home_catering_2' 'img/section-placeholder.jpg' %}"
-             alt="{% site_image_alt 'home_catering_2' 'Catering 2' %}" class="rounded-img">
-        <img src="{% site_image_url 'home_catering_3' 'img/section-placeholder.jpg' %}"
-             alt="{% site_image_alt 'home_catering_3' 'Catering 3' %}" class="rounded-img">
-        <img src="{% site_image_url 'home_catering_4' 'img/section-placeholder.jpg' %}"
-             alt="{% site_image_alt 'home_catering_4' 'Catering 4' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_1' 'img/section-placeholder.jpg' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_2' 'img/section-placeholder.jpg' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_3' 'img/section-placeholder.jpg' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_4' 'img/section-placeholder.jpg' %}" class="rounded-img">
     </div>
 </section>
 
-<!-- ========== KUNDENSTIMMEN (Dein Slider) ========== -->
+<!-- ========== KUNDENSTIMMEN (Testimonials) ========== -->
 <section class="section testimonials-section">
     <div class="testimonials-bg">
         <img src="{% site_image_url 'home_testimonials_bg' 'img/section-placeholder.jpg' %}"
              alt="{% site_image_alt 'home_testimonials_bg' 'Kundenstimmen Hintergrund' %}">
     </div>
 
-    <!-- Overlay Container für den Slider -->
+    <!-- Overlay Container -->
     <div class="testimonials-overlay">
-        <h2 class="section-title" style="margin-bottom: 2rem; color: #fff;">Kundenstimmen</h2>
+        <h2 class="section-title" style="color: #fff; margin-bottom: 2rem;">Kundenstimmen</h2>
 
         <div class="testimonial-slider-container">
             <div class="ts-slide active">
@@ -132,117 +146,175 @@
 </section>
 
 
-<!-- ========== INLINE STYLES für die neuen Layouts ========== -->
+<!-- ========== STYLES (Aktualisiert) ========== -->
 <style>
-    /* --- Styles für den Menü-Split (25% | 50% | 25%) --- */
-    .menu-split-layout {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        padding: 2rem 0;
+    /* --- SYSTEM FARBE --- */
+    :root {
+        --kbg-green: #007755;
     }
+    .btn-primary { background-color: var(--kbg-green) !important; border-color: var(--kbg-green) !important; }
+    .section-kicker { color: var(--kbg-green) !important; }
+    .section-kicker.green { color: var(--kbg-green) !important; }
 
-    .menu-side-img {
-        flex: 1; /* entspricht ca. 25% Anteil */
-        display: flex;
-        justify-content: center;
-    }
-
-    .menu-center-text {
-        flex: 2; /* entspricht ca. 50% Anteil, da doppelt so breit wie side-img */
-        padding: 0 1rem;
-    }
-
-    .full-height-img {
-        height: 300px; /* Einheitliche Höhe für die Seitenbilder */
-        width: 100%;
-        object-fit: cover;
-    }
-
-    @media (max-width: 900px) {
-        .menu-split-layout {
-            flex-direction: column;
-        }
-        .menu-side-img, .menu-center-text {
-            width: 100%;
-            flex: auto;
-        }
-        .full-height-img {
-            height: 250px;
-        }
-        /* Reihenfolge auf Handy ändern: Text oben, dann Bilder?
-           Optional: order css property nutzen */
-    }
-
-
-    /* --- Styles für den "Wer wir sind" Slider (Fade) --- */
-    .about-slider-wrapper {
+    /* --- HERO TYPOGRAPHY & ANIMATION --- */
+    .hero-section {
         position: relative;
-        height: 0;
-        padding-bottom: 66%; /* Seitenverhältnis Platzhalter */
+        /* HÖHE ERHÖHT (vorher 420px, jetzt 600px -> ca +40%) */
+        height: 600px;
         overflow: hidden;
+    }
+
+    .hero-text-julee {
+        font-family: 'Julee', cursive;
+        font-size: 64px;
+        margin: 0.2rem 0;
+        line-height: 1.2;
+    }
+    .hero-text-korean {
+        font-family: 'Outfit', sans-serif;
+        font-size: 64px;
+        /* FARBE GEÄNDERT */
+        color: #f5821f;
+        margin: 0.2rem 0;
+        font-weight: 700;
+    }
+    .hero-text-pronounce {
+        font-family: 'Julee', cursive;
+        font-size: 24px;
+        color: #f5821f; /* Auch hier das neue Orange passend? Oder altes Orange lassen? Ich nehme das neue für Konsistenz */
+        margin-bottom: 1rem;
+    }
+
+    /* Animationen Keyframes */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .anim-1 { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+    .anim-2 { animation: fadeInUp 0.8s ease-out 0.3s forwards; opacity: 0; }
+    .anim-3 { animation: fadeInUp 0.8s ease-out 0.6s forwards; opacity: 0; }
+    .anim-4 { animation: fadeInUp 0.8s ease-out 0.9s forwards; opacity: 0; }
+
+    @media (max-width: 768px) {
+        .hero-section { height: 450px; } /* Handy Höhe etwas kleiner */
+        .hero-text-julee, .hero-text-korean { font-size: 36px; }
+        .hero-text-pronounce { font-size: 18px; }
+    }
+
+
+    /* --- SLIDER "WER WIR SIND" (SLIDING) --- */
+    .about-slider-window {
+        overflow: hidden;
+        position: relative;
         border-radius: 12px;
+        aspect-ratio: 3/2;
     }
 
-    .about-slide {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
+    .about-slider-track {
+        display: flex;
+        width: 200%;
+        height: 100%;
+        transition: transform 0.8s ease-in-out;
     }
 
-    .about-slide.active {
-        opacity: 1;
+    .about-slide-item {
+        width: 50%;
+        height: 100%;
+        flex-shrink: 0;
     }
 
-    .about-slide img {
+    .about-slide-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
     }
 
 
-    /* --- Styles für den Testimonial Slider (Dein Code angepasst) --- */
+    /* --- TESTIMONIALS FIXES (Kein grauer Rand, Bild zentriert) --- */
+    .testimonials-section {
+        position: relative;
+        height: 320px; /* Höhe etwas reduziert */
+        padding: 0 !important; /* WICHTIG: Entfernt Padding der .section Klasse */
+        overflow: hidden;
+    }
+
+    .testimonials-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    .testimonials-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* WICHTIG: Zentriert das Bild vertikal und horizontal */
+        object-position: center center;
+    }
+
+    .testimonials-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+        /* FLEXBOX ZUR ZENTRIERUNG */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Vertikal mittig */
+        align-items: center;     /* Horizontal mittig */
+        padding: 0 1.5rem;
+    }
+
     .testimonial-slider-container {
         width: 100%;
-        max-width: 800px; /* Begrenzung der Breite */
-        height: 250px;    /* Feste Höhe damit Text nicht springt */
+        max-width: 800px;
+        height: 150px; /* Reduziert, damit Text kompakter ist */
         position: relative;
         overflow: hidden;
-        margin: 0 auto;
+        /* margin: 0 auto;  wird durch Flexbox oben erledigt */
     }
 
+    /* Gleicher Slider Code wie vorher für Testimonials (Text) */
     .ts-slide {
         position: absolute;
         width: 100%;
         top: 0;
-        left: 100%; /* Startet rechts */
+        left: 100%;
         opacity: 0;
         transition: left 1s ease-in-out, opacity 1s ease-in-out;
-
-        /* Text Styling */
         font-size: 1.25rem;
         line-height: 1.6;
         font-weight: 500;
         color: #fff;
         text-align: center;
+        /* Vertikale Zentrierung im Slide selbst falls nötig */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
-
     .ts-author {
         display: block;
         margin-top: 1rem;
         font-weight: 700;
-        color: #ffb15a; /* KBG Orange */
+        color: #f5821f; /* Auch hier das neue Orange */
     }
+    .ts-slide.active { left: 0; opacity: 1; }
+    .ts-slide.exit-left { left: -100%; opacity: 0; }
 
-    .ts-slide.active {
-        left: 0;
-        opacity: 1;
-    }
 
-    .ts-slide.exit-left {
-        left: -100%;
-        opacity: 0;
+    /* --- MENU SPLIT --- */
+    .menu-split-layout { display: flex; align-items: center; gap: 2rem; padding: 2rem 0; }
+    .menu-side-img { flex: 1; display: flex; justify-content: center; }
+    .menu-center-text { flex: 2; padding: 0 1rem; }
+    .full-height-img { height: 300px; width: 100%; object-fit: cover; }
+
+    @media (max-width: 900px) {
+        .menu-split-layout { flex-direction: column; }
+        .menu-side-img, .menu-center-text { width: 100%; flex: auto; }
+        .full-height-img { height: 250px; }
     }
 </style>
 
@@ -251,19 +323,24 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // 1. Script für den "Wer wir sind" Slider (einfacher Crossfade)
-    const aboutSlides = document.querySelectorAll('.about-slide');
-    if (aboutSlides.length > 1) {
-        let currentAbout = 0;
+    // 1. SLIDER "WER WIR SIND" (Schiebe-Effekt / Slide)
+    const track = document.getElementById('aboutSliderTrack');
+    if(track) {
+        let isSlide1 = true;
         setInterval(() => {
-            aboutSlides[currentAbout].classList.remove('active');
-            currentAbout = (currentAbout + 1) % aboutSlides.length;
-            aboutSlides[currentAbout].classList.add('active');
-        }, 4000); // alle 4 Sekunden
+            if(isSlide1) {
+                // Zeige Bild 2 (Track nach links schieben um 50%)
+                track.style.transform = "translateX(-50%)";
+            } else {
+                // Zeige Bild 1 (Zurück zum Anfang)
+                track.style.transform = "translateX(0%)";
+            }
+            isSlide1 = !isSlide1;
+        }, 5000); // Alle 5 Sekunden
     }
 
 
-    // 2. Script für den Testimonial Slider (Deine Logik)
+    // 2. TESTIMONIAL TEXT SLIDER
     const tsSlides = document.querySelectorAll('.ts-slide');
     if (tsSlides.length > 0) {
         let currentTs = 0;
@@ -271,13 +348,8 @@ document.addEventListener("DOMContentLoaded", function() {
         function showTsSlide(index) {
             tsSlides.forEach((slide, i) => {
                 slide.classList.remove('active', 'exit-left');
-
-                if (i === currentTs) {
-                    slide.classList.add('exit-left'); // Alte Slide geht nach links raus
-                }
-                if (i === index) {
-                    slide.classList.add('active'); // Neue Slide kommt von rechts rein (durch CSS default left:100%)
-                }
+                if (i === currentTs) slide.classList.add('exit-left');
+                if (i === index) slide.classList.add('active');
             });
             currentTs = index;
         }
@@ -286,11 +358,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const nextIndex = (currentTs + 1) % tsSlides.length;
             showTsSlide(nextIndex);
         }
-
-        // Erster Aufruf, damit Klasse 'active' korrekt sitzt falls HTML abweicht
-        // (Im HTML ist die erste Slide schon .active, daher passt es)
-
-        setInterval(nextTsSlide, 5000); // alle 5 Sekunden
+        setInterval(nextTsSlide, 6000);
     }
 });
 </script>
