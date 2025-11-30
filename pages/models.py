@@ -76,3 +76,51 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return "Globale Seiteneinstellungen"
+
+
+class MenuItem(models.Model):
+    """
+    Repräsentiert einen einzelnen Menü-Block (z.B. "1 Bibimbap").
+    """
+    order = models.PositiveIntegerField(default=0, verbose_name="Reihenfolge")
+
+    # Inhalte
+    dish_id = models.CharField(max_length=10, blank=True, verbose_name="Nummer", help_text="z.B. '1' oder '11'")
+    name = models.CharField(max_length=200, verbose_name="Gericht Name")
+    subtitle = models.CharField(max_length=255, blank=True, verbose_name="Untertitel")
+
+    description_de = models.TextField(blank=True, verbose_name="Beschreibung DE")
+    description_en = models.TextField(blank=True, verbose_name="Beschreibung EN")
+
+    # Optionen: Wir speichern das als Text. Jede Zeile eine Option.
+    # z.B.: "1A Bulgogi Beef"
+    options_text = models.TextField(blank=True, verbose_name="Optionen",
+                                    help_text="Eine Option pro Zeile. Der Code (z.B. 1A) wird automatisch erkannt.")
+
+    # Bilder & Design
+    image = models.ImageField(upload_to="menu_items/", verbose_name="Gericht Bild")
+    background_image = models.ImageField(upload_to="menu_bg/", blank=True, null=True, verbose_name="Hintergrundbild")
+    background_color = models.CharField(max_length=50, blank=True, default="#ffffff",
+                                        verbose_name="Hintergrundfarbe (Hex)")
+
+    def get_options_list(self):
+        """Hilfsfunktion: Wandelt den Textblock in eine Liste um."""
+        if not self.options_text:
+            return []
+        lines = self.options_text.strip().split('\n')
+        result = []
+        for line in lines:
+            line = line.strip()
+            # Versuch, den Code am Anfang zu trennen (erstes Leerzeichen)
+            parts = line.split(' ', 1)
+            if len(parts) == 2:
+                result.append({'code': parts[0], 'label': parts[1]})
+            else:
+                result.append({'code': '', 'label': line})
+        return result
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.dish_id} {self.name}"

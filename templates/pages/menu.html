@@ -1,26 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
+{% load media_tags %}
 
 {% block title %}Menü – Korean BBQ Grill{% endblock %}
 
 {% block content %}
 
 <style>
-    /* Intro oben */
-    .menu-intro {
-        text-align: center;
-    }
-    .menu-intro p {
-        margin-top: 0.4rem;
-        color: #666;
-        font-size: 0.95rem;
-    }
-    .section-white {
-        background-color: #f5f5f5;  /* gleich wie body, kannst du ändern */
-    }
-
-    /* --- Streifen / Menüblöcke --- */
-
+    /* ... (Deine bestehenden Styles hier lassen) ... */
+    .menu-intro { text-align: center; margin-bottom: 2rem; }
     .menu-strip {
         padding: 3rem 0;
         background-size: cover;
@@ -28,98 +16,33 @@
         background-repeat: no-repeat;
         position: relative;
     }
-
-    /* Wenn ein Hintergrundbild gesetzt ist, legen wir ein helles Overlay drüber,
-       damit der Text lesbar bleibt. */
+    /* Overlay für BG Images */
     .menu-strip.has-bg-image::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.94),
-            rgba(255, 255, 255, 0.97)
-        );
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(to right, rgba(255,255,255,0.94), rgba(255,255,255,0.97));
         z-index: 0;
     }
-
     .menu-row {
-        display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);  /* links Bild, rechts Text */
-        gap: 2.5rem;
-        align-items: center;
-        position: relative;
-        z-index: 1; /* über dem Overlay */
+        display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+        gap: 2.5rem; align-items: center; position: relative; z-index: 1;
     }
-
     .menu-dish-image {
-        width: 100%;
-        max-width: 420px;
-        border-radius: 8px;
-        display: block;
+        width: 100%; max-width: 420px; border-radius: 8px; display: block;
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     }
+    .menu-dish-id { color: #f28c1a; font-weight: 700; font-size: 1.6rem; margin-right: 0.4rem; }
+    .menu-dish-name { font-size: 1.6rem; font-weight: 700; }
+    .menu-dish-subtitle { color: #666; font-weight: 500; margin-bottom: 0.7rem; }
+    .menu-dish-description .en { font-style: italic; color: #666; font-size: 0.9rem; }
+    .menu-option-code { color: #f28c1a; font-style: italic; font-weight: 600; margin-right: 0.3rem; }
 
-    .menu-dish-header {
-        margin-bottom: 0.5rem;
-    }
-
-    .menu-dish-id {
-        color: #f28c1a;            /* dein Orange */
-        font-weight: 700;
-        font-size: 1.6rem;
-        margin-right: 0.4rem;
-    }
-
-    .menu-dish-name {
-        font-size: 1.6rem;
-        font-weight: 700;
-    }
-
-    .menu-dish-subtitle {
-        color: #666;
-        font-weight: 500;
-        margin-bottom: 0.7rem;
-    }
-
-    .menu-dish-description {
-        margin-bottom: 0.4rem;
-    }
-
-    .menu-dish-description .en {
-        font-style: italic;
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .menu-options-list {
-        margin-top: 0.75rem;
-        font-size: 0.95rem;
-    }
-
-    .menu-option-item {
-        margin-bottom: 0.2rem;
-    }
-
-    /* 1A / 1B / 11A / 11B etc – Orange + italic */
-    .menu-option-code {
-        color: #f28c1a;
-        font-style: italic;
-        font-weight: 600;
-        margin-right: 0.3rem;
-    }
-
-    @media (max-width: 900px) {
-        .menu-row {
-            grid-template-columns: 1fr;
-        }
-    }
+    @media (max-width: 900px) { .menu-row { grid-template-columns: 1fr; } }
 </style>
 
-<!-- Hero oben (nutzt dein globales hero-section CSS) -->
+<!-- Hero (Statisch, via SiteImage wie gehabt) -->
 <section class="hero-section">
     <div class="hero-bg">
-        <img src="{% static 'img/menu/ramyun-hero.jpg' %}" alt="Ramyun">
+        <img src="{% site_image_url 'menu_hero' 'img/menu/ramyun-hero.jpg' %}" alt="Ramyun">
     </div>
     <div class="hero-overlay">
         <div class="hero-subtitle">Ramyun</div>
@@ -127,7 +50,7 @@
     </div>
 </section>
 
-<!-- Intro "Unser Menü" -->
+<!-- Intro -->
 <section class="section section-white">
     <div class="container menu-intro">
         <div class="section-kicker green">Unser Menü</div>
@@ -136,197 +59,51 @@
     </div>
 </section>
 
-<!-- Hier kommen die Streifen rein (volle Seitenbreite) -->
-<div id="kbg-menu-strips"></div>
+<!-- DYNAMISCHE SCHLEIFE -->
+{% for item in menu_items %}
+<section class="menu-strip {% if item.background_image %}has-bg-image{% endif %}"
+         style="{% if item.background_image %}background-image: url('{{ item.background_image.url }}');{% else %}background-color: {{ item.background_color }};{% endif %}">
 
-<script>
-  // JSON-Daten; backgroundColor / backgroundImage sind optional.
-  // Wenn beides fehlt:
-  //   -> automatisch: 1. Block weiß, 2. Block beige, 3. wieder weiß ...
-  const kbgMenuData = [
-    {
-      id: 1,
-      name: "Bibimbap Bowl",
-      subtitle: "Bekanntestes koreanisches Gericht",
-      descriptionDe: "Reis, frisches Gemüse, Spiegelei, 1 Topping nach Wahl",
-      descriptionEn: "rice, fresh vegetables, fried egg, 1 topping of your choice",
-      image: "{% static 'img/menu/1-bibimbap.jpg' %}",
-      // backgroundColor: "#ffffff",
-      // backgroundImage: "{% static 'img/...'%}",
-      options: [
-        { code: "1A", label: "Bulgogi Beef" },
-        { code: "1B", label: "Teriyaki Lachs" },
-        { code: "1C", label: "Jeyuk Pork 🌶" },
-        { code: "1D", label: "Chicken" },
-        { code: "1E", label: "Tofu 🌱" }
-      ]
-    },
-    {
-      id: 2,
-      name: "BBQ Bowl",
-      subtitle: "Schmackhaft • Gesund • Frisch",
-      descriptionDe: "Reis, Gemüsestreifen, Fleisch nach Wahl",
-      descriptionEn: "rice, vegetable stripes, meat of your choice",
-      image: "{% static 'img/menu/2-bbq-bowl.jpg' %}",
-      options: [
-        { code: "2A", label: "Bulgogi Beef" },
-        { code: "2B", label: "Jeyuk Pork 🌶" },
-        { code: "2C", label: "Chicken" }
-      ]
-    },
-    {
-      id: 3,
-      name: "Chapchae",
-      subtitle: "Festessen täglich genießen",
-      descriptionDe: "Glasnudel mit frischem Gemüse und 1 Topping nach Wahl",
-      descriptionEn: "glass noodle with fresh vegetables and 1 topping of your choice",
-      image: "{% static 'img/menu/3-chapchae.jpg' %}",
-      backgroundImage: "{% static 'img/menu/bg-chapchae.jpg' %}",
-      options: [
-        { code: "3A", label: "Bulgogi Beef" },
-        { code: "3B", label: "Jeyuk Pork 🌶" },
-        { code: "3C", label: "Chicken" },
-        { code: "3D", label: "Tofu 🌱" },
-        { code: "3E", label: "Ohne Extra 🌱" }
-      ]
-    },
-    {
-      id: 4,
-      name: "Ramyun Soup Bowl",
-      subtitle: "Leibgericht für jung & alt",
-      descriptionDe: "Nudelsuppe mit frischem Gemüse und Ei, 1 Topping nach Wahl",
-      descriptionEn: "noodle soup with fresh vegetables and egg, 1 topping of your choice",
-      image: "{% static 'img/menu/4-ramyun-soup.jpg' %}",
-      options: [
-        { code: "4A", label: "Mandu 🌱" },
-        { code: "4B", label: "Käse" },
-        { code: "4C", label: "Kimchi 🌶" },
-        { code: "4D", label: "Fleisch nach Wahl" },
-        { code: "4E", label: "Ohne Extra 🌱" }
-      ]
-    },
-    {
-      id: 11,
-      name: "KBG-Deluxe",
-      subtitle: "Kleines Kulturerlebnis",
-      descriptionDe:
-        "Gimbap, frittierte Mandu, Chapchae, Salat, Reis, Miso-Suppe, Fleisch nach Wahl (oder Tofu)",
-      descriptionEn:
-        "gimbap, fried mandu, chapchae, salad, rice, miso soup, 1 meat of your choice (or tofu)",
-      image: "{% static 'img/menu/11-kbg-deluxe.jpg' %}",
-      backgroundColor: "#e5dfcf",
-      options: [
-        { code: "11A", label: "Bulgogi Beef" },
-        { code: "11B", label: "Jeyuk Pork 🌶" },
-        { code: "11C", label: "Chicken" },
-        { code: "11D", label: "Tofu 🌱" },
-        { code: "11E", label: "Ohne Extra 🌱" }
-      ]
-    }
-  ];
+    <div class="container">
+        <div class="menu-row">
+            <!-- Linke Spalte: Bild -->
+            <div class="menu-col-img">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="menu-dish-image">
+                {% endif %}
+            </div>
 
-  const root = document.getElementById("kbg-menu-strips");
+            <!-- Rechte Spalte: Text -->
+            <div class="menu-col-text">
+                <div class="menu-dish-header">
+                    {% if item.dish_id %}<span class="menu-dish-id">{{ item.dish_id }}</span>{% endif %}
+                    <span class="menu-dish-name">{{ item.name }}</span>
+                </div>
 
-  function createStrip(item, index) {
-    const section = document.createElement("section");
-    section.className = "menu-strip";
+                {% if item.subtitle %}
+                    <div class="menu-dish-subtitle">{{ item.subtitle }}</div>
+                {% endif %}
 
-    // Standard-Streifen: 1 = weiß, 2 = beige, 3 = weiß, ...
-    let bgColor = index % 2 === 0 ? "#ffffff" : "#f5f5f0";
-    let hasBgImage = false;
+                <div class="menu-dish-description">
+                    {{ item.description_de }}<br>
+                    <span class="en">{{ item.description_en }}</span>
+                </div>
 
-    // Farbe / Bild aus JSON überschreibt Standard
-    if (item.backgroundColor) {
-      bgColor = item.backgroundColor;
-    }
-    if (item.backgroundImage) {
-      hasBgImage = true;
-    }
-
-    section.style.backgroundColor = bgColor;
-
-    if (hasBgImage) {
-      section.classList.add("has-bg-image");
-      section.style.backgroundImage = `url('${item.backgroundImage}')`;
-    }
-
-    const container = document.createElement("div");
-    container.className = "container";
-
-    const row = document.createElement("div");
-    row.className = "menu-row";
-
-    // Bild-Spalte
-    const imageCol = document.createElement("div");
-    const img = document.createElement("img");
-    img.src = item.image;
-    img.alt = item.name;
-    img.className = "menu-dish-image";
-    imageCol.appendChild(img);
-
-    // Text-Spalte
-    const textCol = document.createElement("div");
-
-    const header = document.createElement("div");
-    header.className = "menu-dish-header";
-
-    const idSpan = document.createElement("span");
-    idSpan.className = "menu-dish-id";
-    idSpan.textContent = item.id;
-
-    const nameSpan = document.createElement("span");
-    nameSpan.className = "menu-dish-name";
-    nameSpan.textContent = " " + item.name;
-
-    header.appendChild(idSpan);
-    header.appendChild(nameSpan);
-
-    const subtitle = document.createElement("div");
-    subtitle.className = "menu-dish-subtitle";
-    subtitle.textContent = item.subtitle || "";
-
-    const desc = document.createElement("div");
-    desc.className = "menu-dish-description";
-    desc.innerHTML = `${item.descriptionDe || ""}<br><span class="en">${item.descriptionEn || ""}</span>`;
-
-    textCol.appendChild(header);
-    textCol.appendChild(subtitle);
-    textCol.appendChild(desc);
-
-    if (item.options && item.options.length) {
-      const list = document.createElement("div");
-      list.className = "menu-options-list";
-
-      item.options.forEach(opt => {
-        const line = document.createElement("div");
-        line.className = "menu-option-item";
-
-        const code = document.createElement("span");
-        code.className = "menu-option-code";
-        code.textContent = opt.code;
-
-        const label = document.createElement("span");
-        label.className = "menu-option-label";
-        label.textContent = " " + opt.label;
-
-        line.appendChild(code);
-        line.appendChild(label);
-        list.appendChild(line);
-      });
-
-      textCol.appendChild(list);
-    }
-
-    row.appendChild(imageCol);
-    row.appendChild(textCol);
-    container.appendChild(row);
-    section.appendChild(container);
-    return section;
-  }
-
-  kbgMenuData.forEach((item, index) => {
-    root.appendChild(createStrip(item, index));
-  });
-</script>
+                <!-- Optionen Liste -->
+                {% if item.options_text %}
+                <div class="menu-options-list" style="margin-top: 0.75rem; font-size: 0.95rem;">
+                    {% for opt in item.get_options_list %}
+                        <div class="menu-option-item" style="margin-bottom: 0.2rem;">
+                            {% if opt.code %}<span class="menu-option-code">{{ opt.code }}</span>{% endif %}
+                            <span class="menu-option-label">{{ opt.label }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endfor %}
 
 {% endblock %}

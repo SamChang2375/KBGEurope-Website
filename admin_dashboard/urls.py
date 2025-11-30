@@ -54,4 +54,7 @@ urlpatterns = [
         views.dashboard_settings_update,
         name="dashboard_settings_update"
     ),
+    path("menu/create/", views.dashboard_menu_item_create, name="dashboard_menu_item_create"),
+    path("menu/<int:pk>/update/", views.dashboard_menu_item_update, name="dashboard_menu_item_update"),
+    path("menu/<int:pk>/delete/", views.dashboard_menu_item_delete, name="dashboard_menu_item_delete"),
 ]

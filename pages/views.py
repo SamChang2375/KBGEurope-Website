@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from .models import CateringRequest, ContactRequest
 from django.contrib import messages
+from .models import MenuItem, CateringRequest, ContactRequest, SiteImage, SiteSettings # MenuItem importieren
 
 def home_view(request):
     return render(request, "pages/home.html")
 
 def menu_view(request):
-    return render(request, "pages/menu.html")
+    menu_items = MenuItem.objects.all().order_by('order')
+    return render(request, "pages/menu.html", {"menu_items": menu_items})
 
 def bestellen_view(request):
     return render(request, "pages/bestellen.html")

@@ -13,6 +13,7 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
+from pages.models import MenuItem # Neu
 
 # Modelle importieren
 from pages.models import CateringRequest, ContactRequest, SiteImage, SiteSettings
@@ -98,6 +99,9 @@ def dashboard_home(request):
         "chart_data": chart_data,
     }
 
+    # 6. MENÜ ITEMS LADEN
+    menu_items = MenuItem.objects.all().order_by('order')
+
     # Context zusammenbauen
     context = {
         "catering_requests": catering_requests,
@@ -106,6 +110,7 @@ def dashboard_home(request):
         "site_images": site_images,
         "site_settings": site_settings,
         "stats": stats,
+        "menu_items": menu_items,  # <--- DAS HINZUFÜGEN
     }
     return render(request, "admin_dashboard/dashboard_home.html", context)
 
@@ -262,3 +267,80 @@ def force_password_change(request):
             messages.error(request, "Passwörter stimmen nicht überein.")
 
     return render(request, "admin_dashboard/force_password_change.html")
+
+
+# --- MENU ITEM MANAGEMENT ---
+
+@login_required
+@require_POST
+def dashboard_menu_item_create(request):
+    """Neues Menü-Item erstellen"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    # Automatisch höchste Order + 1
+    last_item = MenuItem.objects.last()
+    new_order = (last_item.order + 1) if last_item else 1
+
+    MenuItem.objects.create(
+        order=new_order,
+        dish_id=request.POST.get("dish_id", ""),
+        name=request.POST.get("name", "Neues Gericht"),
+        subtitle=request.POST.get("subtitle", ""),
+        description_de=request.POST.get("description_de", ""),
+        description_en=request.POST.get("description_en", ""),
+        options_text=request.POST.get("options_text", ""),
+        background_color=request.POST.get("background_color", "#ffffff"),
+        image=request.FILES.get("image")  # Bild ist Pflicht beim Erstellen, sonst Fehler im Frontend vermeiden
+    )
+    messages.success(request, "Menü-Block erstellt.")
+    return redirect("dashboard_home")  # Springt via JS zum Tab zurück
+
+
+@login_required
+@require_POST
+def dashboard_menu_item_update(request, pk):
+    """Bestehendes Menü-Item updaten"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    item = get_object_or_404(MenuItem, pk=pk)
+
+    item.dish_id = request.POST.get("dish_id", item.dish_id)
+    item.name = request.POST.get("name", item.name)
+    item.subtitle = request.POST.get("subtitle", item.subtitle)
+    item.description_de = request.POST.get("description_de", item.description_de)
+    item.description_en = request.POST.get("description_en", item.description_en)
+    item.options_text = request.POST.get("options_text", item.options_text)
+    item.background_color = request.POST.get("background_color", item.background_color)
+    item.order = request.POST.get("order", item.order)
+
+    # Bilder nur updaten wenn neu hochgeladen
+    if request.FILES.get("image"):
+        item.image = request.FILES.get("image")
+    if request.FILES.get("background_image"):
+        item.background_image = request.FILES.get("background_image")
+
+    # Checkbox für Hintergrundbild löschen
+    if request.POST.get("delete_bg_image"):
+        item.background_image = None
+
+    item.save()
+
+    # AJAX Support für "Alle Speichern"
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, "admin_dashboard/dashboard_home.html", {})
+
+    messages.success(request, f"Menü '{item.name}' gespeichert.")
+    return redirect("dashboard_home")
+
+
+@login_required
+@require_POST
+def dashboard_menu_item_delete(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+    item = get_object_or_404(MenuItem, pk=pk)
+    item.delete()
+    messages.success(request, "Menü-Block gelöscht.")
+    return redirect("dashboard_home")
