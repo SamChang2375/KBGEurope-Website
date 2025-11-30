@@ -63,3 +63,16 @@ class SiteImage(models.Model):
 
     def __str__(self):
         return self.key
+
+class SiteSettings(models.Model):
+    """
+    Speichert globale Texteinstellungen wie Adresse, Öffnungszeiten, etc.
+    Es sollte immer nur ein Objekt dieser Klasse geben.
+    """
+    address = models.CharField(max_length=255, default="Poststraße 2–4, 53111 Bonn")
+    opening_hours = models.CharField(max_length=255, default="Montag bis Samstag, 11:00–20:30 Uhr")
+    phone = models.CharField(max_length=100, default="+49 228 88690432")
+    email = models.EmailField(default="info@kbg-europe.de")
+
+    def __str__(self):
+        return "Globale Seiteneinstellungen"

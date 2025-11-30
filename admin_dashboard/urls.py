@@ -48,4 +48,10 @@ urlpatterns = [
         views.dashboard_media_update,
         name="dashboard_media_update",
     ),
+
+    path(
+        "settings/update/",
+        views.dashboard_settings_update,
+        name="dashboard_settings_update"
+    ),
 ]

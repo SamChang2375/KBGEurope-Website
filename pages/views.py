@@ -38,3 +38,4 @@ def kontakt_view(request):
         return redirect("kontakt")
 
     return render(request, "pages/kontakt.html")
+
