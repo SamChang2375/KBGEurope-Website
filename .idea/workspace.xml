@@ -4,21 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Alles repariert!&#10;Dashboard fertig eingerichtet.">
-      <change afterPath="$PROJECT_DIR$/pages/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/templatetags/media_tags.py" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt">
+      <change afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/force_password_change.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_dashboard/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/catering.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/catering.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/kontakt.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/kontakt.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +95,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764460028503</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt">
+      <option name="closed" value="true" />
+      <created>1764461950563</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1764461950563</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,6 +121,7 @@
     <MESSAGE value="First Commit - Building the sites" />
     <MESSAGE value="Aktuelle Version, aber bisschen broken" />
     <MESSAGE value="Alles repariert!&#10;Dashboard fertig eingerichtet." />
-    <option name="LAST_COMMIT_MESSAGE" value="Alles repariert!&#10;Dashboard fertig eingerichtet." />
+    <MESSAGE value="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt" />
   </component>
 </project>

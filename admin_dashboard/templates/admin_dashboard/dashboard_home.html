@@ -9,9 +9,16 @@
         <p>Willkommen im internen Bereich.</p>
 
         <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-            <a class="btn btn-primary" href="{% url 'logout' %}">Abmelden</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    Abmelden
+                </button>
+            </form>
+
             <a class="btn" href="{% url 'home' %}">Zurück zur Startseite</a>
         </div>
+
 
         <!-- Tabs + Inhalt -->
         <div class="dashboard-layout" style="margin-top: 2rem;">
@@ -505,9 +512,8 @@
                     </div>
                 </div>
 
-                <!-- Benutzer-Management (nur Admin) -->
-                {% if user.is_superuser %}
-                <div class="dashboard-panel" data-tab-panel="benutzer">
+               {% if user.is_superuser %}
+               <div class="dashboard-panel" data-tab-panel="benutzer">
                     <h2>Benutzer-Management</h2>
                     <p>Nur für Administratoren sichtbar. Hier kannst du Benutzer einsehen, hinzufügen und löschen.</p>
 
@@ -522,30 +528,49 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for u in users %}
                             <tr>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
+                                <td>{{ u.username }}</td>
+                                <td>{{ u.email }}</td>
                                 <td>
-                                    {% if user.is_superuser %}
-                                        Admin
+                                    {% if u.is_superuser %}
+                                        Admin User
                                     {% else %}
-                                        Benutzer
+                                        Common User
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm">Bearbeiten</button>
-                                    <button type="button" class="btn btn-sm">Löschen</button>
+                                    {% if u != user %}
+                                        <form method="post"
+                                              action="{% url 'dashboard_delete_user' u.id %}"
+                                              style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="btn btn-sm"
+                                                    onclick="return confirm('Benutzer wirklich löschen?');">
+                                                Löschen
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span style="font-size:.85rem; color:#777;">(Du selbst)</span>
+                                    {% endif %}
                                 </td>
                             </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">Noch keine Benutzer angelegt.</td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
 
                     <h3 style="margin-top: 1.5rem;">Neuen Benutzer anlegen</h3>
                     <p style="font-size:.9rem; color:#555;">
-                        Die genaue Funktionalität (Passwort-Handling, Einladungs-Mails usw.) kannst du später in den Views/Forms implementieren.
+                        Das Passwort wird automatisch generiert und per E-Mail verschickt.
+                        Beim ersten Login muss der Benutzer ein eigenes Passwort setzen.
                     </p>
 
-                    <form method="post" action="">
+                    <form method="post" action="{% url 'dashboard_create_user' %}">
                         {% csrf_token %}
                         <div class="form-group" style="margin-bottom: .75rem;">
                             <label for="id_new_username">Benutzername</label><br>
@@ -556,14 +581,16 @@
                             <input type="email" id="id_new_email" name="new_email" class="form-control" required>
                         </div>
                         <div class="form-group" style="margin-bottom: .75rem;">
-                            <label for="id_new_password">Passwort</label><br>
-                            <input type="password" id="id_new_password" name="new_password" class="form-control" required>
+                            <label for="id_new_role">Rolle</label><br>
+                            <select id="id_new_role" name="new_role" class="form-control">
+                                <option value="common">Common User</option>
+                                <option value="admin">Admin User</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Benutzer erstellen</button>
                     </form>
                 </div>
                 {% endif %}
-
             </div>
         </div>
 

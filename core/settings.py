@@ -112,15 +112,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.deinprovider.de"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "deine@adresse.de"
-EMAIL_HOST_PASSWORD = "dein-passwort"
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "KBG Europe <deine@adresse.de>"
-
-
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "KBG Europe <noreply@kbg-europe.local>"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

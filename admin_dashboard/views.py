@@ -1,15 +1,21 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
-from pages.models import CateringRequest, ContactRequest, SiteImage
+from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.utils.crypto import get_random_string
 
 
+from pages.models import CateringRequest, ContactRequest, SiteImage
+from .models import UserProfile  # wichtig
 
+User = get_user_model()
 def login_view(request):
     """
     Einfaches Login-View für das interne Dashboard.
@@ -21,6 +27,14 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+
+            # Profil holen/erstellen
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+
+            # Muss Passwort ändern? -> sofort auf eigene Seite leiten
+            if profile.must_change_password:
+                return redirect("force_password_change")
+
             return redirect("dashboard_home")
         else:
             messages.error(request, "Benutzername oder Passwort ist falsch.")
@@ -30,17 +44,56 @@ def login_view(request):
 
 @login_required
 def dashboard_home(request):
+    """
+    Startseite des Dashboards mit Tabs.
+    """
+    # Wenn User sein Passwort noch nicht geändert hat -> zwingend dorthin
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if profile.must_change_password:
+        return redirect("force_password_change")
+
     catering_requests = CateringRequest.objects.order_by("-created_at")[:50]
     contact_requests = ContactRequest.objects.order_by("-created_at")[:50]
-    site_images = {img.key: img for img in SiteImage.objects.all()}
+
+    # Alle Nutzer für Benutzer-Management (nur Admins sehen das im Template)
+    users = User.objects.all().order_by("-is_superuser", "username")
 
     context = {
         "catering_requests": catering_requests,
         "contact_requests": contact_requests,
-        "site_images": site_images,
+        "users": users,
+        # falls du site_images o.ä. nutzt, hier auch reinpacken
+        # "site_images": site_images,
     }
     return render(request, "admin_dashboard/dashboard_home.html", context)
 
+@login_required
+@require_POST
+def dashboard_media_update(request):
+    """
+    Bild für einen bestimmten Slot (z.B. 'home_hero', 'home_about_image', 'logo')
+    hochladen/aktualisieren.
+    Nur Staff-User/Admins dürfen das.
+    """
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Nicht erlaubt.")
+
+    media_key = request.POST.get("media_key")
+    image_file = request.FILES.get("image")
+    alt_text = request.POST.get("alt_text", "").strip()
+
+    if not media_key or not image_file:
+        messages.error(request, "Bitte Slot und Bild auswählen.")
+        return redirect("dashboard_home")
+
+    # Hole oder erstelle den passenden SiteImage-Eintrag
+    obj, _created = SiteImage.objects.get_or_create(key=media_key)
+    obj.image = image_file
+    obj.alt_text = alt_text
+    obj.save()
+
+    messages.success(request, f"Bild für Slot „{media_key}“ wurde aktualisiert.")
+    return redirect("dashboard_home")
 
 @login_required
 def answer_catering_request(request, pk):
@@ -96,29 +149,128 @@ def answer_contact_request(request, pk):
     return redirect("dashboard_home")
 
 @login_required
-@require_POST
-def update_site_image(request):
+@user_passes_test(lambda u: u.is_superuser)
+def dashboard_create_user(request):
     """
-    Verarbeitet Uploads aus dem Medien-Tab.
+    Admin legt einen neuen Benutzer an.
+    Passwort wird automatisch generiert und per Mail versendet.
     """
-    key = request.POST.get("media_key")
-    img_file = request.FILES.get("image")
-    alt_text = request.POST.get("alt_text", "").strip()
-
-    if not key or not img_file:
-        messages.error(request, "Bitte einen Bild-Slot und eine Datei auswählen.")
+    if request.method != "POST":
         return redirect("dashboard_home")
 
-    obj, created = SiteImage.objects.get_or_create(key=key)
+    username = request.POST.get("new_username", "").strip()
+    email = request.POST.get("new_email", "").strip()
+    role = request.POST.get("new_role", "common")
 
-    # altes Bild löschen (Datei), wenn vorhanden
-    if obj.image and obj.image.name and obj.image.storage.exists(obj.image.name):
-        obj.image.delete(save=False)
+    if not username or not email:
+        messages.error(request, "Bitte Benutzername und E-Mail angeben.")
+        return redirect("dashboard_home")
 
-    obj.image = img_file
-    if alt_text:
-        obj.alt_text = alt_text
-    obj.save()
+    if User.objects.filter(username=username).exists():
+        messages.error(request, "Ein Benutzer mit diesem Benutzernamen existiert bereits.")
+        return redirect("dashboard_home")
 
-    messages.success(request, f"Bild für '{key}' wurde aktualisiert.")
+    if User.objects.filter(email=email).exists():
+        messages.error(request, "Ein Benutzer mit dieser E-Mail existiert bereits.")
+        return redirect("dashboard_home")
+
+    # ein brauchbarer Zeichenvorrat ohne verwechselbare Zeichen wie 0/O, 1/l
+    charset = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789"
+    password = get_random_string(12, allowed_chars=charset)
+
+    is_admin = (role == "admin")
+
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+        is_staff=True,             # darf ins Backend / Dashboard
+        is_superuser=is_admin,     # Admin oder Common User
+    )
+
+    # Profil-Flag setzen: muss Passwort ändern
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    profile.must_change_password = True
+    profile.save()
+
+    # Login-URL bauen
+    login_url = request.build_absolute_uri(reverse("login"))
+
+    subject = "Zugang zum KBG Dashboard"
+    message = (
+        f"Hallo {username},\n\n"
+        "du wurdest für das KBG-Dashboard freigeschaltet.\n\n"
+        f"Login-URL: {login_url}\n"
+        f"Benutzername: {username}\n"
+        f"Passwort (bitte beim ersten Login ändern): {password}\n\n"
+        "Beim ersten Login wirst du gebeten, dein eigenes Passwort zu setzen.\n\n"
+        "Viele Grüße\n"
+        "KBG Europe"
+    )
+
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=True,  # im Test egal, geht in die Konsole
+    )
+
+    messages.success(request, "Benutzer wurde angelegt. E-Mail wurde gesendet (oder im Testsystem geloggt).")
     return redirect("dashboard_home")
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def dashboard_delete_user(request, pk):
+    """
+    Admin kann Benutzer löschen.
+    """
+    if request.method != "POST":
+        return redirect("dashboard_home")
+
+    user_to_delete = get_object_or_404(User, pk=pk)
+
+    if user_to_delete == request.user:
+        messages.error(request, "Du kannst dich nicht selbst löschen.")
+        return redirect("dashboard_home")
+
+    user_to_delete.delete()
+    messages.success(request, "Benutzer wurde gelöscht.")
+    return redirect("dashboard_home")
+
+@login_required
+def force_password_change(request):
+    """
+    Seite, auf der Nutzer beim ersten Login ein neues Passwort setzen müssen.
+    """
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    # Falls Flag schon weg ist, direkt ins Dashboard
+    if not profile.must_change_password:
+        return redirect("dashboard_home")
+
+    if request.method == "POST":
+        pw1 = request.POST.get("new_password1")
+        pw2 = request.POST.get("new_password2")
+
+        if not pw1 or not pw2:
+            messages.error(request, "Bitte beide Passwort-Felder ausfüllen.")
+        elif pw1 != pw2:
+            messages.error(request, "Die Passwörter stimmen nicht überein.")
+        else:
+            # Passwort setzen
+            user = request.user
+            user.set_password(pw1)
+            user.save()
+
+            # Profil-Flag zurücksetzen
+            profile.must_change_password = False
+            profile.save()
+
+            # Session behalten, obwohl Passwort geändert wurde
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "Passwort wurde geändert.")
+            return redirect("dashboard_home")
+
+    return render(request, "admin_dashboard/force_password_change.html")
