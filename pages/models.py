@@ -65,18 +65,31 @@ class SiteImage(models.Model):
         return self.key
 
 class SiteSettings(models.Model):
-    """
-    Speichert globale Texteinstellungen wie Adresse, Öffnungszeiten, etc.
-    Es sollte immer nur ein Objekt dieser Klasse geben.
-    """
+    # ... (deine bestehenden Felder: address, opening_hours, phone, email) ...
     address = models.CharField(max_length=255, default="Poststraße 2–4, 53111 Bonn")
     opening_hours = models.CharField(max_length=255, default="Montag bis Samstag, 11:00–20:30 Uhr")
     phone = models.CharField(max_length=100, default="+49 228 88690432")
     email = models.EmailField(default="info@kbg-europe.de")
 
+    # --- NEU: BESTELLEN BUTTONS ---
+    # Button 1: Abholen
+    btn_pickup_text = models.CharField(max_length=50, default="Abholen")
+    btn_pickup_link = models.CharField(max_length=255, default="#", blank=True)
+
+    # Button 2: Wolt
+    btn_wolt_text = models.CharField(max_length=50, default="Wolt")
+    btn_wolt_link = models.CharField(max_length=255, default="https://wolt.com", blank=True)
+
+    # Button 3: Lieferando
+    btn_lieferando_text = models.CharField(max_length=50, default="Lieferando")
+    btn_lieferando_link = models.CharField(max_length=255, default="https://lieferando.de", blank=True)
+
+    # Button 4: Uber Eats
+    btn_uber_text = models.CharField(max_length=50, default="Uber Eats")
+    btn_uber_link = models.CharField(max_length=255, default="https://ubereats.com", blank=True)
+
     def __str__(self):
         return "Globale Seiteneinstellungen"
-
 
 class MenuItem(models.Model):
     """

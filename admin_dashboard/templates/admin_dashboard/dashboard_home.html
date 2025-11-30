@@ -241,6 +241,7 @@
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-catering')">Catering</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-kontakt')">Kontakt</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-layout')">Layout / Logo</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-order')">Bestellen</button>
                     </nav>
 
                     <!-- HOME TAB -->
@@ -413,6 +414,83 @@
 
                     </div>
 
+                    <!-- ORDER TAB -->
+                    <div id="media-order" class="media-subpanel">
+                        <h3>Seite: Bestellen & Abholen</h3>
+
+                        <!-- 1. Hintergrundbild -->
+                        {% include "admin_dashboard/includes/media_row.html" with key="order_hero" label="Hintergrundbild" desc="Das große Bild im Hintergrund." img_obj=site_images.order_hero %}
+
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
+
+                        <h3>Buttons verwalten</h3>
+                        <p style="color:#666; margin-bottom:1.5rem;">Hier kannst du die Texte und Links der 4 Buttons anpassen. Klicke oben auf "Alle Änderungen speichern".</p>
+
+                        <!-- Formular für die Buttons (wird über dashboard_settings_update gespeichert) -->
+                        <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
+                            {% csrf_token %}
+
+                            <!-- Trick: Wir müssen die alten Felder (Adresse etc.) als Hidden mitsenden,
+                                 ODER wir akzeptieren, dass sie leer bleiben, wenn wir sie hier nicht rendern.
+                                 BESSER: Die View oben lädt nur das, was im POST ist.
+                                 Da die View aber ALLES speichert, müssen wir hier aufpassen.
+
+                                 LÖSUNG: Wir nutzen hier KEIN eigenes Formular-Tag, sondern machen diese Felder
+                                 Teil des großen "Alle Speichern" Konzepts via JS, oder wir fügen die Hidden Fields hinzu.
+
+                                 Da wir vorhin eine AJAX "saveAllMedia" Funktion gebaut haben, die ALLE Forms im aktiven Tab sucht,
+                                 ist das hier ein separates Formular. Das ist okay.
+                                 ABER: Die View `dashboard_settings_update` überschreibt alles.
+
+                                 SAFE WAY: Wir rendern die anderen Felder als hidden inputs, damit sie nicht gelöscht werden.
+                            -->
+                            <input type="hidden" name="address" value="{{ site_settings.address }}">
+                            <input type="hidden" name="opening_hours" value="{{ site_settings.opening_hours }}">
+                            <input type="hidden" name="phone" value="{{ site_settings.phone }}">
+                            <input type="hidden" name="email" value="{{ site_settings.email }}">
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+                                <!-- Button 1 -->
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: var(--kbg-green); margin-top:0;">Button 1 (Abholen)</h5>
+                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
+                                    <input type="text" name="btn_pickup_text" class="form-control" value="{{ site_settings.btn_pickup_text }}">
+                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
+                                    <input type="text" name="btn_pickup_link" class="form-control" value="{{ site_settings.btn_pickup_link }}">
+                                </div>
+
+                                <!-- Button 2 -->
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #3f7dbb; margin-top:0;">Button 2 (Wolt)</h5>
+                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
+                                    <input type="text" name="btn_wolt_text" class="form-control" value="{{ site_settings.btn_wolt_text }}">
+                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
+                                    <input type="text" name="btn_wolt_link" class="form-control" value="{{ site_settings.btn_wolt_link }}">
+                                </div>
+
+                                <!-- Button 3 -->
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #c88a27; margin-top:0;">Button 3 (Lieferando)</h5>
+                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
+                                    <input type="text" name="btn_lieferando_text" class="form-control" value="{{ site_settings.btn_lieferando_text }}">
+                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
+                                    <input type="text" name="btn_lieferando_link" class="form-control" value="{{ site_settings.btn_lieferando_link }}">
+                                </div>
+
+                                <!-- Button 4 -->
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #2e6a57; margin-top:0;">Button 4 (Uber Eats)</h5>
+                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
+                                    <input type="text" name="btn_uber_text" class="form-control" value="{{ site_settings.btn_uber_text }}">
+                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
+                                    <input type="text" name="btn_uber_link" class="form-control" value="{{ site_settings.btn_uber_link }}">
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
                     <!-- CATERING TAB -->
                     <div id="media-catering" class="media-subpanel">
                         <h3>Catering Seite</h3>
@@ -464,6 +542,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Im Footer Formular (media-layout Tab) hinzufügen: -->
+                            <input type="hidden" name="btn_pickup_text" value="{{ site_settings.btn_pickup_text }}">
+                            <input type="hidden" name="btn_pickup_link" value="{{ site_settings.btn_pickup_link }}">
+                            <input type="hidden" name="btn_wolt_text" value="{{ site_settings.btn_wolt_text }}">
+                            <input type="hidden" name="btn_wolt_link" value="{{ site_settings.btn_wolt_link }}">
+                            <input type="hidden" name="btn_lieferando_text" value="{{ site_settings.btn_lieferando_text }}">
+                            <input type="hidden" name="btn_lieferando_link" value="{{ site_settings.btn_lieferando_link }}">
+                            <input type="hidden" name="btn_uber_text" value="{{ site_settings.btn_uber_text }}">
+                            <input type="hidden" name="btn_uber_link" value="{{ site_settings.btn_uber_link }}">
                         </form>
                     </div>
                 </div>

@@ -157,13 +157,29 @@ def dashboard_settings_update(request):
         return HttpResponseForbidden()
 
     settings_obj, _ = SiteSettings.objects.get_or_create(id=1)
+
+    # Bestehende Felder
     settings_obj.address = request.POST.get("address", "").strip()
     settings_obj.opening_hours = request.POST.get("opening_hours", "").strip()
     settings_obj.phone = request.POST.get("phone", "").strip()
     settings_obj.email = request.POST.get("email", "").strip()
+
+    # --- NEUE BUTTON FELDER ---
+    settings_obj.btn_pickup_text = request.POST.get("btn_pickup_text", "").strip()
+    settings_obj.btn_pickup_link = request.POST.get("btn_pickup_link", "").strip()
+
+    settings_obj.btn_wolt_text = request.POST.get("btn_wolt_text", "").strip()
+    settings_obj.btn_wolt_link = request.POST.get("btn_wolt_link", "").strip()
+
+    settings_obj.btn_lieferando_text = request.POST.get("btn_lieferando_text", "").strip()
+    settings_obj.btn_lieferando_link = request.POST.get("btn_lieferando_link", "").strip()
+
+    settings_obj.btn_uber_text = request.POST.get("btn_uber_text", "").strip()
+    settings_obj.btn_uber_link = request.POST.get("btn_uber_link", "").strip()
+
     settings_obj.save()
 
-    messages.success(request, "Footer-Daten aktualisiert.")
+    messages.success(request, "Einstellungen gespeichert.")
     return redirect("dashboard_home")
 
 

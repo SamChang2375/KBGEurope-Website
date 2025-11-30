@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
+{% load media_tags %}
 
 {% block title %}Bestellen & Abholen – Korean BBQ Grill{% endblock %}
 
 {% block content %}
 <style>
   :root {
-    --kbg-green: #2e7a55;
-    --kbg-blue: #3f7dbb;
-    --kbg-orange: #c88a27;
-    --kbg-uber: #2e6a57;  /* grünlicher Ton wie im Screenshot */
+    /* Farben mit 90% Deckkraft (0.9 alpha) für Transparenz */
+    --kbg-green-trans: rgba(46, 122, 85, 0.9);
+    --kbg-blue-trans: rgba(63, 125, 187, 0.9);
+    --kbg-orange-trans: rgba(200, 138, 39, 0.9);
+    --kbg-uber-trans: rgba(46, 106, 87, 0.9);
+
     --kbg-btn-radius: 14px;
     --kbg-btn-padding: 14px 38px;
     --kbg-font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -23,10 +26,15 @@
   .kbg-order-hero {
     position: relative;
     width: 100%;
-    height: 360px;
-    background-image: url("{% static 'img/order/order-bg.jpg' %}");
+    /* Höhe 75vh damit es auf den meisten Screens gut füllt, aber Footer sichtbar bleibt */
+    height: 75vh;
+    min-height: 500px;
+
+    /* Dynamisches Hintergrundbild mit Fallback */
+    background-image: url("{% site_image_url 'order_hero' 'img/order/order-bg.jpg' %}");
     background-size: cover;
     background-position: center;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,44 +43,58 @@
   .kbg-order-buttons {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    width: 300px;
+    gap: 16px;
+    width: 320px;
+    max-width: 90%; /* Für sehr kleine Handys */
   }
 
   .kbg-order-btn {
     display: block;
     width: 100%;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     padding: var(--kbg-btn-padding);
     border-radius: var(--kbg-btn-radius);
-    font-weight: 600;
+    font-weight: 700;
     color: white;
     text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Leichter Schatten für Tiefe */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    backdrop-filter: blur(4px); /* Optional: macht den Hintergrund hinter dem Button leicht unscharf */
+  }
+
+  .kbg-order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
   }
 
   .kbg-btn-pickup {
-    background: var(--kbg-green);
+    background: var(--kbg-green-trans);
   }
 
   .kbg-btn-wolt {
-    background: var(--kbg-blue);
+    background: var(--kbg-blue-trans);
   }
 
   .kbg-btn-lieferando {
-    background: var(--kbg-orange);
+    background: var(--kbg-orange-trans);
   }
 
   .kbg-btn-ubereats {
-    background: var(--kbg-uber);
+    background: var(--kbg-uber-trans);
   }
 
   @media (max-width: 600px) {
     .kbg-order-hero {
-      height: 300px;
+      height: 60vh;
+      min-height: 400px;
     }
     .kbg-order-buttons {
-      width: 260px;
+      width: 280px;
+    }
+    .kbg-order-btn {
+        font-size: 1.1rem;
+        padding: 12px 24px;
     }
   }
 </style>
@@ -83,25 +105,35 @@
   <section class="kbg-order-hero">
 
     <div class="kbg-order-buttons">
-      <!-- Abholen -->
-      <a class="kbg-order-btn kbg-btn-pickup" href="#" target="_blank">
-        Abholen
-      </a>
 
-      <!-- Wolt -->
-      <a class="kbg-order-btn kbg-btn-wolt" href="https://wolt.com" target="_blank">
-        Wolt
+      <!-- 1. Abholen -->
+      {% if site_settings.btn_pickup_text %}
+      <a class="kbg-order-btn kbg-btn-pickup" href="{{ site_settings.btn_pickup_link }}" target="_blank">
+        {{ site_settings.btn_pickup_text }}
       </a>
+      {% endif %}
 
-      <!-- Lieferando -->
-      <a class="kbg-order-btn kbg-btn-lieferando" href="https://lieferando.de" target="_blank">
-        Lieferando
+      <!-- 2. Wolt -->
+      {% if site_settings.btn_wolt_text %}
+      <a class="kbg-order-btn kbg-btn-wolt" href="{{ site_settings.btn_wolt_link }}" target="_blank">
+        {{ site_settings.btn_wolt_text }}
       </a>
+      {% endif %}
 
-      <!-- Uber Eats -->
-      <a class="kbg-order-btn kbg-btn-ubereats" href="https://ubereats.com" target="_blank">
-        Uber Eats
+      <!-- 3. Lieferando -->
+      {% if site_settings.btn_lieferando_text %}
+      <a class="kbg-order-btn kbg-btn-lieferando" href="{{ site_settings.btn_lieferando_link }}" target="_blank">
+        {{ site_settings.btn_lieferando_text }}
       </a>
+      {% endif %}
+
+      <!-- 4. Uber Eats -->
+      {% if site_settings.btn_uber_text %}
+      <a class="kbg-order-btn kbg-btn-ubereats" href="{{ site_settings.btn_uber_link }}" target="_blank">
+        {{ site_settings.btn_uber_text }}
+      </a>
+      {% endif %}
+
     </div>
 
   </section>

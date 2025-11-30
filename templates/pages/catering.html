@@ -1,110 +1,309 @@
 {% extends "base.html" %}
 {% load static %}
+{% load media_tags %}
 
 {% block title %}Catering – Korean BBQ Grill{% endblock %}
 
 {% block content %}
 
-<!-- Intro oben -->
-<section class="section section-white section-center catering-intro">
+<style>
+    :root {
+        --kbg-green: #007755;
+        --kbg-beige-bg: #f4f2ed;
+    }
+
+    /* 1. INTRO BEREICH */
+    .catering-intro-section {
+        background-color: var(--kbg-beige-bg);
+        padding: 2rem 0 3rem;
+    }
+
+    .catering-intro-container {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0 1.5rem;
+    }
+
+    .section-kicker.green {
+        color: var(--kbg-green) !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .catering-intro-text p {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.25rem;
+    }
+
+    /* 2. HERO BILDER (Oben & Unten) */
+    .catering-hero {
+        height: 200px; /* Die gewünschte reduzierte Höhe */
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Wir überschreiben hier strikt alle globalen Styles für .hero-bg innerhalb von catering */
+    .catering-hero .hero-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .catering-hero img {
+        width: 100%;
+        height: 100%;
+        display: block; /* Verhindert kleine Abstände unten */
+
+        /* MAGIE FÜR ZENTRIERUNG: */
+        object-fit: cover; /* Füllt den Bereich ohne Verzerren */
+        object-position: 50% 50% !important; /* Erzwingt exakte Mitte vertikal & horizontal */
+    }
+
+    /* 3. ANFRAGE FORMULAR SECTION */
+    .catering-form-section {
+        background-color: var(--kbg-beige-bg);
+        padding: 4rem 0;
+    }
+
+    /* Layout Grid */
+    .catering-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 50/50 Split */
+        gap: 4rem;
+        align-items: center; /* Vertikal zentriert */
+    }
+
+    /* Linke Textspalte */
+    .catering-text-col {
+        text-align: center;
+        /* Optional: Padding rechts, damit Text nicht zu nah am Formular klebt */
+        padding-right: 1rem;
+    }
+
+    .catering-text-col h2 {
+        font-size: 3rem;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        color: #222;
+        line-height: 1.1;
+    }
+
+    .catering-text-col p {
+        color: #444;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Rechte Formularspalte (Card) */
+    .catering-form-card {
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        width: 100%;
+        box-sizing: border-box; /* Garantiert, dass Padding nicht die Breite sprengt */
+    }
+
+    .form-field { margin-bottom: 1.25rem; }
+
+    .form-field label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+        color: #333;
+    }
+
+    .form-field input,
+    .form-field textarea {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background-color: #f3f3f3;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus {
+        outline: none;
+        border-color: var(--kbg-green);
+        background-color: #fff;
+    }
+
+    .form-field textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        gap: 0.8rem;
+        align-items: flex-start;
+        font-weight: normal !important;
+        font-size: 0.85rem !important;
+        line-height: 1.5;
+        cursor: pointer;
+    }
+
+    .checkbox-label input {
+        width: auto;
+        margin-top: 4px;
+        flex-shrink: 0; /* Verhindert, dass Checkbox gequetscht wird */
+    }
+
+    .form-submit {
+        width: 100%;
+        background-color: var(--kbg-green);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background-color 0.2s;
+    }
+
+    .form-submit:hover {
+        background-color: #005a41;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .catering-layout {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        .catering-text-col h2 {
+            font-size: 2.5rem;
+        }
+        .catering-text-col {
+            padding-right: 0;
+        }
+    }
+</style>
+
+<!-- 1. INTRO -->
+<section class="catering-intro-section">
+    <div class="catering-intro-container">
+        <span class="section-kicker green">Catering</span>
+        <h1 class="section-title" style="margin-bottom: 1rem;">Ihr Partner für jeden Anlass</h1>
+
+        <div class="catering-intro-text">
+            <p>Laden Sie Ihre Gäste ein und bieten gesunde und schmackhafte Mahlzeiten an!</p>
+            <p>Perfekt für jede Zeit, die Sie für Ihre Veranstaltung oder Ihr Meeting ein Grib-and-Go-Mittagessen benötigen.</p>
+            <p>Auf Wunsch stellen wir auch Menüs für jede Veranstaltung und jedes Treffen zusammen.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 2. HERO BILD OBEN (Exakt zentriert) -->
+<section class="catering-hero">
+    <div class="hero-bg">
+        <img src="{% site_image_url 'catering_hero' 'img/catering/catering-hero.jpg' %}"
+             alt="{% site_image_alt 'catering_hero' 'KBG Catering' %}">
+    </div>
+</section>
+
+<!-- 3. ANFRAGEFORMULAR -->
+<section class="catering-form-section">
+    <!-- Der globale .container sorgt für die perfekte Ausrichtung mit dem Header -->
     <div class="container">
-        <div class="section-kicker green">Catering</div>
-        <h1 class="section-title">Ihr Partner für jeden Anlass</h1>
 
-        <p>Laden Sie Ihre Gäste ein und bieten gesunde und schmackhafte Mahlzeiten an!</p>
-        <p>Perfekt für jede Zeit, die Sie für Ihre Veranstaltung oder Ihr Meeting ein Grib-and-Go-Mittagessen benötigen.</p>
-        <p>Auf Wunsch stellen wir auch Menüs für jede Veranstaltung und jedes Treffen zusammen.</p>
-    </div>
+        <div class="catering-layout">
+
+            <!-- Linke Seite: Text -->
+            <div class="catering-text-col">
+                <span class="section-kicker green">KBG-Catering</span>
+                <h2 class="section-title">Anfrageformular</h2>
+
+                <p>Bitte teilen Sie uns Ihre Wünsche mit<br>Personenanzahl und Speisen mit.</p>
+                <p>Gerne erstellen wir ein individuelles<br>Angebot für Sie!</p>
+            </div>
+
+            <!-- Rechte Seite: Formular -->
+            <div class="catering-form-card">
+                <form action="{% url 'catering' %}" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-field">
+                        <label for="contact_person">Ansprechpartner*</label>
+                        <input type="text" id="contact_person" name="contact_person" required
+                               placeholder="Vorname und Nachname">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="company">Firma / Gesellschaft</label>
+                        <input type="text" id="company" name="company"
+                               placeholder="z.B. Mustergesellschaft GmbH">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="email">E-Mail*</label>
+                        <input type="email" id="email" name="email" required
+                               placeholder="z.B. maxmustermann@gmail.com">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="phone">Telefonnummer*</label>
+                        <input type="tel" id="phone" name="phone" required
+                               placeholder="z.B. 0123 456789">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="address">Lieferadresse</label>
+                        <input type="text" id="address" name="address"
+                               placeholder="z.B. Musterstraße 1, 12345 Musterstadt">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="message">Nachricht*</label>
+                        <textarea id="message" name="message" required
+                                  placeholder="Geben Sie hier Ihre Teilnehmerzahl, Datum, Uhrzeit und sonstige Wünsche an!"></textarea>
+                    </div>
+
+                    <div class="form-field">
+                        <span style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:0.5rem; color:#333;">Datenschutz*</span>
+                        <label for="privacy" class="checkbox-label">
+                            <input type="checkbox" id="privacy" name="privacy" required>
+                            <span style="color:#555;">
+                                Sie erklären sich damit einverstanden, dass Ihre Daten zur Bearbeitung
+                                Ihres Anliegens verwendet werden. Weitere Informationen und
+                                Widerrufshinweise finden Sie in der Datenschutzerklärung.*
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="form-submit">
+                        Anfrage senden
+                    </button>
+                </form>
+            </div>
+        </div> <!-- End catering-layout -->
+
+    </div> <!-- End container -->
 </section>
 
-<!-- Hero-Bild -->
-<section class="hero-section catering-hero">
+<!-- 4. UNTERES BILD (Exakt zentriert) -->
+<section class="catering-hero">
     <div class="hero-bg">
-        <!-- ersetze den Dateinamen mit deinem echten Bild -->
-        <img src="{% static 'img/catering/catering-hero.jpg' %}" alt="KBG Catering">
-    </div>
-</section>
-
-<!-- Anfrageformular -->
-<section class="section section-light catering-form-section">
-    <div class="container two-column catering-form-layout">
-        <!-- linke Spalte: Text -->
-        <div class="catering-form-text">
-            <div class="section-kicker green">KBG-Catering</div>
-            <h2 class="section-title">Anfrageformular</h2>
-
-            <p>Bitte teilen Sie uns Ihre Wünsche mit Personenzahl und Speisen mit.</p>
-            <p>Gerne erstellen wir ein individuelles Angebot für Sie!</p>
-        </div>
-
-        <!-- rechte Spalte: Formular -->
-        <div class="catering-form-card">
-            <form class="catering-form" action="{% url 'catering' %}" method="post">
-                {% csrf_token %}
-
-                <div class="form-field">
-                    <label for="contact_person">Ansprechpartner*</label>
-                    <input type="text" id="contact_person" name="contact_person" required
-                           placeholder="Vorname und Nachname">
-                </div>
-
-                <div class="form-field">
-                    <label for="company">Firma / Gesellschaft</label>
-                    <input type="text" id="company" name="company"
-                           placeholder="z.B. Muster­gesellschaft GmbH">
-                </div>
-
-                <div class="form-field">
-                    <label for="email">E-Mail*</label>
-                    <input type="email" id="email" name="email" required
-                           placeholder="z.B. maxmustermann@gmail.com">
-                </div>
-
-                <div class="form-field">
-                    <label for="phone">Telefonnummer*</label>
-                    <input type="tel" id="phone" name="phone" required
-                           placeholder="z.B. 0123 456789">
-                </div>
-
-                <div class="form-field">
-                    <label for="address">Lieferadresse</label>
-                    <input type="text" id="address" name="address"
-                           placeholder="z.B. Musterstraße 1, 12345 Musterstadt">
-                </div>
-
-                <div class="form-field">
-                    <label for="message">Nachricht*</label>
-                    <textarea id="message" name="message" required
-                              placeholder="Geben Sie hier Ihre Teilnehmerzahl, Datum, Uhrzeit und sonstige Wünsche an."></textarea>
-                </div>
-
-                <div class="form-field">
-                    <span class="form-label-inline">Datenschutz*</span>
-                    <label for="privacy" class="checkbox-label">
-                        <input type="checkbox" id="privacy" name="privacy" required>
-                        <span>
-                            Ich erkläre mich damit einverstanden, dass meine Daten zur
-                            Bearbeitung meines Anliegens verwendet werden.
-                        </span>
-                    </label>
-                    <small class="form-hint">
-                        Weitere Informationen und Widerrufs­hinweise finden Sie in der Datenschutzerklärung.
-                    </small>
-                </div>
-
-                <button type="submit" class="btn btn-primary form-submit">
-                    Anfrage senden
-                </button>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- unteres Dekobild (optional) -->
-<section class="hero-section catering-bottom-image">
-    <div class="hero-bg">
-        <!-- ersetze den Dateinamen mit deinem echten Bild -->
-        <img src="{% static 'img/catering/catering-bottom.jpg' %}" alt="Korean BBQ">
+        <img src="{% site_image_url 'catering_bottom' 'img/catering/catering-bottom.jpg' %}"
+             alt="{% site_image_alt 'catering_bottom' 'Korean BBQ' %}">
     </div>
 </section>
 
