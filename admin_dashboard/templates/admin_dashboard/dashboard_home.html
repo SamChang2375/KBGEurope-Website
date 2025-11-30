@@ -73,15 +73,43 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for req in catering_requests %}
                             <tr>
-                                <td>01.01.2025</td>
-                                <td>Max Mustermann</td>
-                                <td>max@example.com</td>
-                                <td>Offen</td>
+                                <td>{{ req.created_at|date:"d.m.Y H:i" }}</td>
+                                <td>{{ req.contact_person }}</td>
+                                <td>{{ req.email }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary btn-sm">Antworten</button>
+                                    {% if req.status == "open" %}
+                                        Offen
+                                    {% else %}
+                                        Beantwortet
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-toggle-reply="catering-{{ req.id }}">
+                                        Antworten
+                                    </button>
                                 </td>
                             </tr>
+                            <tr id="reply-row-catering-{{ req.id }}" class="request-reply-row" style="display:none;">
+                                <td colspan="5">
+                                    <form method="post" action="{% url 'answer_catering_request' req.id %}">
+                                        {% csrf_token %}
+                                        <label>Antwort an {{ req.email }}:</label>
+                                        <textarea name="reply_text" rows="3" class="form-control">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
+                                        <div style="margin-top:.5rem;">
+                                            <button type="submit" class="btn btn-primary btn-sm">E-Mail senden</button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">Noch keine Catering-Anfragen.</td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
 
@@ -98,49 +126,356 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for req in contact_requests %}
                             <tr>
-                                <td>02.01.2025</td>
-                                <td>Erika Musterfrau</td>
-                                <td>erika@example.com</td>
-                                <td>Frage zum Menü</td>
-                                <td>Offen</td>
+                                <td>{{ req.created_at|date:"d.m.Y H:i" }}</td>
+                                <td>{{ req.name }}</td>
+                                <td>{{ req.email }}</td>
+                                <td>{{ req.message|truncatechars:40 }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary btn-sm">Antworten</button>
+                                    {% if req.status == "open" %}
+                                        Offen
+                                    {% else %}
+                                        Beantwortet
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-toggle-reply="contact-{{ req.id }}">
+                                        Antworten
+                                    </button>
                                 </td>
                             </tr>
+                            <tr id="reply-row-contact-{{ req.id }}" class="request-reply-row" style="display:none;">
+                                <td colspan="6">
+                                    <form method="post" action="{% url 'answer_contact_request' req.id %}">
+                                        {% csrf_token %}
+                                        <label>Antwort an {{ req.email }}:</label>
+                                        <textarea name="reply_text" rows="3" class="form-control">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
+                                        <div style="margin-top:.5rem;">
+                                            <button type="submit" class="btn btn-primary btn-sm">E-Mail senden</button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6">Noch keine Kontakt-Anfragen.</td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
+
                     </table>
                 </div>
 
                 <!-- Medien -->
                 <div class="dashboard-panel" data-tab-panel="medien">
                     <h2>Medien</h2>
-                    <p>Verwalte Bilder für die Website, z.&nbsp;B. Speisekarten, Menüfotos oder Headerbilder.</p>
+                    <p>Verwalte Bilder für die Website, z.&nbsp;B. Logo, Startseite, Menü oder Kontaktseite.</p>
 
-                    <form method="post" enctype="multipart/form-data" action="">
-                        {% csrf_token %}
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label for="id_image">Neues Bild hochladen</label><br>
-                            <input type="file" name="image" id="id_image" required>
+                    <!-- Unter-Tabs für Seiten -->
+                    <nav class="media-subtabs">
+                        <button type="button" class="media-subtab-btn" data-media-target="media-home">Home</button>
+                        <button type="button" class="media-subtab-btn" data-media-target="media-menu">Menü</button>
+                        <button type="button" class="media-subtab-btn" data-media-target="media-catering">Catering</button>
+                        <button type="button" class="media-subtab-btn" data-media-target="media-kontakt">Kontakt</button>
+                        <button type="button" class="media-subtab-btn" data-media-target="media-layout">Layout / Logo</button>
+                    </nav>
+
+                    <div class="media-panels">
+
+                        {# ---------- HOME ---------- #}
+                        <div class="media-panel" data-media-panel="media-home">
+                            <h3>Startseite</h3>
+
+                            {# Helper-Block für Dictionary-Lookup #}
+                            {% with img=site_images.home_hero %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Home – Hero-Bild</h4>
+                                    <p>Großes Bild ganz oben auf der Startseite.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}
+                                            <a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}
+                                            <em>Standard-Platzhalter wird verwendet.</em>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="home_hero">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {% with img=site_images.home_about_image %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Home – „Wer wir sind“-Bild</h4>
+                                    <p>Bild rechts neben dem Textblock „Wer wir sind“.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}
+                                            <a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}
+                                            <em>Standard-Platzhalter.</em>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="home_about_image">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {% with img=site_images.home_menu_1 %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Home – Menü-Galerie Bild 1</h4>
+                                    <p>Erstes Bild in der dreispaltigen Menü-Galerie.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="home_menu_1">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {% with img=site_images.home_menu_2 %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Home – Menü-Galerie Bild 2</h4>
+                                    <p>Zweites Bild in der dreispaltigen Menü-Galerie.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="home_menu_2">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {% with img=site_images.home_menu_3 %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Home – Menü-Galerie Bild 3</h4>
+                                    <p>Drittes Bild in der dreispaltigen Menü-Galerie.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="home_menu_3">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {# ... analog: home_catering_1..4, home_testimonials_bg #}
                         </div>
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label for="id_alt_text">Alt-Text / Beschreibung</label><br>
-                            <input type="text" name="alt_text" id="id_alt_text" class="form-control" placeholder="z.B. &quot;KBG Menü – Vorspeisen&quot;">
+
+                        {# ---------- MENÜ ---------- #}
+                        <div class="media-panel" data-media-panel="media-menu">
+                            <h3>Menü-Seite</h3>
+
+                            {% with img=site_images.menu_hero %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Menü – Hero-Bild</h4>
+                                    <p>Großes Bild oben (Ramyun-Hintergrund).</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="menu_hero">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {# hier kannst du analogue Blöcke für menu_1_bibimbap, menu_2_bbq_bowl, ... anlegen #}
                         </div>
-                        <button type="submit" class="btn btn-primary">Bild hochladen</button>
-                    </form>
 
-                    <hr style="margin: 2rem 0;">
+                        {# ---------- CATERING ---------- #}
+                        <div class="media-panel" data-media-panel="media-catering">
+                            <h3>Catering-Seite</h3>
 
-                    <h3>Aktive Bilder</h3>
-                    <p style="font-size: .9rem; color: #555;">
-                        Hier könntest du die aktuell verwendeten Bilder aus der Datenbank anzeigen und ggf. ersetzen oder löschen.
-                    </p>
+                            {% with img=site_images.catering_hero %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Catering – Hero-Bild</h4>
+                                    <p>Großes Bild oben auf der Catering-Seite.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="catering_hero">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
 
-                    <ul>
-                        <li>menue_header.jpg – <a href="#">Ansehen</a> · <a href="#">Löschen/Ersetzen</a></li>
-                    </ul>
+                            {% with img=site_images.catering_bottom %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Catering – Unteres Dekobild</h4>
+                                    <p>Bild ganz unten auf der Catering-Seite.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="catering_bottom">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+                        </div>
+
+                        {# ---------- KONTAKT ---------- #}
+                        <div class="media-panel" data-media-panel="media-kontakt">
+                            <h3>Kontaktseite</h3>
+
+                            {% with img=site_images.contact_top_bg %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Kontakt – Oberes Hintergrundbild</h4>
+                                    <p>Hintergrund im Streifen „Über uns“.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="contact_top_bg">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            {# weitere Slots: contact_philosophie, contact_mission, contact_bottom_bg #}
+                        </div>
+
+                        {# ---------- LAYOUT / LOGO ---------- #}
+                        <div class="media-panel" data-media-panel="media-layout">
+                            <h3>Layout &amp; Logo</h3>
+
+                            {% with img=site_images.global_logo %}
+                            <div class="media-slot">
+                                <div class="media-slot-info">
+                                    <h4>Logo im Header</h4>
+                                    <p>Logo oben links in der Navigation.</p>
+                                    <p>
+                                        Aktuell:
+                                        {% if img and img.image %}<a href="{{ img.image.url }}" target="_blank">Bild ansehen</a>
+                                        {% else %}<em>Standard-Platzhalter.</em>{% endif %}
+                                    </p>
+                                </div>
+                                <div class="media-slot-form">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_media_update' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="media_key" value="global_logo">
+                                        <input type="file" name="image" required>
+                                        <input type="text" name="alt_text"
+                                               placeholder="Alt-Text"
+                                               value="{% if img %}{{ img.alt_text }}{% endif %}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endwith %}
+                        </div>
+
+                    </div>
                 </div>
+
 
                 <!-- SEO -->
                 <div class="dashboard-panel" data-tab-panel="seo">
@@ -256,7 +591,39 @@ document.addEventListener("DOMContentLoaded", function () {
     if (tabButtons.length > 0) {
         activateTab(tabButtons[0].dataset.tabTarget);
     }
+
+    // NEU: Reply-Form-Toggle
+    document.querySelectorAll("[data-toggle-reply]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-toggle-reply");
+            const row = document.getElementById(`reply-row-${id}`);
+            if (row) {
+                row.style.display = row.style.display === "none" || row.style.display === "" ? "table-row" : "none";
+            }
+        });
+    });
 });
+
+// Sub-Tabs im Medien-Bereich
+const mediaButtons = document.querySelectorAll("[data-media-target]");
+const mediaPanels = document.querySelectorAll("[data-media-panel]");
+
+function activateMediaTab(name) {
+    mediaPanels.forEach(panel => {
+        panel.classList.toggle("media-panel-active", panel.dataset.mediaPanel === name);
+    });
+    mediaButtons.forEach(btn => {
+        btn.classList.toggle("media-subtab-active", btn.dataset.mediaTarget === name);
+    });
+}
+
+mediaButtons.forEach(btn => {
+    btn.addEventListener("click", () => activateMediaTab(btn.dataset.mediaTarget));
+});
+
+if (mediaButtons.length > 0) {
+    activateMediaTab(mediaButtons[0].dataset.mediaTarget);
+}
 </script>
 
 <style>
@@ -312,6 +679,87 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         .dashboard-tab-btn.dashboard-tab-active {
             border-bottom-width: 3px;
+        }
+    }
+
+        .media-subtabs {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        border-bottom: 1px solid #ddd;
+        flex-wrap: wrap;
+    }
+
+    .media-subtab-btn {
+        border: none;
+        background: #f3f3f3;
+        padding: 0.45rem 0.9rem;
+        border-radius: 4px 4px 0 0;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .media-subtab-btn.media-subtab-active {
+        background: #ffffff;
+        border-bottom: 3px solid #2f7d32;
+        font-weight: 600;
+        color: #2f7d32;
+    }
+
+    .media-panels {
+        border-radius: 4px;
+        background: #fff;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .media-panel { display: none; }
+    .media-panel.media-panel-active { display: block; }
+
+    .media-slot {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .media-slot:last-child {
+        border-bottom: none;
+    }
+
+    .media-slot-info {
+        flex: 1;
+        font-size: 0.9rem;
+    }
+
+    .media-slot-info h4 {
+        margin: 0 0 0.25rem;
+    }
+
+    .media-slot-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        align-items: flex-start;
+    }
+
+    .media-slot-form input[type="file"] {
+        font-size: 0.85rem;
+    }
+
+    .media-slot-form input[type="text"] {
+        width: 100%;
+        max-width: 260px;
+    }
+
+    @media (max-width: 768px) {
+        .media-slot {
+            flex-direction: column;
+        }
+        .media-slot-form {
+            width: 100%;
         }
     }
 </style>

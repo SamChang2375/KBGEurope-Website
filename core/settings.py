@@ -112,6 +112,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.deinprovider.de"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "deine@adresse.de"
+EMAIL_HOST_PASSWORD = "dein-passwort"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "KBG Europe <deine@adresse.de>"
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -138,3 +147,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# NEU:
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

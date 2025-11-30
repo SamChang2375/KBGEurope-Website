@@ -39,7 +39,7 @@
 
         <!-- rechte Spalte: Formular -->
         <div class="catering-form-card">
-            <form class="catering-form" action="#" method="post">
+            <form class="catering-form" action="{% url 'catering' %}" method="post">
                 {% csrf_token %}
 
                 <div class="form-field">

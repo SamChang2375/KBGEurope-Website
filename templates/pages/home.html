@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+{% load media_tags %}
+
 
 {% block content %}
 
 <section class="hero-section">
     <div class="hero-bg">
         <!-- später Video oder Slider; jetzt Platzhalterbild -->
-        <img src="{% static 'img/hero-placeholder.jpg' %}" alt="KBG Hero">
+        <img src="{% site_image_url 'home_hero' 'img/hero-placeholder.jpg' %}"
+     alt="{% site_image_alt 'home_hero' 'KBG Hero' %}">
+
     </div>
     <div class="hero-overlay">
         <p class="hero-subtitle">So schmeckt zusammen</p>
@@ -27,7 +31,10 @@
             <a href="#kontakt" class="btn btn-primary">Finden Sie uns hier</a>
         </div>
         <div class="col">
-            <img class="rounded-img" src="{% static 'img/section-placeholder.jpg' %}" alt="Maximilian Center">
+            <img class="rounded-img"
+     src="{% site_image_url 'home_about_image' 'img/section-placeholder.jpg' %}"
+     alt="{% site_image_alt 'home_about_image' 'Maximilian Center' %}">
+
         </div>
     </div>
 </section>
@@ -41,9 +48,10 @@
     </div>
 
     <div class="container three-column gallery-row">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 1" class="rounded-img">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 2" class="rounded-img">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Gericht 3" class="rounded-img">
+        <img src="{% site_image_url 'home_menu_1' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_1' 'Gericht 1' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_menu_2' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_2' 'Gericht 2' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_menu_3' 'img/section-placeholder.jpg' %}" alt="{% site_image_alt 'home_menu_3' 'Gericht 3' %}" class="rounded-img">
+
     </div>
 </section>
 
@@ -57,16 +65,21 @@
     </div>
 
     <div class="container four-column gallery-row">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 1" class="rounded-img">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 2" class="rounded-img">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 3" class="rounded-img">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Catering 4" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_1' 'img/section-placeholder.jpg' %}"
+             alt="{% site_image_alt 'home_catering_1' 'Catering 1' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_2' 'img/section-placeholder.jpg' %}"
+             alt="{% site_image_alt 'home_catering_2' 'Catering 2' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_3' 'img/section-placeholder.jpg' %}"
+             alt="{% site_image_alt 'home_catering_3' 'Catering 3' %}" class="rounded-img">
+        <img src="{% site_image_url 'home_catering_4' 'img/section-placeholder.jpg' %}"
+             alt="{% site_image_alt 'home_catering_4' 'Catering 4' %}" class="rounded-img">
     </div>
 </section>
 
 <section class="section testimonials-section">
     <div class="testimonials-bg">
-        <img src="{% static 'img/section-placeholder.jpg' %}" alt="Kundenstimmen Hintergrund">
+        <img src="{% site_image_url 'home_testimonials_bg' 'img/section-placeholder.jpg' %}"
+             alt="{% site_image_alt 'home_testimonials_bg' 'Kundenstimmen Hintergrund' %}">
     </div>
     <div class="testimonials-overlay">
         <h2 class="section-title">Kundenstimmen</h2>
