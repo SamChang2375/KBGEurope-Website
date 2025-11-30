@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
 
+
 urlpatterns = [
     # Login / Logout
     path("login/", views.login_view, name="login"),
