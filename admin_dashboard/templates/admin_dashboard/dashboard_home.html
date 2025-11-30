@@ -242,6 +242,7 @@
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-kontakt')">Kontakt</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-layout')">Layout / Logo</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-order')">Bestellen</button>
+                        <button type="button" class="media-subtab-btn" onclick="openTab('karriere')">Karriere / Jobs</button>
                     </nav>
 
                     <!-- HOME TAB -->
@@ -565,6 +566,119 @@
                             <input type="hidden" name="btn_uber_text" value="{{ site_settings.btn_uber_text }}">
                             <input type="hidden" name="btn_uber_link" value="{{ site_settings.btn_uber_link }}">
                         </form>
+                    </div>
+
+                    <!-- KARRIERE / JOBS TAB -->
+                    <div id="karriere" class="media-subpanel">
+
+                        <h2>Seite: Karriere / Jobs verwalten</h2>
+
+                        <!-- FRANCHISE SLIDER -->
+                        <div class="card p-4 mb-5">
+                            <h3>Franchise Slider Bilder</h3>
+                            <p style="color:#666;">Diese beiden Bilder werden unten auf der Seite im Wechsel angezeigt.</p>
+
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_1" label="Slider Bild 1" desc="Erstes Bild." img_obj=site_images.career_franchise_1 %}
+
+                            <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
+
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_2" label="Slider Bild 2" desc="Zweites Bild." img_obj=site_images.career_franchise_2 %}
+
+                            <div style="margin-top:1rem; text-align:right;">
+                                <button type="button" class="btn btn-primary" onclick="saveAllMedia()">Slider speichern</button>
+                            </div>
+                        </div>
+
+                        <!-- JOB LISTE -->
+                        <div class="header-actions" style="justify-content: space-between; margin-bottom: 2rem;">
+                            <h3>Aktuelle Stellenanzeigen</h3>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-job-form').style.display='block'; window.location.hash='new-job-form';">
+                                + Neue Stelle ausschreiben
+                            </button>
+                        </div>
+
+                        <div id="job-items-list">
+                            {% for job in jobs %}
+                            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #ddd; position: relative;">
+
+                                <!-- Löschen -->
+                                <form method="post" action="{% url 'dashboard_job_delete' job.id %}" onsubmit="return confirm('Stelle wirklich löschen?');" style="position: absolute; top: 1rem; right: 1rem;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-icon delete" title="Löschen">🗑</button>
+                                </form>
+
+                                <h4 style="margin-top:0; color:var(--kbg-green);">{{ job.title }}</h4>
+
+                                <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_update' job.id %}" class="media-upload-form">
+                                    {% csrf_token %}
+
+                                    <div style="display: grid; grid-template-columns: 120px 1fr; gap: 1.5rem;">
+
+                                        <!-- Bild -->
+                                        <div style="text-align:center;">
+                                            {% if job.image %}
+                                                <img src="{{ job.image.url }}" onclick="openModal(this.src)" style="width:100%; height:100px; object-fit:cover; border-radius:6px; cursor:pointer;">
+                                            {% else %}
+                                                <div style="width:100%; height:100px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:0.8rem;">Kein Bild</div>
+                                            {% endif %}
+                                            <input type="file" name="image" style="font-size:0.75rem; margin-top:0.5rem; width:100%;">
+                                        </div>
+
+                                        <!-- Daten -->
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <div>
+                                                <label style="font-size:0.8rem; color:#666;">Job Titel</label>
+                                                <input type="text" name="title" class="form-control" value="{{ job.title }}" style="font-weight:bold;">
+                                            </div>
+                                            <div>
+                                                <label style="font-size:0.8rem; color:#666;">Link für Button</label>
+                                                <input type="text" name="button_link" class="form-control" value="{{ job.button_link }}">
+                                            </div>
+                                            <div style="grid-column: span 2;">
+                                                <label style="font-size:0.8rem; color:#666;">Beschreibung (Jede Zeile = Ein Punkt)</label>
+                                                <textarea name="description" class="form-control" rows="4">{{ job.description }}</textarea>
+                                            </div>
+                                            <div>
+                                                <label style="font-size:0.8rem; color:#666;">Reihenfolge</label>
+                                                <input type="number" name="order" class="form-control" value="{{ job.order }}" style="width: 80px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- NEUER JOB ERSTELLEN -->
+                        <div id="new-job-form" style="display:none; margin-top:3rem; border:2px dashed #ccc; padding:2rem; border-radius:8px; background:#fff;">
+                            <h3 style="margin-top:0;">Neue Stelle hinzufügen</h3>
+                            <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_create' %}">
+                                {% csrf_token %}
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                    <div>
+                                        <label>Vorschaubild *</label>
+                                        <input type="file" name="image" class="form-control" required>
+
+                                        <label style="margin-top:1rem;">Titel *</label>
+                                        <input type="text" name="title" class="form-control" required placeholder="z.B. Servicekraft (m/w/d)">
+                                    </div>
+                                    <div>
+                                        <label>Link (Mailto oder URL)</label>
+                                        <input type="text" name="button_link" class="form-control" value="mailto:jobs@kbg-europe.de">
+
+                                        <label style="margin-top:1rem;">Beschreibung (Punkte)</label>
+                                        <textarea name="description" class="form-control" rows="4" placeholder="Vollzeit&#10;Erfahrung erwünscht&#10;Gute Deutschkenntnisse"></textarea>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top:1.5rem; text-align:right;">
+                                    <button type="button" class="btn" onclick="document.getElementById('new-job-form').style.display='none'" style="margin-right:1rem;">Abbrechen</button>
+                                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
 

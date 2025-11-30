@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import CateringRequest, ContactRequest
+from .models import CateringRequest, ContactRequest, JobOffer
 from django.contrib import messages
 from .models import MenuItem, CateringRequest, ContactRequest, SiteImage, SiteSettings # MenuItem importieren
 
@@ -40,4 +40,8 @@ def kontakt_view(request):
         return redirect("kontakt")
 
     return render(request, "pages/kontakt.html")
+
+def jobs_view(request):
+    jobs = JobOffer.objects.all().order_by('order')
+    return render(request, "pages/jobs.html", {"jobs": jobs})
 

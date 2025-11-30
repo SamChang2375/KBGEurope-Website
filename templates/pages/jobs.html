@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% load static %}
+{% load media_tags %}
+
+{% block title %}Karriere & Jobs – KBG Europe{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --kbg-green: #007755;
+        --kbg-beige-bg: #f4f2ed;
+        --kbg-gray: #e0e0e0;
+    }
+
+    /* 1. INTRO / HEADER */
+    .jobs-intro {
+        background-color: var(--kbg-beige-bg);
+        text-align: center;
+        padding: 4rem 1.5rem;
+    }
+
+    .jobs-kicker {
+        color: var(--kbg-green);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .jobs-title {
+        font-size: 3rem;
+        color: #222;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* 2. JOB LISTINGS */
+    .jobs-list-section {
+        background-color: #fff;
+        padding: 4rem 0;
+    }
+
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .job-card {
+        background: #f0f0f0; /* Leichtes Grau für die Karte */
+        border-radius: 0; /* Eckig laut Screenshot */
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s;
+    }
+
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .job-img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .job-content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .job-title {
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: #333;
+        font-weight: 700;
+    }
+
+    .job-list {
+        list-style: disc;
+        padding-left: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: #444;
+        line-height: 1.6;
+    }
+
+    .job-list li {
+        margin-bottom: 0.3rem;
+    }
+
+    .btn-job {
+        margin-top: auto; /* Drückt den Button nach unten */
+        background-color: var(--kbg-green);
+        color: #fff;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        transition: background 0.2s;
+    }
+    .btn-job:hover { background-color: #005a41; }
+
+
+    /* 3. FRANCHISE SECTION (Beige) */
+    .franchise-section {
+        background-color: var(--kbg-beige-bg);
+        padding: 5rem 0;
+    }
+
+    .franchise-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Slider Styles */
+    .franchise-slider-window {
+        width: 100%;
+        height: 400px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .franchise-track {
+        display: flex;
+        width: 200%;
+        height: 100%;
+        transition: transform 0.8s ease-in-out;
+    }
+
+    .franchise-slide {
+        width: 50%;
+        height: 100%;
+        flex-shrink: 0;
+    }
+
+    .franchise-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .franchise-text {
+        text-align: center;
+    }
+
+    .franchise-title {
+        color: #222;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .franchise-desc {
+        color: #555;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+        .jobs-grid { grid-template-columns: 1fr; }
+        .franchise-grid { grid-template-columns: 1fr; }
+        .franchise-slider-window { height: 300px; }
+        .franchise-grid { display: flex; flex-direction: column-reverse; } /* Text oben oder unten je nach Wunsch */
+    }
+</style>
+
+<!-- 1. HEADER -->
+<section class="jobs-intro">
+    <div class="container">
+        <span class="jobs-kicker">Karriere / Jobs</span>
+        <h1 class="jobs-title">Werden Sie Teil unseres Teams</h1>
+        <p style="color:#666;">Bewerben Sie sich jetzt!</p>
+    </div>
+</section>
+
+<!-- 2. WIR SUCHEN (Dynamisch aus DB) -->
+<section class="jobs-list-section">
+    <div class="container" style="text-align:center; margin-bottom:2rem;">
+        <h2 style="font-size:2rem; margin:0;">Wir suchen</h2>
+    </div>
+
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <img src="{{ job.image.url }}" alt="{{ job.title }}" class="job-img">
+            <div class="job-content">
+                <h3 class="job-title">{{ job.title }}</h3>
+                <ul class="job-list">
+                    {% for point in job.get_points %}
+                        <li>{{ point }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ job.button_link }}" class="btn-job">
+                    {{ job.button_text }}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 3. FRANCHISE SLIDER -->
+<section class="franchise-section">
+    <div class="franchise-grid">
+
+        <!-- Linker Slider -->
+        <div class="franchise-slider-window">
+            <div class="franchise-track" id="franchiseTrack">
+                <!-- Bild 1 -->
+                <div class="franchise-slide">
+                    <img src="{% site_image_url 'career_franchise_1' 'img/career/franchise-1.jpg' %}" alt="Franchise 1">
+                </div>
+                <!-- Bild 2 -->
+                <div class="franchise-slide">
+                    <img src="{% site_image_url 'career_franchise_2' 'img/career/franchise-2.jpg' %}" alt="Franchise 2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Rechter Text -->
+        <div class="franchise-text">
+            <span class="jobs-kicker" style="font-size:1.2rem;">Franchise</span>
+            <h2 class="franchise-title">Werden Sie unser Partner</h2>
+            <p class="franchise-desc">
+                KBG ist bereits erfolgreich in den USA. Und immer mehr gibt es Nachfragen, auch in Europa.
+                Ergreifen Sie die Gelegenheit und fragen Sie uns einfach nach.
+            </p>
+            <a href="{% url 'kontakt' %}" class="btn-job">Mehr Informationen</a>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Slider für Franchise (automatisch alle 4s)
+        const track = document.getElementById('franchiseTrack');
+        if(track) {
+            let isSlide1 = true;
+            setInterval(() => {
+                track.style.transform = isSlide1 ? "translateX(-50%)" : "translateX(0%)";
+                isSlide1 = !isSlide1;
+            }, 4000);
+        }
+    });
+</script>
+
+{% endblock %}

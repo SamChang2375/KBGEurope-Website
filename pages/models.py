@@ -137,3 +137,32 @@ class MenuItem(models.Model):
 
     def __str__(self):
         return f"{self.dish_id} {self.name}"
+
+
+class JobOffer(models.Model):
+    """
+    Repräsentiert ein Stellenangebot auf der Karriere-Seite.
+    """
+    order = models.PositiveIntegerField(default=0, verbose_name="Reihenfolge")
+    title = models.CharField(max_length=200, verbose_name="Job Titel", default="Mitarbeiter (m/w/d)")
+
+    # Wir speichern die Aufzählungspunkte als Text. Jede neue Zeile = ein Punkt.
+    description = models.TextField(verbose_name="Beschreibung / Punkte",
+                                   help_text="Jede neue Zeile wird ein Stichpunkt.")
+
+    image = models.ImageField(upload_to="jobs/", verbose_name="Vorschaubild")
+
+    # Optional, falls jeder Job woanders hinführt (z.B. Mailto oder Formular)
+    button_link = models.CharField(max_length=255, default="mailto:jobs@kbg-europe.de",
+                                   verbose_name="Link für Bewerbung")
+    button_text = models.CharField(max_length=50, default="Zur Bewerbung", verbose_name="Button Text")
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+    def get_points(self):
+        """Hilfsfunktion: Wandelt Text in Liste für Template um"""
+        return [x.strip() for x in self.description.split('\n') if x.strip()]

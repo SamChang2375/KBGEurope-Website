@@ -14,6 +14,7 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
 from pages.models import MenuItem # Neu
+from pages.models import JobOffer
 
 # Modelle importieren
 from pages.models import CateringRequest, ContactRequest, SiteImage, SiteSettings
@@ -102,6 +103,9 @@ def dashboard_home(request):
     # 6. MENÜ ITEMS LADEN
     menu_items = MenuItem.objects.all().order_by('order')
 
+    # Jobs laden
+    jobs = JobOffer.objects.all().order_by('order')
+
     # Context zusammenbauen
     context = {
         "catering_requests": catering_requests,
@@ -110,7 +114,8 @@ def dashboard_home(request):
         "site_images": site_images,
         "site_settings": site_settings,
         "stats": stats,
-        "menu_items": menu_items,  # <--- DAS HINZUFÜGEN
+        "menu_items": menu_items,
+        "jobs": jobs,
     }
     return render(request, "admin_dashboard/dashboard_home.html", context)
 
@@ -359,4 +364,65 @@ def dashboard_menu_item_delete(request, pk):
     item = get_object_or_404(MenuItem, pk=pk)
     item.delete()
     messages.success(request, "Menü-Block gelöscht.")
+    return redirect("dashboard_home")
+
+
+# --- JOB MANAGEMENT ---
+
+@login_required
+@require_POST
+def dashboard_job_create(request):
+    """Neuen Job erstellen"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    last_job = JobOffer.objects.last()
+    new_order = (last_job.order + 1) if last_job else 1
+
+    JobOffer.objects.create(
+        order=new_order,
+        title=request.POST.get("title", "Neuer Job"),
+        description=request.POST.get("description", ""),
+        button_link=request.POST.get("button_link", "mailto:jobs@kbg-europe.de"),
+        image=request.FILES.get("image")
+    )
+    messages.success(request, "Job-Angebot erstellt.")
+    return redirect("dashboard_home")
+
+
+@login_required
+@require_POST
+def dashboard_job_update(request, pk):
+    """Job bearbeiten"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    job = get_object_or_404(JobOffer, pk=pk)
+
+    job.title = request.POST.get("title", job.title)
+    job.description = request.POST.get("description", job.description)
+    job.button_link = request.POST.get("button_link", job.button_link)
+    job.order = request.POST.get("order", job.order)
+
+    if request.FILES.get("image"):
+        job.image = request.FILES.get("image")
+
+    job.save()
+
+    # AJAX Support
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, "admin_dashboard/dashboard_home.html", {})
+
+    messages.success(request, f"Job '{job.title}' gespeichert.")
+    return redirect("dashboard_home")
+
+
+@login_required
+@require_POST
+def dashboard_job_delete(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+    job = get_object_or_404(JobOffer, pk=pk)
+    job.delete()
+    messages.success(request, "Job gelöscht.")
     return redirect("dashboard_home")
