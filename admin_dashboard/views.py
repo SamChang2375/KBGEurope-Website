@@ -13,11 +13,18 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
-from pages.models import MenuItem # Neu
-from pages.models import JobOffer
 
 # Modelle importieren
-from pages.models import CateringRequest, ContactRequest, SiteImage, SiteSettings
+from pages.models import (
+    CateringRequest,
+    ContactRequest,
+    SiteImage,
+    SiteSettings,
+    MenuItem,
+    JobOffer,
+    JobContent,
+    JobApplication
+)
 from .models import UserProfile, PageVisit
 
 User = get_user_model()
@@ -40,7 +47,7 @@ def login_view(request):
     return render(request, "admin_dashboard/login.html")
 
 
-# --- DASHBOARD HOME (ZUSAMMENGEFÜHRT) ---
+# --- DASHBOARD HOME (ALLE DATEN LADEN) ---
 @login_required
 def dashboard_home(request):
     # 1. Passwort-Check
@@ -103,8 +110,17 @@ def dashboard_home(request):
     # 6. MENÜ ITEMS LADEN
     menu_items = MenuItem.objects.all().order_by('order')
 
-    # Jobs laden
+    # 7. JOBS LADEN
+    # a) Die dynamische Liste
     jobs = JobOffer.objects.all().order_by('order')
+
+    # b) Die 3 statischen Job-Karten Inhalte
+    job_contents = {}
+    for jt in ['manager', 'service', 'cook']:
+        job_contents[jt], _ = JobContent.objects.get_or_create(job_type=jt)
+
+    # c) Bewerbungen laden (neueste zuerst)
+    applications = JobApplication.objects.all().order_by('-created_at')
 
     # Context zusammenbauen
     context = {
@@ -115,7 +131,9 @@ def dashboard_home(request):
         "site_settings": site_settings,
         "stats": stats,
         "menu_items": menu_items,
-        "jobs": jobs,
+        "jobs": jobs,  # Für die Liste der Stellenanzeigen
+        "job_contents": job_contents,  # Für die 3 Karten (Bild/Text/Popup)
+        "applications": applications,  # Für die Tabelle
     }
     return render(request, "admin_dashboard/dashboard_home.html", context)
 
@@ -131,24 +149,20 @@ def dashboard_media_update(request):
     image_file = request.FILES.get("image")
     alt_text = request.POST.get("alt_text", "").strip()
 
-    # Logik: Entweder Bild + Alt, oder nur Alt (falls Bild schon existiert)
     if not media_key:
         messages.error(request, "Fehler: Kein Media-Key.")
         return redirect("dashboard_home")
 
     obj, created = SiteImage.objects.get_or_create(key=media_key)
 
-    # Nur updaten, wenn neue Datei da ist
     if image_file:
         obj.image = image_file
 
-    # Alt Text immer updaten
     obj.alt_text = alt_text
     obj.save()
 
-    # Kein Redirect nötig bei AJAX, aber schadet nicht
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return render(request, "admin_dashboard/dashboard_home.html", {})  # Dummy return für AJAX success
+        return render(request, "admin_dashboard/dashboard_home.html", {})
 
     messages.success(request, f"Gespeichert: {media_key}")
     return redirect("dashboard_home")
@@ -163,34 +177,31 @@ def dashboard_settings_update(request):
 
     settings_obj, _ = SiteSettings.objects.get_or_create(id=1)
 
-    # Bestehende Felder
-    settings_obj.address = request.POST.get("address", "").strip()
-    settings_obj.opening_hours = request.POST.get("opening_hours", "").strip()
-    settings_obj.phone = request.POST.get("phone", "").strip()
-    settings_obj.email = request.POST.get("email", "").strip()
+    # Felder speichern (verwende get um Fehler zu vermeiden, falls Feld nicht im Formular)
+    settings_obj.address = request.POST.get("address", settings_obj.address)
+    settings_obj.opening_hours = request.POST.get("opening_hours", settings_obj.opening_hours)
+    settings_obj.phone = request.POST.get("phone", settings_obj.phone)
+    settings_obj.email = request.POST.get("email", settings_obj.email)
 
-    # --- NEUE BUTTON FELDER ---
-    settings_obj.btn_pickup_text = request.POST.get("btn_pickup_text", "").strip()
-    settings_obj.btn_pickup_link = request.POST.get("btn_pickup_link", "").strip()
-
-    settings_obj.btn_wolt_text = request.POST.get("btn_wolt_text", "").strip()
-    settings_obj.btn_wolt_link = request.POST.get("btn_wolt_link", "").strip()
-
-    settings_obj.btn_lieferando_text = request.POST.get("btn_lieferando_text", "").strip()
-    settings_obj.btn_lieferando_link = request.POST.get("btn_lieferando_link", "").strip()
-
-    settings_obj.btn_uber_text = request.POST.get("btn_uber_text", "").strip()
-    settings_obj.btn_uber_link = request.POST.get("btn_uber_link", "").strip()
+    settings_obj.btn_pickup_text = request.POST.get("btn_pickup_text", settings_obj.btn_pickup_text)
+    settings_obj.btn_pickup_link = request.POST.get("btn_pickup_link", settings_obj.btn_pickup_link)
+    settings_obj.btn_wolt_text = request.POST.get("btn_wolt_text", settings_obj.btn_wolt_text)
+    settings_obj.btn_wolt_link = request.POST.get("btn_wolt_link", settings_obj.btn_wolt_link)
+    settings_obj.btn_lieferando_text = request.POST.get("btn_lieferando_text", settings_obj.btn_lieferando_text)
+    settings_obj.btn_lieferando_link = request.POST.get("btn_lieferando_link", settings_obj.btn_lieferando_link)
+    settings_obj.btn_uber_text = request.POST.get("btn_uber_text", settings_obj.btn_uber_text)
+    settings_obj.btn_uber_link = request.POST.get("btn_uber_link", settings_obj.btn_uber_link)
 
     settings_obj.save()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, "admin_dashboard/dashboard_home.html", {})
 
     messages.success(request, "Einstellungen gespeichert.")
     return redirect("dashboard_home")
 
 
-# --- ANFRAGEN BEANTWORTEN / USER MANAGEMENT ---
-# (Die restlichen Funktionen wie answer_catering_request, dashboard_create_user
-# etc. aus deinem Code unverändert hier drunter lassen)
+# --- ANFRAGEN BEANTWORTEN ---
 @login_required
 def answer_catering_request(request, pk):
     req = get_object_or_404(CateringRequest, pk=pk)
@@ -231,6 +242,7 @@ def answer_contact_request(request, pk):
     return redirect("dashboard_home")
 
 
+# --- USER MANAGEMENT ---
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def dashboard_create_user(request):
@@ -252,7 +264,6 @@ def dashboard_create_user(request):
         profile.must_change_password = True
         profile.save()
 
-        # Email senden Logik hier... (wie gehabt)
         messages.success(request, "Benutzer angelegt.")
     return redirect("dashboard_home")
 
@@ -295,11 +306,9 @@ def force_password_change(request):
 @login_required
 @require_POST
 def dashboard_menu_item_create(request):
-    """Neues Menü-Item erstellen"""
     if not request.user.is_staff:
         return HttpResponseForbidden()
 
-    # Automatisch höchste Order + 1
     last_item = MenuItem.objects.last()
     new_order = (last_item.order + 1) if last_item else 1
 
@@ -312,21 +321,19 @@ def dashboard_menu_item_create(request):
         description_en=request.POST.get("description_en", ""),
         options_text=request.POST.get("options_text", ""),
         background_color=request.POST.get("background_color", "#ffffff"),
-        image=request.FILES.get("image")  # Bild ist Pflicht beim Erstellen, sonst Fehler im Frontend vermeiden
+        image=request.FILES.get("image")
     )
     messages.success(request, "Menü-Block erstellt.")
-    return redirect("dashboard_home")  # Springt via JS zum Tab zurück
+    return redirect("dashboard_home")
 
 
 @login_required
 @require_POST
 def dashboard_menu_item_update(request, pk):
-    """Bestehendes Menü-Item updaten"""
     if not request.user.is_staff:
         return HttpResponseForbidden()
 
     item = get_object_or_404(MenuItem, pk=pk)
-
     item.dish_id = request.POST.get("dish_id", item.dish_id)
     item.name = request.POST.get("name", item.name)
     item.subtitle = request.POST.get("subtitle", item.subtitle)
@@ -336,19 +343,15 @@ def dashboard_menu_item_update(request, pk):
     item.background_color = request.POST.get("background_color", item.background_color)
     item.order = request.POST.get("order", item.order)
 
-    # Bilder nur updaten wenn neu hochgeladen
     if request.FILES.get("image"):
         item.image = request.FILES.get("image")
     if request.FILES.get("background_image"):
         item.background_image = request.FILES.get("background_image")
-
-    # Checkbox für Hintergrundbild löschen
     if request.POST.get("delete_bg_image"):
         item.background_image = None
 
     item.save()
 
-    # AJAX Support für "Alle Speichern"
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, "admin_dashboard/dashboard_home.html", {})
 
@@ -367,12 +370,11 @@ def dashboard_menu_item_delete(request, pk):
     return redirect("dashboard_home")
 
 
-# --- JOB MANAGEMENT ---
+# --- JOB OFFER MANAGEMENT (Dynamische Liste) ---
 
 @login_required
 @require_POST
 def dashboard_job_create(request):
-    """Neuen Job erstellen"""
     if not request.user.is_staff:
         return HttpResponseForbidden()
 
@@ -393,12 +395,10 @@ def dashboard_job_create(request):
 @login_required
 @require_POST
 def dashboard_job_update(request, pk):
-    """Job bearbeiten"""
     if not request.user.is_staff:
         return HttpResponseForbidden()
 
     job = get_object_or_404(JobOffer, pk=pk)
-
     job.title = request.POST.get("title", job.title)
     job.description = request.POST.get("description", job.description)
     job.button_link = request.POST.get("button_link", job.button_link)
@@ -409,7 +409,6 @@ def dashboard_job_update(request, pk):
 
     job.save()
 
-    # AJAX Support
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, "admin_dashboard/dashboard_home.html", {})
 
@@ -425,4 +424,58 @@ def dashboard_job_delete(request, pk):
     job = get_object_or_404(JobOffer, pk=pk)
     job.delete()
     messages.success(request, "Job gelöscht.")
+    return redirect("dashboard_home")
+
+
+# --- JOB CONTENT & BEWERBUNG (Die fehlenden Funktionen!) ---
+
+@login_required
+@require_POST
+def dashboard_job_content_update(request):
+    """Speichert Bilder und Texte der 3 statischen Job-Karten (Manager, Service, Koch)"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    # Wir loopen durch die 3 Typen und speichern die Eingaben
+    for jt in ['manager', 'service', 'cook']:
+        obj, _ = JobContent.objects.get_or_create(job_type=jt)
+
+        # Beschreibung (Punkte auf Karte)
+        short_desc = request.POST.get(f"{jt}_short_desc")
+        if short_desc is not None:
+            obj.short_description = short_desc
+
+        # Popup Infos
+        popup_title = request.POST.get(f"{jt}_popup_title")
+        if popup_title is not None:
+            obj.popup_title = popup_title
+
+        popup_text = request.POST.get(f"{jt}_popup_text")
+        if popup_text is not None:
+            obj.popup_text = popup_text
+
+        # Bild Update
+        if request.FILES.get(f"{jt}_image"):
+            obj.image = request.FILES.get(f"{jt}_image")
+
+        obj.save()
+
+    messages.success(request, "Job-Inhalte gespeichert.")
+    return redirect("dashboard_home")
+
+
+@login_required
+def dashboard_application_processed(request, pk):
+    """Setzt Status einer Bewerbung auf 'Bearbeitet'"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden()
+
+    app = get_object_or_404(JobApplication, pk=pk)
+    app.status = 'processed'
+    app.save()
+
+    # Bei AJAX Requests einfach 200 OK zurückgeben, sonst Redirect
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, "admin_dashboard/dashboard_home.html", {})
+
     return redirect("dashboard_home")

@@ -37,7 +37,8 @@
                 <a href="{% url 'menu' %}">Menü</a>
                 <a href="{% url 'bestellen' %}">Bestellen & Abholen</a>
                 <a href="{% url 'catering' %}">Catering</a>
-                <a href="#">Karriere / Jobs</a>
+                <!-- HIER IST DIE ÄNDERUNG: -->
+                <a href="{% url 'jobs' %}">Karriere / Jobs</a>
                 <a href="{% url 'kontakt' %}">Über uns</a>
             </nav>
         </div>

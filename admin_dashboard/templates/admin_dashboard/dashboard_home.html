@@ -18,7 +18,7 @@
 <section class="section section-light" style="min-height: 80vh;">
     <div class="container">
 
-        <!-- HEADER -->
+        <!-- DASHBOARD HEADER -->
         <div class="dashboard-header">
             <div>
                 <h1 class="section-title" style="margin-bottom: 0;">Dashboard</h1>
@@ -33,14 +33,15 @@
             </div>
         </div>
 
-        <!-- LAYOUT -->
+        <!-- LAYOUT CONTAINER -->
         <div class="dashboard-layout">
 
-            <!-- TABS -->
+            <!-- HAUPT NAVIGATION (TABS) -->
             <nav class="dashboard-tabs" aria-label="Dashboard-Bereiche">
                 <button type="button" class="dashboard-tab-btn" onclick="openTab('statistiken')">Statistiken</button>
                 <button type="button" class="dashboard-tab-btn" onclick="openTab('anfragen')">Anfragen</button>
                 <button type="button" class="dashboard-tab-btn" onclick="openTab('medien')">Medien</button>
+                <button type="button" class="dashboard-tab-btn" onclick="openTab('karriere')">Karriere / Jobs</button>
                 <button type="button" class="dashboard-tab-btn" onclick="openTab('seo')">SEO</button>
                 {% if user.is_superuser %}
                 <button type="button" class="dashboard-tab-btn" onclick="openTab('benutzer')">Benutzer-Management</button>
@@ -50,13 +51,14 @@
             <!-- PANELS -->
             <div class="dashboard-panels">
 
-                <!-- 1. STATISTIKEN -->
+                <!-- 1. STATISTIKEN (Altes Design wiederhergestellt) -->
                 <div id="statistiken" class="dashboard-panel">
                     <div class="stats-header mb-4">
                         <h2>Website Performance</h2>
-                        <p style="color:#777; font-size:0.9rem;">Daten der letzten 30 Tage (Live-Berechnung)</p>
+                        <p style="color:#777; font-size:0.9rem;">Daten der letzten 30 Tage</p>
                     </div>
 
+                    <!-- Key Metrics (Grid Layout) -->
                     <div class="stats-grid-top">
                         <div class="stat-card">
                             <div class="stat-icon" style="background:#e0f2f1; color:#007755;">👥</div>
@@ -76,78 +78,60 @@
                             <div class="stat-icon" style="background:#fff3e0; color:#f57c00;">📅</div>
                             <div class="stat-info">
                                 <h3>{{ stats.today_visits|default:"0" }}</h3>
-                                <p>Aufrufe heute</p>
+                                <p>Aufrufe Heute</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card p-4 mt-4 mb-4">
-                        <h4 style="margin-bottom: 1rem;">Besucher-Trend (30 Tage)</h4>
-                        <div style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="trafficChart"></canvas>
-                        </div>
-                    </div>
+                    <!-- Diagramm & Tabelle -->
+                    <div class="stats-grid-bottom mt-4">
 
-                    <div class="card p-4">
-                        <h4>Beliebteste Seiten</h4>
-                        <table class="simple-table mt-3">
-                            <thead>
-                                <tr>
-                                    <th>Seite (Pfad)</th>
-                                    <th>Aufrufe</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if stats.top_pages %}
-                                    {% for page in stats.top_pages %}
-                                    <tr>
-                                        <td>{{ page.path }}</td>
-                                        <td><strong>{{ page.count }}</strong></td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr><td colspan="2">Noch keine Daten verfügbar.</td></tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                        <!-- Diagramm -->
+                        <div class="card p-4 shadow-sm" style="grid-column: span 2;">
+                            <h4 style="margin-bottom: 1rem; margin-top: 0;">Besucher-Trend (30 Tage)</h4>
+                            <div style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Tabelle -->
+                        <div class="card p-4 shadow-sm" style="grid-column: span 2;">
+                            <h4 style="margin-top: 0;">Beliebteste Seiten</h4>
+                            <table class="simple-table mt-3">
+                                <thead>
+                                    <tr><th>Seite (Pfad)</th><th>Aufrufe</th></tr>
+                                </thead>
+                                <tbody>
+                                    {% if stats.top_pages %}
+                                        {% for page in stats.top_pages %}
+                                        <tr><td>{{ page.path }}</td><td><strong>{{ page.count }}</strong></td></tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr><td colspan="2">Noch keine Daten verfügbar.</td></tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 2. ANFRAGEN -->
                 <div id="anfragen" class="dashboard-panel">
                     <h2>Anfragen Verwaltung</h2>
-
+                    <!-- (Hier deine Anfragen-Tabellen, Code gekürzt da unverändert) -->
                     <div class="table-section">
                         <h3>Catering-Anfragen</h3>
-                        <div class="table-responsive">
+                        <div class="table-responsive shadow-sm">
                             <table class="modern-table">
-                                <thead>
-                                    <tr>
-                                        <th>Datum</th>
-                                        <th>Name</th>
-                                        <th>E-Mail</th>
-                                        <th>Status</th>
-                                        <th style="text-align: right;">Aktion</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Datum</th><th>Name</th><th>E-Mail</th><th>Status</th><th style="text-align: right;">Aktion</th></tr></thead>
                                 <tbody>
                                     {% for req in catering_requests %}
                                     <tr>
                                         <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
                                         <td><strong>{{ req.contact_person }}</strong></td>
                                         <td><a href="mailto:{{ req.email }}">{{ req.email }}</a></td>
-                                        <td>
-                                            {% if req.status == "open" %}
-                                                <span class="badge badge-open">Offen</span>
-                                            {% else %}
-                                                <span class="badge badge-done">Beantwortet</span>
-                                            {% endif %}
-                                        </td>
-                                        <td style="text-align: right;">
-                                            <button type="button" class="btn-icon" onclick="toggleReply('catering-{{ req.id }}')">
-                                                ↩ Antworten
-                                            </button>
-                                        </td>
+                                        <td>{% if req.status == "open" %}<span class="badge badge-open">Offen</span>{% else %}<span class="badge badge-done">Beantwortet</span>{% endif %}</td>
+                                        <td style="text-align: right;"><button type="button" class="btn-icon" onclick="toggleReply('catering-{{ req.id }}')">↩ Antworten</button></td>
                                     </tr>
                                     <tr id="reply-row-catering-{{ req.id }}" class="reply-row" style="display:none;">
                                         <td colspan="5">
@@ -156,52 +140,32 @@
                                                     {% csrf_token %}
                                                     <label>Antwort an {{ req.email }}:</label>
                                                     <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                                    <div style="margin-top:.5rem; text-align: right;">
-                                                        <button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button>
-                                                    </div>
+                                                    <div style="margin-top:.5rem; text-align: right;"><button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button></div>
                                                 </form>
                                             </div>
                                         </td>
                                     </tr>
                                     {% empty %}
-                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Catering-Anfragen vorhanden.</td></tr>
+                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Catering-Anfragen.</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
                     <div class="table-section mt-5">
                         <h3>Kontakt-Anfragen</h3>
-                        <div class="table-responsive">
+                        <!-- ... Kontakt Tabelle ... -->
+                         <div class="table-responsive shadow-sm">
                             <table class="modern-table">
-                                <thead>
-                                    <tr>
-                                        <th>Datum</th>
-                                        <th>Name</th>
-                                        <th>Betreff / Nachricht</th>
-                                        <th>Status</th>
-                                        <th style="text-align: right;">Aktion</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Datum</th><th>Name</th><th>Nachricht</th><th>Status</th><th style="text-align: right;">Aktion</th></tr></thead>
                                 <tbody>
                                     {% for req in contact_requests %}
                                     <tr>
                                         <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
                                         <td>{{ req.name }}<br><small>{{ req.email }}</small></td>
                                         <td><div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ req.message }}</div></td>
-                                        <td>
-                                            {% if req.status == "open" %}
-                                                <span class="badge badge-open">Offen</span>
-                                            {% else %}
-                                                <span class="badge badge-done">Beantwortet</span>
-                                            {% endif %}
-                                        </td>
-                                        <td style="text-align: right;">
-                                            <button type="button" class="btn-icon" onclick="toggleReply('contact-{{ req.id }}')">
-                                                ↩ Antworten
-                                            </button>
-                                        </td>
+                                        <td>{% if req.status == "open" %}<span class="badge badge-open">Offen</span>{% else %}<span class="badge badge-done">Beantwortet</span>{% endif %}</td>
+                                        <td style="text-align: right;"><button type="button" class="btn-icon" onclick="toggleReply('contact-{{ req.id }}')">↩ Antworten</button></td>
                                     </tr>
                                     <tr id="reply-row-contact-{{ req.id }}" class="reply-row" style="display:none;">
                                         <td colspan="5">
@@ -210,15 +174,13 @@
                                                     {% csrf_token %}
                                                     <label>Antwort an {{ req.email }}:</label>
                                                     <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                                    <div style="margin-top:.5rem; text-align: right;">
-                                                        <button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button>
-                                                    </div>
+                                                    <div style="margin-top:.5rem; text-align: right;"><button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button></div>
                                                 </form>
                                             </div>
                                         </td>
                                     </tr>
                                     {% empty %}
-                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Kontakt-Anfragen vorhanden.</td></tr>
+                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Keine Kontakt-Anfragen.</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -228,29 +190,32 @@
 
                 <!-- 3. MEDIEN -->
                 <div id="medien" class="dashboard-panel">
-                    <div class="media-header">
-                        <h2>Medien Verwaltung</h2>
+                    <!-- Header mit Save Button rechts -->
+                    <div class="media-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h2 style="margin:0;">Medien & Inhalte Verwaltung</h2>
                         <button type="button" class="btn btn-primary" onclick="saveAllMedia()">
                             💾 Alle Änderungen speichern
                         </button>
                     </div>
 
+                    <!-- Medien Sub-Navigation -->
                     <nav class="media-subtabs">
                         <button type="button" class="media-subtab-btn active" onclick="openMediaSubTab('media-home')">Home</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-menu')">Menü</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-catering')">Catering</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-kontakt')">Kontakt</button>
-                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-layout')">Layout / Logo</button>
                         <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-order')">Bestellen</button>
-                        <button type="button" class="media-subtab-btn" onclick="openTab('karriere')">Karriere / Jobs</button>
+                        <button type="button" class="media-subtab-btn" onclick="openMediaSubTab('media-layout')">Layout / Footer</button>
                     </nav>
 
-                    <!-- HOME TAB -->
+                    <!-- HOME SUB-TAB -->
                     <div id="media-home" class="media-subpanel active">
                         <h3>Startseite</h3>
                         {% include "admin_dashboard/includes/media_row.html" with key="home_hero" label="Hero Bild" desc="Großes Bild ganz oben." img_obj=site_images.home_hero %}
+                        <!-- ... restliche Home Items ... -->
                         {% include "admin_dashboard/includes/media_row.html" with key="home_about_image" label="Wer wir sind (Slider 1)" desc="Slider Bild 1." img_obj=site_images.home_about_image %}
                         {% include "admin_dashboard/includes/media_row.html" with key="home_about_image_2" label="Wer wir sind (Slider 2)" desc="Slider Bild 2." img_obj=site_images.home_about_image_2 %}
+                        <hr style="margin: 1.5rem 0;">
                         {% include "admin_dashboard/includes/media_row.html" with key="home_menu_1" label="Menü Links" desc="Bild links (25%)." img_obj=site_images.home_menu_1 %}
                         {% include "admin_dashboard/includes/media_row.html" with key="home_menu_2" label="Menü Rechts" desc="Bild rechts (25%)." img_obj=site_images.home_menu_2 %}
                         <h4 class="mt-4">Catering Galerie</h4>
@@ -262,289 +227,186 @@
                         {% include "admin_dashboard/includes/media_row.html" with key="home_testimonials_bg" label="Hintergrund" desc="Hinter dem Slider." img_obj=site_images.home_testimonials_bg %}
                     </div>
 
-                    <!-- MENU TAB -->
+                    <!-- MENU SUB-TAB -->
                     <div id="media-menu" class="media-subpanel">
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <!-- ... Menu Code ... -->
+                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                             <div>
                                 <h3>Menü Seite verwalten</h3>
-                                <p style="color:#666; margin:0;">Hier kannst du die Blöcke für die Menü-Seite bearbeiten, sortieren und löschen.</p>
+                                <p style="color:#666; margin:0;">Bearbeite Bilder, Texte und Hintergründe der Menü-Blöcke.</p>
                             </div>
-                            <!-- Button zum Erstellen -->
-                            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-menu-item-form').style.display='block'; window.location.hash='new-menu-item-form';">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-menu-item-form').style.display='block';">
                                 + Neuer Menü-Block
                             </button>
                         </div>
-
-                        <!-- 1. Header Bild (Bleibt SiteImage) -->
                         <div style="background:#f9f9f9; padding:1rem; border-radius:8px; margin-bottom:2rem; border:1px solid #eee;">
-                            <h4 style="margin-top:0;">Header Bild (Ganz oben)</h4>
+                            <h4 style="margin-top:0;">Header Bild</h4>
                             {% include "admin_dashboard/includes/media_row.html" with key="menu_hero" label="Menu Hero" desc="Hintergrundbild Header." img_obj=site_images.menu_hero %}
                         </div>
-
                         <hr>
-
-                        <!-- 2. Liste der Menü Items -->
                         <div id="menu-items-list">
                             {% for item in menu_items %}
+                            <!-- Menu Items Loop (unverändert) -->
                             <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #ddd; position: relative;">
-
-                                <!-- Löschen Button oben rechts -->
                                 <form method="post" action="{% url 'dashboard_menu_item_delete' item.id %}" onsubmit="return confirm('Block wirklich löschen?');" style="position: absolute; top: 1rem; right: 1rem;">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-icon delete" title="Block löschen">🗑</button>
+                                    <button type="submit" class="btn-icon delete" title="Löschen">🗑</button>
                                 </form>
-
-                                <h4 style="margin-top:0; color:var(--kbg-green);">
-                                    Block {{ forloop.counter }}: {{ item.name }}
-                                    <small style="color:#999; font-weight:normal;">(ID: {{ item.dish_id }})</small>
-                                </h4>
-
+                                <h4 style="margin-top:0; color:var(--kbg-green);">Block {{ forloop.counter }}: {{ item.name }}</h4>
                                 <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_update' item.id %}" class="media-upload-form">
                                     {% csrf_token %}
-
-                                    <!-- GRID FÜR INHALTE -->
                                     <div style="display: grid; grid-template-columns: 100px 1fr 1fr; gap: 1.5rem; align-items: start;">
-
-                                        <!-- Spalte 1: Bild Vorschau -->
+                                        <!-- Bild -->
                                         <div style="text-align: center;">
-                                            <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:0.5rem;">Gericht Bild</label>
                                             {% if item.image %}
                                                 <img src="{{ item.image.url }}" onclick="openModal(this.src)" style="width:100px; height:100px; object-fit:cover; border-radius:6px; cursor:pointer; border:1px solid #ccc;">
                                             {% else %}
-                                                <div style="width:100px; height:100px; background:#eee; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">Kein Bild</div>
+                                                <div style="width:100px; height:100px; background:#eee; border-radius:6px; display:flex; align-items:center; justify-content:center;">Kein Bild</div>
                                             {% endif %}
                                             <input type="file" name="image" style="font-size:0.75rem; margin-top:0.5rem; width:100%;">
                                         </div>
-
-                                        <!-- Spalte 2: Texte -->
+                                        <!-- Texte -->
                                         <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Nummer (z.B. 1)</label>
-                                                <input type="text" name="dish_id" class="form-control" value="{{ item.dish_id }}">
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Gericht Name</label>
-                                                <input type="text" name="name" class="form-control" value="{{ item.name }}" style="font-weight:bold;">
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Untertitel</label>
-                                                <input type="text" name="subtitle" class="form-control" value="{{ item.subtitle }}">
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Beschreibung (DE)</label>
-                                                <textarea name="description_de" class="form-control" rows="2">{{ item.description_de }}</textarea>
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Beschreibung (EN)</label>
-                                                <textarea name="description_en" class="form-control" rows="2">{{ item.description_en }}</textarea>
-                                            </div>
+                                            <input type="text" name="dish_id" class="form-control" value="{{ item.dish_id }}" placeholder="Nummer (z.B. 1)">
+                                            <input type="text" name="name" class="form-control" value="{{ item.name }}" placeholder="Name" style="font-weight:bold;">
+                                            <input type="text" name="subtitle" class="form-control" value="{{ item.subtitle }}" placeholder="Untertitel">
+                                            <textarea name="description_de" class="form-control" rows="2" placeholder="Beschreibung DE">{{ item.description_de }}</textarea>
+                                            <textarea name="description_en" class="form-control" rows="2" placeholder="Beschreibung EN">{{ item.description_en }}</textarea>
                                         </div>
-
-                                        <!-- Spalte 3: Design & Optionen -->
+                                        <!-- Design & Optionen -->
                                         <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Optionen (Pro Zeile: 'Code Label')</label>
-                                                <textarea name="options_text" class="form-control" rows="5" placeholder="1A Bulgogi&#10;1B Tofu">{{ item.options_text }}</textarea>
-                                            </div>
-
+                                            <textarea name="options_text" class="form-control" rows="5" placeholder="Optionen (z.B. 1A Bulgogi)">{{ item.options_text }}</textarea>
                                             <div style="background:#f5f5f5; padding:0.8rem; border-radius:6px;">
-                                                <label style="font-size:0.8rem; font-weight:bold;">Hintergrund Design</label>
-
-                                                <div style="margin-top:0.5rem;">
-                                                    <label style="font-size:0.8rem; color:#666;">Farbe (Hex Code)</label>
-                                                    <div style="display:flex; gap:0.5rem;">
-                                                        <input type="color" value="{{ item.background_color }}" onchange="this.nextElementSibling.value = this.value" style="height:35px; width:40px; padding:0; border:none;">
-                                                        <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}" style="margin:0;">
-                                                    </div>
+                                                <label style="font-size:0.8rem; font-weight:bold;">Hintergrund</label>
+                                                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                                                    <input type="color" value="{{ item.background_color }}" onchange="this.nextElementSibling.value = this.value" style="height:35px; width:40px; padding:0; border:none;">
+                                                    <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}" style="margin:0;">
                                                 </div>
-
                                                 <div style="margin-top:0.8rem;">
-                                                    <label style="font-size:0.8rem; color:#666;">Hintergrundbild (Optional)</label>
+                                                    <input type="file" name="background_image" style="font-size:0.75rem;">
                                                     {% if item.background_image %}
-                                                        <div style="font-size:0.75rem; margin-bottom:4px; color:green;">✓ Bild aktiv</div>
-                                                        <label style="font-size:0.75rem;"><input type="checkbox" name="delete_bg_image"> Bild entfernen</label>
+                                                    <label style="font-size:0.75rem; display:block; margin-top:4px;"><input type="checkbox" name="delete_bg_image"> Bild entfernen</label>
                                                     {% endif %}
-                                                    <input type="file" name="background_image" style="font-size:0.75rem; margin-top:4px;">
                                                 </div>
                                             </div>
-
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Reihenfolge (Sortierung)</label>
-                                                <input type="number" name="order" class="form-control" value="{{ item.order }}">
-                                            </div>
+                                            <input type="number" name="order" class="form-control" value="{{ item.order }}" placeholder="Reihenfolge">
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             {% endfor %}
                         </div>
-
-                        <!-- NEUES ITEM ERSTELLEN -->
                         <div id="new-menu-item-form" style="display:none; margin-top:3rem; border:2px dashed #ccc; padding:2rem; border-radius:8px; background:#fff;">
                             <h3 style="margin-top:0;">Neuen Menü-Block hinzufügen</h3>
                             <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_create' %}">
                                 {% csrf_token %}
-
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                                     <div>
                                         <label>Bild *</label>
                                         <input type="file" name="image" class="form-control" required>
-
-                                        <label style="margin-top:1rem;">Nummer</label>
-                                        <input type="text" name="dish_id" class="form-control" placeholder="z.B. 10">
-
-                                        <label style="margin-top:1rem;">Name *</label>
-                                        <input type="text" name="name" class="form-control" required placeholder="Gericht Name">
+                                        <input type="text" name="dish_id" class="form-control" placeholder="Nummer (z.B. 10)" style="margin-top:1rem;">
+                                        <input type="text" name="name" class="form-control" required placeholder="Gericht Name" style="margin-top:1rem;">
                                     </div>
                                     <div>
                                         <label>Hintergrundfarbe</label>
                                         <input type="text" name="background_color" class="form-control" value="#ffffff">
-
                                         <label style="margin-top:1rem;">Beschreibung (DE)</label>
                                         <textarea name="description_de" class="form-control" rows="3"></textarea>
                                     </div>
                                 </div>
-
                                 <div style="margin-top:1.5rem; text-align:right;">
-                                    <button type="button" class="btn" onclick="document.getElementById('new-menu-item-form').style.display='none'" style="margin-right:1rem;">Abbrechen</button>
+                                    <button type="button" class="btn" onclick="document.getElementById('new-menu-item-form').style.display='none'">Abbrechen</button>
                                     <button type="submit" class="btn btn-primary">Erstellen</button>
                                 </div>
                             </form>
                         </div>
-
                     </div>
 
-                    <!-- ORDER TAB -->
-                    <div id="media-order" class="media-subpanel">
-                        <h3>Seite: Bestellen & Abholen</h3>
-
-                        <!-- 1. Hintergrundbild -->
-                        {% include "admin_dashboard/includes/media_row.html" with key="order_hero" label="Hintergrundbild" desc="Das große Bild im Hintergrund." img_obj=site_images.order_hero %}
-
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
-
-                        <h3>Buttons verwalten</h3>
-                        <p style="color:#666; margin-bottom:1.5rem;">Hier kannst du die Texte und Links der 4 Buttons anpassen. Klicke oben auf "Alle Änderungen speichern".</p>
-
-                        <!-- Formular für die Buttons (wird über dashboard_settings_update gespeichert) -->
-                        <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
-                            {% csrf_token %}
-
-                            <!-- Trick: Wir müssen die alten Felder (Adresse etc.) als Hidden mitsenden,
-                                 ODER wir akzeptieren, dass sie leer bleiben, wenn wir sie hier nicht rendern.
-                                 BESSER: Die View oben lädt nur das, was im POST ist.
-                                 Da die View aber ALLES speichert, müssen wir hier aufpassen.
-
-                                 LÖSUNG: Wir nutzen hier KEIN eigenes Formular-Tag, sondern machen diese Felder
-                                 Teil des großen "Alle Speichern" Konzepts via JS, oder wir fügen die Hidden Fields hinzu.
-
-                                 Da wir vorhin eine AJAX "saveAllMedia" Funktion gebaut haben, die ALLE Forms im aktiven Tab sucht,
-                                 ist das hier ein separates Formular. Das ist okay.
-                                 ABER: Die View `dashboard_settings_update` überschreibt alles.
-
-                                 SAFE WAY: Wir rendern die anderen Felder als hidden inputs, damit sie nicht gelöscht werden.
-                            -->
-                            <input type="hidden" name="address" value="{{ site_settings.address }}">
-                            <input type="hidden" name="opening_hours" value="{{ site_settings.opening_hours }}">
-                            <input type="hidden" name="phone" value="{{ site_settings.phone }}">
-                            <input type="hidden" name="email" value="{{ site_settings.email }}">
-
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-
-                                <!-- Button 1 -->
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: var(--kbg-green); margin-top:0;">Button 1 (Abholen)</h5>
-                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
-                                    <input type="text" name="btn_pickup_text" class="form-control" value="{{ site_settings.btn_pickup_text }}">
-                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
-                                    <input type="text" name="btn_pickup_link" class="form-control" value="{{ site_settings.btn_pickup_link }}">
-                                </div>
-
-                                <!-- Button 2 -->
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #3f7dbb; margin-top:0;">Button 2 (Wolt)</h5>
-                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
-                                    <input type="text" name="btn_wolt_text" class="form-control" value="{{ site_settings.btn_wolt_text }}">
-                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
-                                    <input type="text" name="btn_wolt_link" class="form-control" value="{{ site_settings.btn_wolt_link }}">
-                                </div>
-
-                                <!-- Button 3 -->
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #c88a27; margin-top:0;">Button 3 (Lieferando)</h5>
-                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
-                                    <input type="text" name="btn_lieferando_text" class="form-control" value="{{ site_settings.btn_lieferando_text }}">
-                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
-                                    <input type="text" name="btn_lieferando_link" class="form-control" value="{{ site_settings.btn_lieferando_link }}">
-                                </div>
-
-                                <!-- Button 4 -->
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #2e6a57; margin-top:0;">Button 4 (Uber Eats)</h5>
-                                    <label style="font-size:0.85rem; color:#666;">Beschriftung</label>
-                                    <input type="text" name="btn_uber_text" class="form-control" value="{{ site_settings.btn_uber_text }}">
-                                    <label style="font-size:0.85rem; color:#666; margin-top:0.5rem;">Link (URL)</label>
-                                    <input type="text" name="btn_uber_link" class="form-control" value="{{ site_settings.btn_uber_link }}">
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- CATERING TAB -->
+                    <!-- CATERING SUB-TAB -->
                     <div id="media-catering" class="media-subpanel">
                         <h3>Catering Seite</h3>
                         {% include "admin_dashboard/includes/media_row.html" with key="catering_hero" label="Catering Hero" desc="Bild oben." img_obj=site_images.catering_hero %}
                         {% include "admin_dashboard/includes/media_row.html" with key="catering_bottom" label="Catering Unten" desc="Dekobild unten." img_obj=site_images.catering_bottom %}
                     </div>
 
-                    <!-- KONTAKT TAB -->
+                    <!-- KONTAKT SUB-TAB -->
                     <div id="media-kontakt" class="media-subpanel">
                         <h3>Kontakt Seite</h3>
-
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_top_bg" label="Top Banner (Über uns)" desc="Hintergrundbild ganz oben." img_obj=site_images.contact_top_bg %}
-
-                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
-
+                        <hr style="margin: 1.5rem 0;">
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_philosophie_img" label="Bild: Philosophie" desc="Bild links neben 'So isst man zusammen'." img_obj=site_images.contact_philosophie_img %}
-
-                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
-
+                        <hr style="margin: 1.5rem 0;">
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_mission_img" label="Bild: Mission" desc="Bild rechts neben 'Harmonie aus der Natur'." img_obj=site_images.contact_mission_img %}
-
-                        <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
-
+                        <hr style="margin: 1.5rem 0;">
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_bottom_bg" label="Hintergrund Kontaktformular" desc="Bild hinter dem Formular unten." img_obj=site_images.contact_bottom_bg %}
                     </div>
 
-                    <!-- LAYOUT TAB -->
+                    <!-- ORDER SUB-TAB -->
+                    <div id="media-order" class="media-subpanel">
+                        <h3>Seite: Bestellen & Abholen</h3>
+                        {% include "admin_dashboard/includes/media_row.html" with key="order_hero" label="Hintergrundbild" desc="Das große Bild im Hintergrund." img_obj=site_images.order_hero %}
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
+                        <h3>Buttons verwalten</h3>
+                        <!-- Form code wie gehabt -->
+                        <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="address" value="{{ site_settings.address }}">
+                            <input type="hidden" name="opening_hours" value="{{ site_settings.opening_hours }}">
+                            <input type="hidden" name="phone" value="{{ site_settings.phone }}">
+                            <input type="hidden" name="email" value="{{ site_settings.email }}">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: var(--kbg-green); margin-top:0;">Abholen</h5>
+                                    <input type="text" name="btn_pickup_text" class="form-control" value="{{ site_settings.btn_pickup_text }}" placeholder="Text">
+                                    <input type="text" name="btn_pickup_link" class="form-control" value="{{ site_settings.btn_pickup_link }}" placeholder="Link">
+                                </div>
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #3f7dbb; margin-top:0;">Wolt</h5>
+                                    <input type="text" name="btn_wolt_text" class="form-control" value="{{ site_settings.btn_wolt_text }}" placeholder="Text">
+                                    <input type="text" name="btn_wolt_link" class="form-control" value="{{ site_settings.btn_wolt_link }}" placeholder="Link">
+                                </div>
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #c88a27; margin-top:0;">Lieferando</h5>
+                                    <input type="text" name="btn_lieferando_text" class="form-control" value="{{ site_settings.btn_lieferando_text }}" placeholder="Text">
+                                    <input type="text" name="btn_lieferando_link" class="form-control" value="{{ site_settings.btn_lieferando_link }}" placeholder="Link">
+                                </div>
+                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
+                                    <h5 style="color: #2e6a57; margin-top:0;">Uber Eats</h5>
+                                    <input type="text" name="btn_uber_text" class="form-control" value="{{ site_settings.btn_uber_text }}" placeholder="Text">
+                                    <input type="text" name="btn_uber_link" class="form-control" value="{{ site_settings.btn_uber_link }}" placeholder="Link">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- LAYOUT SUB-TAB -->
                     <div id="media-layout" class="media-subpanel">
                         <h3>Layout & Logos</h3>
                         {% include "admin_dashboard/includes/media_row.html" with key="global_logo" label="Logo Header" desc="Hauptlogo." img_obj=site_images.global_logo %}
                         {% include "admin_dashboard/includes/media_row.html" with key="instagram_icon" label="Instagram Icon" desc="Für Footer & Tabs." img_obj=site_images.instagram_icon %}
                         {% include "admin_dashboard/includes/media_row.html" with key="email_icon" label="Email Icon" desc="Für Footer & Tabs." img_obj=site_images.email_icon %}
-
                         <hr style="border: 0; border-top: 1px solid #eee; margin: 2.5rem 0;">
-
                         <h3>Footer Informationen</h3>
-                        <p style="color:#666; margin-bottom:1.5rem;">Hier kannst du Adresse, Öffnungszeiten und Kontaktdaten ändern. Klicke oben auf "Alle Änderungen speichern", um diese Daten zu sichern.</p>
-
-                        <!-- Footer Form (Teil der Massen-Speicherung, kein eigener Button mehr) -->
-                        <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form" id="footer-settings-form">
+                        <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
                             {% csrf_token %}
-
+                            <!-- Hidden Inputs -->
+                            <input type="hidden" name="btn_pickup_text" value="{{ site_settings.btn_pickup_text }}">
+                            <input type="hidden" name="btn_pickup_link" value="{{ site_settings.btn_pickup_link }}">
+                            <input type="hidden" name="btn_wolt_text" value="{{ site_settings.btn_wolt_text }}">
+                            <input type="hidden" name="btn_wolt_link" value="{{ site_settings.btn_wolt_link }}">
+                            <input type="hidden" name="btn_lieferando_text" value="{{ site_settings.btn_lieferando_text }}">
+                            <input type="hidden" name="btn_lieferando_link" value="{{ site_settings.btn_lieferando_link }}">
+                            <input type="hidden" name="btn_uber_text" value="{{ site_settings.btn_uber_text }}">
+                            <input type="hidden" name="btn_uber_link" value="{{ site_settings.btn_uber_link }}">
                             <div class="card" style="padding: 2rem; background:#ffffff; border: 1px solid #eee; border-radius: 8px;">
                                 <div class="form-group mb-3">
                                     <label style="font-weight:600; color:#444;">Adresse</label>
                                     <input type="text" name="address" class="form-control" value="{{ site_settings.address }}">
                                 </div>
-
                                 <div class="form-group mb-3">
                                     <label style="font-weight:600; color:#444;">Öffnungszeiten</label>
                                     <input type="text" name="opening_hours" class="form-control" value="{{ site_settings.opening_hours }}">
                                 </div>
-
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                                     <div class="form-group mb-3">
                                         <label style="font-weight:600; color:#444;">Telefonnummer</label>
@@ -556,140 +418,131 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Im Footer Formular (media-layout Tab) hinzufügen: -->
-                            <input type="hidden" name="btn_pickup_text" value="{{ site_settings.btn_pickup_text }}">
-                            <input type="hidden" name="btn_pickup_link" value="{{ site_settings.btn_pickup_link }}">
-                            <input type="hidden" name="btn_wolt_text" value="{{ site_settings.btn_wolt_text }}">
-                            <input type="hidden" name="btn_wolt_link" value="{{ site_settings.btn_wolt_link }}">
-                            <input type="hidden" name="btn_lieferando_text" value="{{ site_settings.btn_lieferando_text }}">
-                            <input type="hidden" name="btn_lieferando_link" value="{{ site_settings.btn_lieferando_link }}">
-                            <input type="hidden" name="btn_uber_text" value="{{ site_settings.btn_uber_text }}">
-                            <input type="hidden" name="btn_uber_link" value="{{ site_settings.btn_uber_link }}">
                         </form>
-                    </div>
-
-                    <!-- KARRIERE / JOBS TAB -->
-                    <div id="karriere" class="media-subpanel">
-
-                        <h2>Seite: Karriere / Jobs verwalten</h2>
-
-                        <!-- FRANCHISE SLIDER -->
-                        <div class="card p-4 mb-5">
-                            <h3>Franchise Slider Bilder</h3>
-                            <p style="color:#666;">Diese beiden Bilder werden unten auf der Seite im Wechsel angezeigt.</p>
-
-                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_1" label="Slider Bild 1" desc="Erstes Bild." img_obj=site_images.career_franchise_1 %}
-
-                            <hr style="border:0; border-top:1px solid #eee; margin:1.5rem 0;">
-
-                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_2" label="Slider Bild 2" desc="Zweites Bild." img_obj=site_images.career_franchise_2 %}
-
-                            <div style="margin-top:1rem; text-align:right;">
-                                <button type="button" class="btn btn-primary" onclick="saveAllMedia()">Slider speichern</button>
-                            </div>
-                        </div>
-
-                        <!-- JOB LISTE -->
-                        <div class="header-actions" style="justify-content: space-between; margin-bottom: 2rem;">
-                            <h3>Aktuelle Stellenanzeigen</h3>
-                            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-job-form').style.display='block'; window.location.hash='new-job-form';">
-                                + Neue Stelle ausschreiben
-                            </button>
-                        </div>
-
-                        <div id="job-items-list">
-                            {% for job in jobs %}
-                            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #ddd; position: relative;">
-
-                                <!-- Löschen -->
-                                <form method="post" action="{% url 'dashboard_job_delete' job.id %}" onsubmit="return confirm('Stelle wirklich löschen?');" style="position: absolute; top: 1rem; right: 1rem;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-icon delete" title="Löschen">🗑</button>
-                                </form>
-
-                                <h4 style="margin-top:0; color:var(--kbg-green);">{{ job.title }}</h4>
-
-                                <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_update' job.id %}" class="media-upload-form">
-                                    {% csrf_token %}
-
-                                    <div style="display: grid; grid-template-columns: 120px 1fr; gap: 1.5rem;">
-
-                                        <!-- Bild -->
-                                        <div style="text-align:center;">
-                                            {% if job.image %}
-                                                <img src="{{ job.image.url }}" onclick="openModal(this.src)" style="width:100%; height:100px; object-fit:cover; border-radius:6px; cursor:pointer;">
-                                            {% else %}
-                                                <div style="width:100%; height:100px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:0.8rem;">Kein Bild</div>
-                                            {% endif %}
-                                            <input type="file" name="image" style="font-size:0.75rem; margin-top:0.5rem; width:100%;">
-                                        </div>
-
-                                        <!-- Daten -->
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Job Titel</label>
-                                                <input type="text" name="title" class="form-control" value="{{ job.title }}" style="font-weight:bold;">
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Link für Button</label>
-                                                <input type="text" name="button_link" class="form-control" value="{{ job.button_link }}">
-                                            </div>
-                                            <div style="grid-column: span 2;">
-                                                <label style="font-size:0.8rem; color:#666;">Beschreibung (Jede Zeile = Ein Punkt)</label>
-                                                <textarea name="description" class="form-control" rows="4">{{ job.description }}</textarea>
-                                            </div>
-                                            <div>
-                                                <label style="font-size:0.8rem; color:#666;">Reihenfolge</label>
-                                                <input type="number" name="order" class="form-control" value="{{ job.order }}" style="width: 80px;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <!-- NEUER JOB ERSTELLEN -->
-                        <div id="new-job-form" style="display:none; margin-top:3rem; border:2px dashed #ccc; padding:2rem; border-radius:8px; background:#fff;">
-                            <h3 style="margin-top:0;">Neue Stelle hinzufügen</h3>
-                            <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_create' %}">
-                                {% csrf_token %}
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                                    <div>
-                                        <label>Vorschaubild *</label>
-                                        <input type="file" name="image" class="form-control" required>
-
-                                        <label style="margin-top:1rem;">Titel *</label>
-                                        <input type="text" name="title" class="form-control" required placeholder="z.B. Servicekraft (m/w/d)">
-                                    </div>
-                                    <div>
-                                        <label>Link (Mailto oder URL)</label>
-                                        <input type="text" name="button_link" class="form-control" value="mailto:jobs@kbg-europe.de">
-
-                                        <label style="margin-top:1rem;">Beschreibung (Punkte)</label>
-                                        <textarea name="description" class="form-control" rows="4" placeholder="Vollzeit&#10;Erfahrung erwünscht&#10;Gute Deutschkenntnisse"></textarea>
-                                    </div>
-                                </div>
-
-                                <div style="margin-top:1.5rem; text-align:right;">
-                                    <button type="button" class="btn" onclick="document.getElementById('new-job-form').style.display='none'" style="margin-right:1rem;">Abbrechen</button>
-                                    <button type="submit" class="btn btn-primary">Erstellen</button>
-                                </div>
-                            </form>
-                        </div>
-
                     </div>
                 </div>
 
-                <!-- 4. SEO -->
+                <!-- 4. KARRIERE / JOBS (Haupt-Tab) -->
+                <div id="karriere" class="dashboard-panel">
+
+                    <!-- Header mit Save Button -->
+                    <div class="media-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <h2>Karriere / Jobs Management</h2>
+                        <!-- Der Button speichert Job Inhalte UND Franchise Slider -->
+                        <div class="save-btn-container" style="display:none;" id="save-jobs-btn">
+                            <button type="button" class="btn btn-primary" onclick="saveAllMedia()">
+                                💾 Alle Änderungen speichern
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sub-Navigation -->
+                    <nav class="media-subtabs" style="margin-top: 0;">
+                        <button type="button" class="media-subtab-btn active" onclick="openJobSubTab('job-apps')">Bewerbungen</button>
+                        <button type="button" class="media-subtab-btn" onclick="openJobSubTab('job-content')">Inhalte & Slider</button>
+                    </nav>
+
+                    <!-- A) Bewerbungen -->
+                    <div id="job-apps" class="job-subpanel active">
+                        <h3>Eingegangene Bewerbungen</h3>
+                        <div class="table-responsive shadow-sm">
+                            <table class="modern-table">
+                                <thead><tr><th>Datum</th><th>Name</th><th>Stelle</th><th>Dateien</th><th>Status / Kontakt</th></tr></thead>
+                                <tbody>
+                                    {% for app in applications %}
+                                    <tr style="{% if app.status == 'new' %}background-color:#f0fdf4;{% endif %}">
+                                        <td>{{ app.created_at|date:"d.m.Y H:i" }}</td>
+                                        <td>{{ app.first_name }} {{ app.last_name }}</td>
+                                        <td><span class="badge" style="background:#eee; color:#333;">{{ app.job_type }}</span></td>
+                                        <td>
+                                            {% if app.cover_letter %}<a href="{{ app.cover_letter.url }}" target="_blank">📄 Anschreiben</a><br>{% endif %}
+                                            {% if app.cv %}<a href="{{ app.cv.url }}" target="_blank">📄 Lebenslauf</a>{% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="mailto:{{ app.email }}?subject=Bewerbung bei KBG&body=Hallo {{ app.first_name }}," class="btn btn-primary btn-sm" onclick="markProcessed({{ app.id }})" target="_blank">✉️ Antworten</a>
+                                            <div style="margin-top:5px; font-size:0.8rem;">Status: <span id="status-text-{{ app.id }}" style="font-weight:bold; color:{% if app.status == 'new' %}#c0392b{% else %}#27ae60{% endif %};">{% if app.status == 'new' %}Unbearbeitet{% else %}Bearbeitet{% endif %}</span></div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="5" style="text-align:center; padding:2rem;">Keine Bewerbungen vorhanden.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- B) Inhalte (Jobs + Franchise) -->
+                    <div id="job-content" class="job-subpanel">
+                        <h3>Inhalte der 3 Job-Karten</h3>
+                        <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_content_update' %}" class="media-upload-form">
+                            {% csrf_token %}
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+                                <!-- MANAGER -->
+                                <div class="card p-3 shadow-sm">
+                                    <h4 style="color:var(--kbg-green);">Shopleiter</h4>
+                                    <label>Bild</label>
+                                    {% if job_contents.manager.image %}<img src="{{ job_contents.manager.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
+                                    <input type="file" name="manager_image" class="form-control">
+                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <textarea name="manager_short_desc" class="form-control" rows="4">{{ job_contents.manager.short_description }}</textarea>
+                                    <hr>
+                                    <label>Popup Titel</label>
+                                    <input type="text" name="manager_popup_title" class="form-control" value="{{ job_contents.manager.popup_title }}">
+                                    <label>Popup Text</label>
+                                    <textarea name="manager_popup_text" class="form-control" rows="8">{{ job_contents.manager.popup_text }}</textarea>
+                                </div>
+                                <!-- SERVICE -->
+                                <div class="card p-3 shadow-sm">
+                                    <h4 style="color:var(--kbg-green);">Service</h4>
+                                    <label>Bild</label>
+                                    {% if job_contents.service.image %}<img src="{{ job_contents.service.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
+                                    <input type="file" name="service_image" class="form-control">
+                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <textarea name="service_short_desc" class="form-control" rows="4">{{ job_contents.service.short_description }}</textarea>
+                                    <hr>
+                                    <label>Popup Titel</label>
+                                    <input type="text" name="service_popup_title" class="form-control" value="{{ job_contents.service.popup_title }}">
+                                    <label>Popup Text</label>
+                                    <textarea name="service_popup_text" class="form-control" rows="8">{{ job_contents.service.popup_text }}</textarea>
+                                </div>
+                                <!-- COOK -->
+                                <div class="card p-3 shadow-sm">
+                                    <h4 style="color:var(--kbg-green);">Koch</h4>
+                                    <label>Bild</label>
+                                    {% if job_contents.cook.image %}<img src="{{ job_contents.cook.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
+                                    <input type="file" name="cook_image" class="form-control">
+                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <textarea name="cook_short_desc" class="form-control" rows="4">{{ job_contents.cook.short_description }}</textarea>
+                                    <hr>
+                                    <label>Popup Titel</label>
+                                    <input type="text" name="cook_popup_title" class="form-control" value="{{ job_contents.cook.popup_title }}">
+                                    <label>Popup Text</label>
+                                    <textarea name="cook_popup_text" class="form-control" rows="8">{{ job_contents.cook.popup_text }}</textarea>
+                                </div>
+                            </div>
+                        </form>
+
+                        <hr>
+
+                        <!-- Franchise Slider -->
+                        <div class="card p-4 shadow-sm" style="margin-top: 2rem;">
+                            <h3 style="margin-top:0;">Franchise Slider</h3>
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_1" label="Slider Bild 1" desc="." img_obj=site_images.career_franchise_1 %}
+                            <hr>
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_2" label="Slider Bild 2" desc="." img_obj=site_images.career_franchise_2 %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. SEO -->
                 <div id="seo" class="dashboard-panel">
                     <h2>SEO Einstellungen</h2>
                     <form method="post" action="">
                         {% csrf_token %}
                         <div class="form-group mb-3">
                             <label>Meta-Titel</label>
-                            <input type="text" name="meta_title" class="form-control" placeholder="Titel der Website...">
+                            <input type="text" name="meta_title" class="form-control" placeholder="Website Titel...">
                         </div>
                         <div class="form-group mb-3">
                             <label>Meta-Beschreibung</label>
@@ -699,46 +552,27 @@
                     </form>
                 </div>
 
-                <!-- 5. BENUTZER MANAGEMENT -->
+                <!-- 6. BENUTZER MANAGEMENT -->
                 {% if user.is_superuser %}
                 <div id="benutzer" class="dashboard-panel">
                     <h2>Benutzer Management</h2>
-
                     <div class="user-layout">
-                        <!-- Linke Seite: Tabelle -->
+                        <!-- Tabelle -->
                         <div class="user-list">
                             <h3>Registrierte Benutzer</h3>
-                            <table class="modern-table">
-                                <thead>
-                                    <tr>
-                                        <th>Benutzername</th>
-                                        <th>E-Mail</th>
-                                        <th>Rolle</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
+                            <table class="modern-table shadow-sm">
+                                <thead><tr><th>Name</th><th>E-Mail</th><th>Rolle</th><th></th></tr></thead>
                                 <tbody>
                                     {% for u in users %}
                                     <tr>
-                                        <td>{{ u.username }}</td>
-                                        <td>{{ u.email }}</td>
-                                        <td>
-                                            {% if u.is_superuser %}
-                                                <span class="badge badge-admin">Admin</span>
-                                            {% else %}
-                                                <span class="badge badge-user">User</span>
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ u.username }}</td><td>{{ u.email }}</td>
+                                        <td>{% if u.is_superuser %}<span class="badge badge-admin">Admin</span>{% else %}<span class="badge badge-user">User</span>{% endif %}</td>
                                         <td style="text-align:right;">
                                             {% if u != user %}
-                                                <form method="post" action="{% url 'dashboard_delete_user' u.id %}" onsubmit="return confirm('Wirklich löschen?');">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn-icon delete big-delete" title="Benutzer löschen">
-                                                        🗑
-                                                    </button>
-                                                </form>
-                                            {% else %}
-                                                <span style="font-size:0.8rem; color:#aaa;">(Du)</span>
+                                            <form method="post" action="{% url 'dashboard_delete_user' u.id %}" onsubmit="return confirm('Löschen?');">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn-icon delete big-delete">🗑</button>
+                                            </form>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -746,13 +580,10 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- Rechte Seite: Erstellen -->
+                        <!-- Erstellen -->
                         <div class="user-create">
-                            <div class="card p-4">
-                                <h3>Neuen Benutzer anlegen</h3>
-                                <p style="font-size:0.85rem; color:#666;">Passwort wird automatisch generiert und per E-Mail gesendet.</p>
-
+                            <div class="card p-4 shadow-sm">
+                                <h3>Neuen Benutzer</h3>
                                 <form method="post" action="{% url 'dashboard_create_user' %}">
                                     {% csrf_token %}
                                     <div class="form-group mb-3">
@@ -766,11 +597,11 @@
                                     <div class="form-group mb-4">
                                         <label>Rolle</label>
                                         <select name="new_role" class="form-control">
-                                            <option value="common">Standard User</option>
-                                            <option value="admin">Administrator</option>
+                                            <option value="common">User</option>
+                                            <option value="admin">Admin</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-primary" style="width:100%;">Benutzer erstellen</button>
+                                    <button type="submit" class="btn btn-primary" style="width:100%;">Erstellen</button>
                                 </form>
                             </div>
                         </div>
@@ -784,28 +615,22 @@
     </div>
 </section>
 
-<!-- TOAST NOTIFICATION -->
-<div id="toast" class="toast">Einstellungen gespeichert!</div>
+<div id="toast" class="toast">Gespeichert!</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // --- TABS LOGIK & PERSISTENZ ---
+    // Tabs Restore
     const lastTab = localStorage.getItem("activeDashboardTab") || "statistiken";
     openTab(lastTab);
-
     const lastMediaTab = localStorage.getItem("activeMediaTab") || "media-home";
     openMediaSubTab(lastMediaTab);
 
-    // --- CHANGE DETECTION INIT ---
-    // Markiere alle Inputs mit ihrem initialen Wert für die Änderungs-Erkennung
+    // Change Detection for AJAX Save
     document.querySelectorAll('.media-upload-form input, .media-upload-form textarea').forEach(input => {
-        // Files werden separat behandelt
-        if(input.type !== 'file' && input.type !== 'hidden') {
-            input.setAttribute('data-original', input.value);
-        }
+        if(input.type !== 'file' && input.type !== 'hidden') input.setAttribute('data-original', input.value);
     });
 
-    // --- CHART.JS INITIALISIERUNG ---
+    // Chart.js
     const ctx = document.getElementById('trafficChart');
     const chartLabels = {{ stats.chart_labels|default:"[]"|safe }};
     const chartData = {{ stats.chart_data|default:"[]"|safe }};
@@ -816,58 +641,47 @@ document.addEventListener("DOMContentLoaded", function() {
             data: {
                 labels: chartLabels,
                 datasets: [{
-                    label: 'Seitenaufrufe',
-                    data: chartData,
-                    borderColor: '#007755',
-                    backgroundColor: 'rgba(0, 119, 85, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#007755',
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true
+                    label: 'Seitenaufrufe', data: chartData, borderColor: '#007755', backgroundColor: 'rgba(0, 119, 85, 0.1)', borderWidth: 2, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#007755', fill: true
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
-                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { x: {grid: {display:false}, ticks: {maxTicksLimit: 10}}, y: {beginAtZero: true, grid: {color: '#f0f0f0'}} } }
         });
     } else if (ctx) {
         ctx.style.display = 'none';
-        ctx.parentElement.innerHTML += '<p style="text-align:center; color:#999; padding-top:100px;">Keine Statistik-Daten verfügbar.</p>';
+        ctx.parentElement.innerHTML += '<p style="text-align:center; color:#999; padding-top:100px;">Keine Daten.</p>';
     }
 });
 
 function openTab(tabId) {
     document.querySelectorAll('.dashboard-panel').forEach(p => p.style.display = 'none');
     document.getElementById(tabId).style.display = 'block';
-
     document.querySelectorAll('.dashboard-tab-btn').forEach(b => b.classList.remove('active'));
-    // Simple Button active logic
     const btns = document.querySelectorAll('.dashboard-tab-btn');
-    btns.forEach(btn => {
-        if(btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
-    });
+    btns.forEach(b => { if(b.getAttribute('onclick').includes(tabId)) b.classList.add('active'); });
     localStorage.setItem("activeDashboardTab", tabId);
 }
 
 function openMediaSubTab(tabId) {
     document.querySelectorAll('.media-subpanel').forEach(p => p.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-
     document.querySelectorAll('.media-subtab-btn').forEach(b => b.classList.remove('active'));
     const btns = document.querySelectorAll('.media-subtab-btn');
-    btns.forEach(btn => {
-        if(btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
-    });
+    btns.forEach(b => { if(b.getAttribute('onclick').includes(tabId)) b.classList.add('active'); });
     localStorage.setItem("activeMediaTab", tabId);
+}
+
+function openJobSubTab(id) {
+    document.querySelectorAll('.job-subpanel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    const btns = document.querySelectorAll('#karriere .media-subtab-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Save Button nur bei Content zeigen
+    const saveBtn = document.getElementById('save-jobs-btn');
+    if (id === 'job-content') saveBtn.style.display = 'block';
+    else saveBtn.style.display = 'none';
 }
 
 function toggleReply(id) {
@@ -875,61 +689,55 @@ function toggleReply(id) {
     row.style.display = (row.style.display === "none") ? "table-row" : "none";
 }
 
-// --- GLOBAL SAVE FUNCTION ---
 function saveAllMedia() {
-    const activeSubTab = document.querySelector('.media-subpanel.active');
-    if(!activeSubTab) return;
+    // Logik: Finde aktives Panel (egal ob Media oder Karriere)
+    let activePanel = document.querySelector('.dashboard-panel[style*="block"]');
+    if (!activePanel) return;
 
-    // Suche ALLE Formulare in diesem Tab (auch Footer!)
-    const forms = activeSubTab.querySelectorAll('.media-upload-form');
+    // Falls Medien oder Karriere, suche aktives Subpanel
+    const activeSub = activePanel.querySelector('.media-subpanel.active, .job-subpanel.active');
+    const container = activeSub ? activeSub : activePanel;
+
+    const forms = container.querySelectorAll('.media-upload-form');
     let changedForms = [];
 
     forms.forEach(form => {
         const inputs = form.querySelectorAll('input, textarea');
         let isChanged = false;
-
         inputs.forEach(input => {
-            // 1. Datei Upload check
-            if (input.type === 'file') {
-                if (input.files.length > 0) isChanged = true;
-            }
-            // 2. Text/Email check (Adresse, Alt-Text, Telefon etc.)
+            if (input.type === 'file') { if (input.files.length > 0) isChanged = true; }
             else if (input.type !== 'hidden' && input.type !== 'submit') {
                 const original = input.getAttribute('data-original');
-                // Wenn original noch nicht gesetzt (zB dynamisch), ist es kein Change
-                if (original !== null && input.value !== original) {
-                    isChanged = true;
-                }
+                if (original !== null && input.value !== original) isChanged = true;
             }
         });
-
         if (isChanged) changedForms.push(form);
     });
 
-    if (changedForms.length === 0) {
-        showToast("Keine Änderungen erkannt.", "info");
-        return;
-    }
+    if (changedForms.length === 0) { showToast("Keine Änderungen.", "info"); return; }
 
-    const btn = document.querySelector('.media-header .btn');
-    const originalText = btn.innerText;
-    btn.innerText = "Speichere...";
-    btn.disabled = true;
+    // Sucht den Save Button im Header oder im Container
+    const btn = document.querySelector('.media-header .btn-primary') || container.querySelector('.btn-primary');
+    const originalText = btn ? btn.innerText : "";
+    if(btn) { btn.innerText = "Speichere..."; btn.disabled = true; }
 
     const promises = changedForms.map(form => {
         const formData = new FormData(form);
-        return fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        }).then(response => response.ok);
+        return fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(r => r.ok);
     });
 
     Promise.all(promises).then(() => {
-        btn.innerText = originalText;
-        btn.disabled = false;
-        showToast("Erfolgreich gespeichert!");
+        if(btn) { btn.innerText = originalText; btn.disabled = false; }
+        showToast("Gespeichert!");
         setTimeout(() => location.reload(), 1000);
+    });
+}
+
+function markProcessed(appId) {
+    fetch(`/dashboard/application/${appId}/processed/`).then(() => {
+        const span = document.getElementById(`status-text-${appId}`);
+        span.innerText = "Bearbeitet"; span.style.color = "#27ae60";
+        span.closest('tr').style.backgroundColor = "transparent";
     });
 }
 
@@ -937,124 +745,71 @@ function showToast(msg, type="success") {
     const toast = document.getElementById("toast");
     toast.innerText = msg;
     toast.className = "toast show";
-    if(type === "info") toast.style.backgroundColor = "#333";
-    else toast.style.backgroundColor = "var(--kbg-green)";
-    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    toast.style.backgroundColor = (type === "info") ? "#333" : "var(--kbg-green)";
+    setTimeout(() => toast.className = toast.className.replace("show", ""), 3000);
 }
 
-function openModal(src, title) {
-    if(!src || src === "") return;
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImg");
-    const captionText = document.getElementById("caption");
-    modal.style.display = "flex";
-    modalImg.src = src;
-    captionText.innerHTML = title || "";
+function openModal(src) {
+    const m = document.getElementById("imageModal");
+    document.getElementById("modalImg").src = src;
+    m.style.display = "flex";
 }
-
-function closeModal() {
-    document.getElementById("imageModal").style.display = "none";
-}
+function closeModal() { document.getElementById("imageModal").style.display = "none"; }
 </script>
 
 <style>
-    /* VARS */
-    :root {
-        --kbg-green: #007755;
-        --kbg-green-hover: #005a41;
-        --kbg-green-light: #e0f2f1;
-    }
+    :root { --kbg-green: #007755; --kbg-green-hover: #005a41; }
     .btn-primary { background-color: var(--kbg-green) !important; border-color: var(--kbg-green) !important; color: #fff; }
     .btn-primary:hover { background-color: var(--kbg-green-hover) !important; }
 
-    /* DASHBOARD LAYOUT */
     .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
     .header-actions { display: flex; gap: 1rem; }
-
     .dashboard-tabs { display: flex; gap: 5px; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
-    .dashboard-tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1rem; cursor: pointer; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-    .dashboard-tab-btn:hover { color: var(--kbg-green); background: #f9f9f9; }
+    .dashboard-tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1rem; cursor: pointer; color: #666; border-bottom: 2px solid transparent; transition: 0.2s; }
     .dashboard-tab-btn.active { color: var(--kbg-green); border-bottom: 2px solid var(--kbg-green); font-weight: bold; }
-
     .dashboard-panel { display: none; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* STATS */
-    .stats-grid-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
-    .stat-card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 1rem; }
-    .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-    .stat-info h3 { margin: 0; font-size: 1.6rem; color: #333; }
-    .stat-info p { margin: 0; color: #777; font-size: 0.85rem; }
-
-    .simple-table { width: 100%; border-collapse: collapse; }
-    .simple-table th { text-align: left; border-bottom: 1px solid #eee; padding: 8px 0; color: #555; font-size: 0.9rem; }
-    .simple-table td { border-bottom: 1px solid #f9f9f9; padding: 8px 0; font-size: 0.95rem; color: #333; }
-
-    /* MEDIA */
     .media-subtabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .media-subtab-btn { background: #eee; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; color: #555; }
     .media-subtab-btn.active { background: var(--kbg-green); color: #fff; }
-    .media-subpanel { display: none; }
-    .media-subpanel.active { display: block; }
+    .media-subpanel, .job-subpanel { display: none; }
+    .media-subpanel.active, .job-subpanel.active { display: block; }
 
     .media-row-container { display: grid; grid-template-columns: 80px 2fr 1.5fr 1.5fr; gap: 1.5rem; align-items: center; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1rem; border: 1px solid #f0f0f0; }
-    .media-thumb { order: -1; }
-    .media-info { order: 1; }
-    .media-alt { order: 2; }
-    .media-file { order: 3; }
+    .media-thumb { order: -1; } .media-info { order: 1; } .media-alt { order: 2; } .media-file { order: 3; }
+    .media-thumb img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #eee; transition: 0.2s; }
+    .media-thumb img:hover { transform: scale(1.1); }
 
-    .media-info h5 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 600; }
-    .media-info p { margin: 0; font-size: 0.85rem; color: #777; }
-    .media-filename { font-family: monospace; color: #555; font-size: 0.8rem; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
-    .media-thumb img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #eee; transition: transform 0.2s; }
-    .media-thumb img:hover { transform: scale(1.1); border-color: var(--kbg-green); }
+    /* Statistiken Grid Fix */
+    .stats-grid-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+    .stats-grid-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .stat-card { display: flex; align-items: center; gap: 1.5rem; }
 
-    /* TABLES */
     .table-responsive { background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
     .modern-table { width: 100%; border-collapse: collapse; }
-    .modern-table th { background: #f8f9fa; text-align: left; padding: 12px 15px; font-weight: 600; color: #555; border-bottom: 1px solid #eee; }
+    .modern-table th { background: #f8f9fa; text-align: left; padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; }
     .modern-table td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
     .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .badge-open { background: #fff3cd; color: #856404; }
-    .badge-done { background: #d4edda; color: #155724; }
-    .badge-admin { background: #cce5ff; color: #004085; }
-    .badge-user { background: #e2e3e5; color: #383d41; }
+    .badge-open { background: #fff3cd; color: #856404; } .badge-done { background: #d4edda; color: #155724; }
+    .badge-admin { background: #cce5ff; color: #004085; } .badge-user { background: #e2e3e5; color: #383d41; }
 
-    .btn-icon { background: none; border: none; cursor: pointer; font-size: 0.9rem; color: var(--kbg-green); transition: color 0.2s; }
-    .btn-icon:hover { text-decoration: underline; color: var(--kbg-green-hover); }
-    .btn-icon.delete.big-delete { color: #d32f2f; background: #ffebee; padding: 6px 10px; border-radius: 4px; font-size: 1.1rem; }
-    .btn-icon.delete.big-delete:hover { background: #ffcdd2; }
-
-    /* FORMS & LAYOUT */
-    .reply-row { background: #fafafa; }
-    .reply-box { padding: 1rem; border-left: 3px solid var(--kbg-green); margin: 0 1rem 1rem 1rem; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: calc(100% - 2rem); box-sizing: border-box; }
-    .reply-textarea { width: 100%; box-sizing: border-box; resize: vertical; }
-
+    .reply-box { padding: 1rem; border-left: 3px solid var(--kbg-green); margin: 1rem; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .user-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .user-list { flex: 2; min-width: 300px; }
-    .user-create { flex: 1; min-width: 280px; }
+    .user-list { flex: 2; min-width: 300px; } .user-create { flex: 1; min-width: 280px; }
+    .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box; }
 
-    .image-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
-    .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; object-fit: contain; border-radius: 4px; }
-    .close-modal { position: absolute; top: 20px; right: 40px; color: #fff; font-size: 50px; font-weight: bold; cursor: pointer; z-index: 1001; }
+    /* Utility */
+    .shadow-sm { box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; background: #fff; border-radius: 8px; }
+    .card { background: #fff; border-radius: 8px; }
 
-    .toast { visibility: hidden; min-width: 250px; background-color: var(--kbg-green); color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .image-modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+    .modal-content { max-width: 90%; max-height: 90vh; }
+    .close-modal { position: absolute; top: 20px; right: 40px; color: #fff; font-size: 50px; cursor: pointer; }
+    .toast { visibility: hidden; min-width: 250px; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-
-    .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box; }
-    input[type="file"] { font-size: 0.85rem; }
-    .media-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-
-    @media (max-width: 1100px) {
-        .media-row-container { grid-template-columns: 1fr; gap: 1rem; text-align: center; }
-        .media-thumb { order: -1; margin: 0 auto; }
-        .media-info { order: 0; }
-        .media-alt { order: 1; }
-        .media-file { order: 2; }
-    }
-    @media (max-width: 900px) {
-        .user-layout { flex-direction: column; }
-    }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    @media (max-width: 1100px) { .media-row-container { grid-template-columns: 1fr; text-align: center; gap: 1rem; } .media-thumb { margin: 0 auto; } }
+    @media (max-width: 900px) { .user-layout { flex-direction: column; } .stats-grid-top, .stats-grid-bottom { grid-template-columns: 1fr; } }
 </style>
-
 {% endblock %}

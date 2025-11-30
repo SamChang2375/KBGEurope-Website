@@ -56,3 +56,7 @@ class PageVisit(models.Model):
 
     def __str__(self):
         return f"{self.path} at {self.timestamp}"
+
+
+class JobContent:
+    pass

@@ -58,7 +58,6 @@ urlpatterns = [
     path("menu/<int:pk>/update/", views.dashboard_menu_item_update, name="dashboard_menu_item_update"),
     path("menu/<int:pk>/delete/", views.dashboard_menu_item_delete, name="dashboard_menu_item_delete"),
 
-    path("jobs/create/", views.dashboard_job_create, name="dashboard_job_create"),
-    path("jobs/<int:pk>/update/", views.dashboard_job_update, name="dashboard_job_update"),
-    path("jobs/<int:pk>/delete/", views.dashboard_job_delete, name="dashboard_job_delete"),
+    path("jobs/content/update/", views.dashboard_job_content_update, name="dashboard_job_content_update"),
+    path("application/<int:pk>/processed/", views.dashboard_application_processed, name="dashboard_application_processed"),
 ]

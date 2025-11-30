@@ -9,17 +9,16 @@
 <style>
     :root {
         --kbg-green: #007755;
+        --kbg-green-hover: #005a41;
         --kbg-beige-bg: #f4f2ed;
-        --kbg-gray: #e0e0e0;
     }
 
-    /* 1. INTRO / HEADER */
+    /* 1. INTRO */
     .jobs-intro {
         background-color: var(--kbg-beige-bg);
         text-align: center;
         padding: 4rem 1.5rem;
     }
-
     .jobs-kicker {
         color: var(--kbg-green);
         font-weight: 700;
@@ -28,7 +27,6 @@
         margin-bottom: 0.5rem;
         display: block;
     }
-
     .jobs-title {
         font-size: 3rem;
         color: #222;
@@ -36,12 +34,11 @@
         margin-bottom: 1rem;
     }
 
-    /* 2. JOB LISTINGS */
+    /* 2. JOB GRID */
     .jobs-list-section {
         background-color: #fff;
         padding: 4rem 0;
     }
-
     .jobs-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -50,34 +47,28 @@
         margin: 0 auto;
         padding: 0 1.5rem;
     }
-
     .job-card {
-        background: #f0f0f0; /* Leichtes Grau für die Karte */
-        border-radius: 0; /* Eckig laut Screenshot */
-        overflow: hidden;
+        background: #f0f0f0;
         display: flex;
         flex-direction: column;
         transition: transform 0.2s;
+        border-radius: 0; /* Eckig laut Design */
     }
-
     .job-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
-
     .job-img {
         width: 100%;
         height: 250px;
         object-fit: cover;
     }
-
     .job-content {
         padding: 1.5rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
-
     .job-title {
         font-size: 1.5rem;
         margin-top: 0;
@@ -85,40 +76,34 @@
         color: #333;
         font-weight: 700;
     }
-
     .job-list {
-        list-style: disc;
         padding-left: 1.2rem;
         margin-bottom: 1.5rem;
-        color: #444;
         line-height: 1.6;
+        color: #555;
     }
-
-    .job-list li {
-        margin-bottom: 0.3rem;
-    }
-
     .btn-job {
-        margin-top: auto; /* Drückt den Button nach unten */
+        margin-top: auto;
         background-color: var(--kbg-green);
         color: #fff;
-        text-align: center;
         padding: 0.8rem 1.5rem;
         border-radius: 30px;
         text-decoration: none;
         font-weight: 600;
-        display: inline-block;
-        transition: background 0.2s;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1rem;
     }
-    .btn-job:hover { background-color: #005a41; }
+    .btn-job:hover { background-color: var(--kbg-green-hover); }
 
-
-    /* 3. FRANCHISE SECTION (Beige) */
+    /* 3. FRANCHISE (Beige) */
     .franchise-section {
         background-color: var(--kbg-beige-bg);
         padding: 5rem 0;
     }
-
     .franchise-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -128,8 +113,6 @@
         margin: 0 auto;
         padding: 0 1.5rem;
     }
-
-    /* Slider Styles */
     .franchise-slider-window {
         width: 100%;
         height: 400px;
@@ -137,47 +120,116 @@
         overflow: hidden;
         position: relative;
     }
-
     .franchise-track {
         display: flex;
         width: 200%;
         height: 100%;
         transition: transform 0.8s ease-in-out;
     }
-
     .franchise-slide {
         width: 50%;
         height: 100%;
         flex-shrink: 0;
     }
-
     .franchise-slide img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+    .franchise-text { text-align: center; }
+    .franchise-title { color: #222; font-size: 2.5rem; margin-bottom: 1rem; }
+    .franchise-desc { color: #555; line-height: 1.7; margin-bottom: 2rem; }
 
-    .franchise-text {
+    /* MODAL STYLES */
+    .job-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(4px);
+        overflow-y: auto; /* Scrollbar falls Modal zu hoch */
+    }
+    .job-modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        width: 90%;
+        max-width: 1100px;
+        border-radius: 12px;
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Split Layout */
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 40px;
+        cursor: pointer;
+        z-index: 10;
+        color: #333;
+        line-height: 0.8;
+    }
+
+    .modal-left {
+        background: var(--kbg-beige-bg);
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        border-right: 1px solid #eee;
+    }
+    .modal-right {
+        padding: 3rem;
+        background: #fff;
+    }
+
+    .modal-left h2 { color: var(--kbg-green); margin-top: 0; font-size: 2rem; margin-bottom: 1rem; }
+    .modal-left p { line-height: 1.6; color: #444; font-size: 1rem; white-space: pre-line; }
+
+    /* FORM STYLES */
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; color: #333; }
+    .form-control { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+
+    .file-btn {
+        border: 1px dashed #ccc;
+        padding: 1rem;
+        width: 100%;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        background: #fafafa;
         text-align: center;
+        box-sizing: border-box;
     }
+    .file-btn:hover { background: #f0f0f0; border-color: #999; }
 
-    .franchise-title {
-        color: #222;
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .franchise-desc {
-        color: #555;
-        line-height: 1.7;
-        margin-bottom: 2rem;
+    /* SUCCESS OVERLAY */
+    .success-overlay {
+        position: fixed;
+        inset: 0;
+        background: white;
+        z-index: 3000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
     }
 
     @media (max-width: 900px) {
         .jobs-grid { grid-template-columns: 1fr; }
-        .franchise-grid { grid-template-columns: 1fr; }
+        .franchise-grid { grid-template-columns: 1fr; display: flex; flex-direction: column-reverse; }
         .franchise-slider-window { height: 300px; }
-        .franchise-grid { display: flex; flex-direction: column-reverse; } /* Text oben oder unten je nach Wunsch */
+
+        .job-modal-content { grid-template-columns: 1fr; margin: 0; width: 100%; border-radius: 0; min-height: 100vh; }
+        .modal-left, .modal-right { padding: 1.5rem; }
     }
 </style>
 
@@ -190,29 +242,62 @@
     </div>
 </section>
 
-<!-- 2. WIR SUCHEN (Dynamisch aus DB) -->
+<!-- 2. JOB LISTE -->
 <section class="jobs-list-section">
     <div class="container" style="text-align:center; margin-bottom:2rem;">
         <h2 style="font-size:2rem; margin:0;">Wir suchen</h2>
     </div>
 
     <div class="jobs-grid">
-        {% for job in jobs %}
+
+        <!-- JOB 1: Shopleiter -->
         <div class="job-card">
-            <img src="{{ job.image.url }}" alt="{{ job.title }}" class="job-img">
+            <img src="{% if jobs.manager.image %}{{ jobs.manager.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Shopleiter">
             <div class="job-content">
-                <h3 class="job-title">{{ job.title }}</h3>
+                <h3 class="job-title">Shopleiter (m/w)</h3>
                 <ul class="job-list">
-                    {% for point in job.get_points %}
+                    {% for point in jobs.manager.get_points %}
                         <li>{{ point }}</li>
+                    {% empty %}
+                        <li>Bitte Punkte im Dashboard hinzufügen.</li>
                     {% endfor %}
                 </ul>
-                <a href="{{ job.button_link }}" class="btn-job">
-                    {{ job.button_text }}
-                </a>
+                <button class="btn-job" onclick="openJobModal('manager')">Zur Bewerbung</button>
             </div>
         </div>
-        {% endfor %}
+
+        <!-- JOB 2: Service -->
+        <div class="job-card">
+            <img src="{% if jobs.service.image %}{{ jobs.service.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Service">
+            <div class="job-content">
+                <h3 class="job-title">Service (m/w)</h3>
+                <ul class="job-list">
+                    {% for point in jobs.service.get_points %}
+                        <li>{{ point }}</li>
+                    {% empty %}
+                        <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                    {% endfor %}
+                </ul>
+                <button class="btn-job" onclick="openJobModal('service')">Zur Bewerbung</button>
+            </div>
+        </div>
+
+        <!-- JOB 3: Koch -->
+        <div class="job-card">
+            <img src="{% if jobs.cook.image %}{{ jobs.cook.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Koch">
+            <div class="job-content">
+                <h3 class="job-title">Koch (m/w)</h3>
+                <ul class="job-list">
+                    {% for point in jobs.cook.get_points %}
+                        <li>{{ point }}</li>
+                    {% empty %}
+                        <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                    {% endfor %}
+                </ul>
+                <button class="btn-job" onclick="openJobModal('cook')">Zur Bewerbung</button>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -220,7 +305,7 @@
 <section class="franchise-section">
     <div class="franchise-grid">
 
-        <!-- Linker Slider -->
+        <!-- Slider Links -->
         <div class="franchise-slider-window">
             <div class="franchise-track" id="franchiseTrack">
                 <!-- Bild 1 -->
@@ -234,32 +319,155 @@
             </div>
         </div>
 
-        <!-- Rechter Text -->
+        <!-- Text Rechts -->
         <div class="franchise-text">
             <span class="jobs-kicker" style="font-size:1.2rem;">Franchise</span>
             <h2 class="franchise-title">Werden Sie unser Partner</h2>
             <p class="franchise-desc">
                 KBG ist bereits erfolgreich in den USA. Und immer mehr gibt es Nachfragen, auch in Europa.
-                Ergreifen Sie die Gelegenheit und fragen Sie uns einfach nach.
+                Ergreifen Sie die Gelegenheit und fragen Sie uns einfach nach. Sie uns einfach nach.
             </p>
-            <a href="{% url 'kontakt' %}" class="btn-job">Mehr Informationen</a>
+            <a href="{% url 'kontakt' %}" class="btn-job" style="display:inline-block; width:auto; padding: 1rem 2.5rem;">Mehr Informationen</a>
         </div>
 
     </div>
 </section>
 
+
+<!-- BEWERBUNG MODAL -->
+<div id="applicationModal" class="job-modal">
+    <div class="job-modal-content">
+        <span class="close-modal" onclick="closeJobModal()">&times;</span>
+
+        <!-- Linke Seite: Dynamische Job-Infos -->
+        <div class="modal-left">
+            <h2 id="modalTitle">Job Titel</h2>
+            <div id="modalText" style="flex: 1; overflow-y: auto;"></div>
+
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+                <p style="color: var(--kbg-green); font-weight: 700; margin: 0;">
+                    Neugierig? Dann lade hier dein Anschreiben und Lebenslauf hoch, und wir melden uns bei dir per Mail!
+                </p>
+            </div>
+        </div>
+
+        <!-- Rechte Seite: Formular -->
+        <div class="modal-right">
+            <h3 style="margin-top:0; margin-bottom:1.5rem;">Deine Daten</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Hidden Field für den Job-Typ -->
+                <input type="hidden" name="job_type_label" id="jobTypeInput">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Vorname*</label>
+                        <input type="text" name="first_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nachname*</label>
+                        <input type="text" name="last_name" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>E-Mail*</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Telefon (optional)</label>
+                    <input type="text" name="phone" class="form-control">
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Anschreiben (PDF)*</label>
+                        <input type="file" name="cover_letter" class="file-btn" accept=".pdf,.doc,.docx" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lebenslauf (PDF)*</label>
+                        <input type="file" name="cv" class="file-btn" accept=".pdf,.doc,.docx" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-job" style="margin-top: 1.5rem;">Bewerbung Abschicken</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+{% if success %}
+<div class="success-overlay">
+    <h1 style="color: var(--kbg-green); font-size: 3rem; margin-bottom: 1rem;">Danke für deine Bewerbung!</h1>
+    <p style="font-size: 1.2rem; color: #555;">Wir haben deine Unterlagen erhalten und werden uns per E-Mail oder telefonisch bei dir melden.</p>
+    <p style="margin-top: 3rem; font-size: 1rem; color: #999;">
+        Weiterleitung zur Startseite in <span id="countdown" style="color:#333; font-weight:bold;">5</span> Sekunden...
+    </p>
+</div>
 <script>
+    let count = 5;
+    setInterval(() => {
+        count--;
+        document.getElementById('countdown').innerText = count;
+        if(count <= 0) window.location.href = "{% url 'home' %}";
+    }, 1000);
+</script>
+{% endif %}
+
+<!-- JAVASCRIPT LOGIK -->
+<script>
+    // Franchise Slider
     document.addEventListener("DOMContentLoaded", function() {
-        // Slider für Franchise (automatisch alle 4s)
         const track = document.getElementById('franchiseTrack');
         if(track) {
             let isSlide1 = true;
             setInterval(() => {
                 track.style.transform = isSlide1 ? "translateX(-50%)" : "translateX(0%)";
                 isSlide1 = !isSlide1;
-            }, 4000);
+            }, 5000);
         }
     });
+
+    // Daten für Modal (kommen aus Django View)
+    // Wir nutzen escapejs um Zeilenumbrüche sicher zu machen
+    const jobData = {
+        'manager': {
+            title: "{{ jobs.manager.popup_title|escapejs }}",
+            text: `{{ jobs.manager.popup_text|escapejs }}`,
+            label: "Shopleiter"
+        },
+        'service': {
+            title: "{{ jobs.service.popup_title|escapejs }}",
+            text: `{{ jobs.service.popup_text|escapejs }}`,
+            label: "Service"
+        },
+        'cook': {
+            title: "{{ jobs.cook.popup_title|escapejs }}",
+            text: `{{ jobs.cook.popup_text|escapejs }}`,
+            label: "Koch"
+        }
+    };
+
+    function openJobModal(type) {
+        const data = jobData[type];
+        if(data) {
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalText').innerText = data.text;
+            document.getElementById('jobTypeInput').value = data.label;
+
+            document.getElementById('applicationModal').style.display = 'block';
+            // Body Scroll lock
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeJobModal() {
+        document.getElementById('applicationModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
 </script>
 
 {% endblock %}
