@@ -33,11 +33,11 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 72px;
+    height: 90px;          /* größerer Header */
 }
 
 .logo img {
-    height: 40px;
+    height: 55px;          /* größeres Logo */
 }
 
 .main-nav a {
@@ -383,25 +383,23 @@ a {
 }
 
 /* ========== RESPONSIVE ========== */
-
 @media (max-width: 900px) {
+    /* Header bleibt eine Reihe: Logo links, Burger rechts */
     .header-inner {
-        flex-direction: column;
-        height: auto;
-        padding: .5rem 0 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: 90px;
+        padding: .5rem 0;
     }
 
+    /* Desktop-Navi wird über base.html ausgeblendet,
+       daher hier keine besondere Darstellung mehr nötig */
     .main-nav {
-        margin-top: .5rem;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        margin-top: 0;
     }
 
-    .main-nav a {
-        margin: .3rem .8rem;
-    }
-
+    /* Rest wie gehabt */
     .two-column,
     .three-column,
     .four-column,
@@ -421,6 +419,7 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
 
 /* ========== SOCIAL ICONS (Footer) ========== */
 
