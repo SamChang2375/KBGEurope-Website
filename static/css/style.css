@@ -1,3 +1,8 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 /* ========== GLOBAL ========== */
 
 body {
@@ -390,16 +395,16 @@ a {
         justify-content: space-between;
         align-items: center;
         height: 90px;
-        padding: .5rem 0;
+        /* WICHTIG: nur oben/unten setzen, Seiten kommen von .container */
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        /* KEIN padding: .5rem 0; mehr! */
     }
 
-    /* Desktop-Navi wird über base.html ausgeblendet,
-       daher hier keine besondere Darstellung mehr nötig */
     .main-nav {
         margin-top: 0;
     }
 
-    /* Rest wie gehabt */
     .two-column,
     .three-column,
     .four-column,
@@ -419,6 +424,7 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
 
 
 /* ========== SOCIAL ICONS (Footer) ========== */

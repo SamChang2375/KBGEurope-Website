@@ -7,7 +7,6 @@
 {% block content %}
 <style>
   :root {
-    /* Farben mit 90% Deckkraft (0.9 alpha) für Transparenz */
     --kbg-green-trans: rgba(46, 122, 85, 0.9);
     --kbg-blue-trans: rgba(63, 125, 187, 0.9);
     --kbg-orange-trans: rgba(200, 138, 39, 0.9);
@@ -26,26 +25,29 @@
   .kbg-order-hero {
     position: relative;
     width: 100%;
-    /* Höhe 75vh damit es auf den meisten Screens gut füllt, aber Footer sichtbar bleibt */
     height: 75vh;
     min-height: 500px;
-
-    /* Dynamisches Hintergrundbild mit Fallback */
     background-image: url("{% site_image_url 'order_hero' 'img/order/order-bg.jpg' %}");
     background-size: cover;
     background-position: center;
+
+    /* WICHTIG: gleiche Seitenabstände wie .container */
+    padding: 0 1.5rem;
+    box-sizing: border-box;
 
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
+  /* Buttons wirklich zentrieren, falls irgendwas Flex stört */
   .kbg-order-buttons {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 320px;
-    max-width: 90%; /* Für sehr kleine Handys */
+    max-width: 90%;
+    margin: 0 auto;        /* horizontale Zentrierung als Backup */
   }
 
   .kbg-order-btn {
@@ -58,9 +60,9 @@
     font-weight: 700;
     color: white;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Leichter Schatten für Tiefe */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    backdrop-filter: blur(4px); /* Optional: macht den Hintergrund hinter dem Button leicht unscharf */
+    backdrop-filter: blur(4px);
   }
 
   .kbg-order-btn:hover {
@@ -68,21 +70,10 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
   }
 
-  .kbg-btn-pickup {
-    background: var(--kbg-green-trans);
-  }
-
-  .kbg-btn-wolt {
-    background: var(--kbg-blue-trans);
-  }
-
-  .kbg-btn-lieferando {
-    background: var(--kbg-orange-trans);
-  }
-
-  .kbg-btn-ubereats {
-    background: var(--kbg-uber-trans);
-  }
+  .kbg-btn-pickup    { background: var(--kbg-green-trans); }
+  .kbg-btn-wolt      { background: var(--kbg-blue-trans); }
+  .kbg-btn-lieferando{ background: var(--kbg-orange-trans); }
+  .kbg-btn-ubereats  { background: var(--kbg-uber-trans); }
 
   @media (max-width: 600px) {
     .kbg-order-hero {
@@ -93,8 +84,8 @@
       width: 280px;
     }
     .kbg-order-btn {
-        font-size: 1.1rem;
-        padding: 12px 24px;
+      font-size: 1.1rem;
+      padding: 12px 24px;
     }
   }
 </style>
