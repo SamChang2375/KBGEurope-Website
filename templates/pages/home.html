@@ -69,12 +69,13 @@
     </div>
 </section>
 
-<!-- ========== MENÜ (Split Layout 25/50/25) ========== -->
+<!-- ========== MENÜ (Split Layout 25/50/25) - HTML FÜR RESPONSIVEN SLIDER ERWEITERT ========== -->
 <section class="section section-white">
+    <!-- Desktop: 25/50/25 -->
     <div class="container menu-split-layout">
 
-        <!-- Links: 25% -->
-        <div class="menu-side-img">
+        <!-- Links: 25% (Nur Desktop/Groß) -->
+        <div class="menu-side-img menu-img-1">
             <img src="{% site_image_url 'home_menu_1' 'img/section-placeholder.jpg' %}"
                  alt="{% site_image_alt 'home_menu_1' 'Gericht 1' %}"
                  class="rounded-img full-height-img">
@@ -89,17 +90,47 @@
             <a href="{% url 'menu' %}" class="btn btn-primary">Entdecken Sie unser Menü</a>
         </div>
 
-        <!-- Rechts: 25% -->
-        <div class="menu-side-img">
+        <!-- Rechts: 25% (Nur Desktop/Groß) -->
+        <div class="menu-side-img menu-img-2">
             <img src="{% site_image_url 'home_menu_2' 'img/section-placeholder.jpg' %}"
                  alt="{% site_image_alt 'home_menu_2' 'Gericht 2' %}"
                  class="rounded-img full-height-img">
         </div>
 
     </div>
+
+    <!-- NEUER BEREICH: Menü für Tablet (2 Bilder) und Mobile (Slider) -->
+    <div class="container menu-responsive-container">
+
+        <!-- NEU: Textblock – identisch wie oben, aber für Tablet & Mobile -->
+        <div class="menu-center-text section-center menu-responsive-text">
+            <h3 class="section-kicker">Menü</h3>
+            <h2 class="section-title">Genießen Sie die koreanische Vielfalt</h2>
+            <p>Unsere Speisen werden täglich frisch zubereitet. Entdecken Sie die Vielfalt von Bibimbap, Bulgogi und vielem mehr.</p>
+            <br>
+            <a href="{% url 'menu' %}" class="btn btn-primary">Entdecken Sie unser Menü</a>
+        </div>
+
+        <!-- Slider / Bilder -->
+        <div class="menu-mobile-slider" id="menuSlider">
+            <!-- Die einzelnen Bilder für den Slider -->
+            <div class="menu-slider-track" id="menuSliderTrack">
+                <div class="menu-slide-item">
+                     <img src="{% site_image_url 'home_menu_1' 'img/section-placeholder.jpg' %}"
+                         alt="{% site_image_alt 'home_menu_1' 'Gericht 1' %}"
+                         class="rounded-img">
+                </div>
+                <div class="menu-slide-item">
+                     <img src="{% site_image_url 'home_menu_2' 'img/section-placeholder.jpg' %}"
+                         alt="{% site_image_alt 'home_menu_2' 'Gericht 2' %}"
+                         class="rounded-img">
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
-<!-- ========== CATERING ========== -->
+<!-- ========== CATERING - HTML FÜR RESPONSIVEN SLIDER ERWEITERT ========== -->
 <section class="section section-light">
     <div class="container section-center">
         <h2 class="section-title">Unser Catering</h2>
@@ -109,11 +140,33 @@
         <a href="{% url 'catering' %}" class="btn btn-primary">Hier geht es zum Catering!</a>
     </div>
 
-    <div class="container four-column gallery-row">
+    <!-- Container für Desktop (4-Spalten) und Tablet (2x2-Grid) -->
+    <div class="container gallery-row" id="cateringGalleryDesktop">
         <img src="{% site_image_url 'home_catering_1' 'img/section-placeholder.jpg' %}" class="rounded-img">
         <img src="{% site_image_url 'home_catering_2' 'img/section-placeholder.jpg' %}" class="rounded-img">
         <img src="{% site_image_url 'home_catering_3' 'img/section-placeholder.jpg' %}" class="rounded-img">
         <img src="{% site_image_url 'home_catering_4' 'img/section-placeholder.jpg' %}" class="rounded-img">
+    </div>
+
+    <!-- NEUER BEREICH: Catering für Mobile (Slider) -->
+    <div class="container">
+        <div class="catering-mobile-slider" id="cateringSlider">
+            <div class="catering-slider-track" id="cateringSliderTrack">
+                <!-- Die 4 Bilder als Slider-Elemente -->
+                <div class="catering-slide-item">
+                    <img src="{% site_image_url 'home_catering_1' 'img/section-placeholder.jpg' %}" class="rounded-img">
+                </div>
+                <div class="catering-slide-item">
+                    <img src="{% site_image_url 'home_catering_2' 'img/section-placeholder.jpg' %}" class="rounded-img">
+                </div>
+                <div class="catering-slide-item">
+                    <img src="{% site_image_url 'home_catering_3' 'img/section-placeholder.jpg' %}" class="rounded-img">
+                </div>
+                <div class="catering-slide-item">
+                    <img src="{% site_image_url 'home_catering_4' 'img/section-placeholder.jpg' %}" class="rounded-img">
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -146,22 +199,73 @@
 </section>
 
 
-<!-- ========== STYLES (Aktualisiert) ========== -->
+<!-- ========== STYLES (Aktualisiert für Responsive Design) ========== -->
 <style>
     /* --- SYSTEM FARBE --- */
     :root {
         --kbg-green: #007755;
+        --kbg-orange: #f5821f;
     }
     .btn-primary { background-color: var(--kbg-green) !important; border-color: var(--kbg-green) !important; }
     .section-kicker { color: var(--kbg-green) !important; }
     .section-kicker.green { color: var(--kbg-green) !important; }
 
-    /* --- HERO TYPOGRAPHY & ANIMATION --- */
+    /* --- BASIS-CONTAINER: Stellt sicher, dass an den Rändern immer Platz ist --- */
+    /* Korrektur: Einheitliches Padding und auto Margin für perfekte Symmetrie und Zentrierung */
+    .container {
+        width: 100%;
+        padding-left: 1.5rem; /* Basis-Padding für Mobile */
+        padding-right: 1.5rem;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box; /* Wichtig, damit Padding zur Breite hinzukommt und nicht subtrahiert */
+    }
+    /* sm: 40rem (640px) */
+    @media (width >= 40rem) {
+        .container { padding-left: 2rem; padding-right: 2rem; }
+    }
+    /* lg: 64rem (1024px) */
+    @media (width >= 64rem) {
+        .container { max-width: 1024px; }
+    }
+    /* xl: 80rem (1280px) */
+    @media (width >= 80rem) {
+        .container { max-width: 1280px; }
+    }
+
+
+    /* --- HERO SECTION (KORREKTUREN) --- */
     .hero-section {
         position: relative;
-        /* HÖHE ERHÖHT (vorher 420px, jetzt 600px -> ca +40%) */
         height: 600px;
         overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    /* KORREKTUR 1: Bild füllt immer aus, kein weißer Rand */
+    .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Stellt sicher, dass das Bild gecroppt wird und die Fläche füllt */
+    }
+
+    /* KORREKTUR 2: Textzentrierung mit Flexbox */
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: rgba(0,0,0,0.1); /* Leichtes Overlay, um Text lesbar zu halten */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Vertikal zentriert */
+        align-items: center;     /* Horizontal zentriert */
+        color: #fff;
+        text-align: center;
     }
 
     .hero-text-julee {
@@ -173,57 +277,45 @@
     .hero-text-korean {
         font-family: 'Outfit', sans-serif;
         font-size: 64px;
-        /* FARBE GEÄNDERT */
-        color: #f5821f;
+        color: var(--kbg-orange);
         margin: 0.2rem 0;
         font-weight: 700;
     }
     .hero-text-pronounce {
         font-family: 'Julee', cursive;
         font-size: 24px;
-        color: #f5821f; /* Auch hier das neue Orange passend? Oder altes Orange lassen? Ich nehme das neue für Konsistenz */
+        color: var(--kbg-orange);
         margin-bottom: 1rem;
     }
 
-    /* Animationen Keyframes */
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .anim-1 { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
-    .anim-2 { animation: fadeInUp 0.8s ease-out 0.3s forwards; opacity: 0; }
-    .anim-3 { animation: fadeInUp 0.8s ease-out 0.6s forwards; opacity: 0; }
-    .anim-4 { animation: fadeInUp 0.8s ease-out 0.9s forwards; opacity: 0; }
-
-    @media (max-width: 768px) {
-        .hero-section { height: 450px; } /* Handy Höhe etwas kleiner */
-        .hero-text-julee, .hero-text-korean { font-size: 36px; }
-        .hero-text-pronounce { font-size: 18px; }
+    /* Anpassung der HERO-Typographie für kleinere Bildschirme (md: 768px) */
+    @media (max-width: 48rem) { /* < 768px */
+        .hero-section { height: 450px; }
+        /* ca. 30 % größer als vorher (36px → 48px, 18px → 24px) */
+        .hero-text-julee, .hero-text-korean { font-size: 48px; }
+        .hero-text-pronounce { font-size: 24px; }
     }
 
 
     /* --- SLIDER "WER WIR SIND" (SLIDING) --- */
+    /* ... (Unverändert gelassen) ... */
     .about-slider-window {
         overflow: hidden;
         position: relative;
         border-radius: 12px;
         aspect-ratio: 3/2;
     }
-
     .about-slider-track {
         display: flex;
         width: 200%;
         height: 100%;
         transition: transform 0.8s ease-in-out;
     }
-
     .about-slide-item {
         width: 50%;
         height: 100%;
         flex-shrink: 0;
     }
-
     .about-slide-item img {
         width: 100%;
         height: 100%;
@@ -232,11 +324,167 @@
     }
 
 
-    /* --- TESTIMONIALS FIXES (Kein grauer Rand, Bild zentriert) --- */
+    /* --- MENÜ SPLIT LAYOUT (RESPONSIV) --- */
+    /* Desktop (>= 64rem / 1024px) - 25/50/25 Split */
+    .menu-split-layout {
+        display: none;
+    }
+    @media (width >= 64rem) {
+        .menu-split-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .menu-side-img {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .menu-center-text {
+            flex: 2;
+            padding: 0 1rem;
+        }
+        .menu-responsive-container {
+            display: none;
+        }
+    }
+
+    /* Desktop-Bilder links/rechts:
+       etwas schmaler als die Spalte -> wirken wie beim Catering im Container */
+    .full-height-img {
+        width: 100%;          /* volle Spaltenbreite -> direkt am lila Rand */
+        aspect-ratio: 1 / 1;  /* weiterhin quadratisch */
+        object-fit: cover;
+        display: block;
+        /* max-width entfernt */
+    }
+
+    /* Standard: Responsive-Container ausblenden,
+       wird in den Media Queries wieder aktiviert */
+    .menu-responsive-container {
+        display: none;
+    }
+
+    /* Tablet (>= 40rem / 640px und < 64rem / 1024px)
+       -> 2 Bilder teilen sich die Breite sauber im Container (wie Catering-Grid) */
+    @media (width >= 40rem) and (max-width: 63.99rem) {
+        .menu-split-layout { display: none; }
+        .menu-responsive-container { display: block; }
+
+        .menu-mobile-slider {
+            margin-top: 2rem;
+        }
+
+        .menu-slider-track {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            transform: none !important; /* keine Slider-Animation im Tablet-Layout */
+        }
+
+        .menu-slide-item {
+            width: 100%;
+        }
+
+        .menu-slide-item img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+    /* Mobile (< 40rem / 640px) - Text über Slider
+       -> Slider bleibt, aber Bilder werden nicht quadratisch erzwungen */
+    @media (max-width: 39.99rem) {
+        .menu-split-layout { display: none; }
+        .menu-responsive-container { display: block; }
+
+        .menu-mobile-slider {
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+            border-radius: 12px;
+        }
+        .menu-slider-track {
+            display: flex;
+            width: 200%; /* 2 Slides */
+            transition: transform 0.5s ease-in-out;
+        }
+        .menu-slide-item {
+            width: 50%;
+            flex-shrink: 0;
+        }
+        .menu-slide-item img {
+            width: 100%;
+            height: auto;   /* natürliche Höhe, kein Abschneiden */
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+
+    /* --- CATERING GALERIE (RESPONSIV) --- */
+
+    /* Desktop (>= 64rem / 1024px) - 4 Spalten */
+    .gallery-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+    .catering-mobile-slider { display: none; }
+
+
+    /* Tablet (>= 40rem / 640px) und (< 64rem / 1024px) - 2x2 Grid */
+    @media (width >= 40rem) and (max-width: 63.99rem) {
+        .gallery-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+
+    /* Mobile (< 40rem / 640px) - Slider */
+    @media (max-width: 39.99rem) {
+        .gallery-row { display: none; }
+
+        .catering-mobile-slider {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+            margin-top: 3rem;
+            border-radius: 12px;
+        }
+        .catering-slider-track {
+            display: flex;
+            width: 400%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        .catering-slide-item {
+            width: 25%;
+            height: 100%;
+            flex-shrink: 0;
+        }
+        .catering-slide-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+
+    /* --- KUNDENSTIMMEN (KORREKTUREN) --- */
     .testimonials-section {
         position: relative;
-        height: 320px; /* Höhe etwas reduziert */
-        padding: 0 !important; /* WICHTIG: Entfernt Padding der .section Klasse */
+        /* KORREKTUR: Höhe erhöht */
+        height: 400px;
+        padding: 0 !important;
         overflow: hidden;
     }
 
@@ -250,7 +498,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        /* WICHTIG: Zentriert das Bild vertikal und horizontal */
         object-position: center center;
     }
 
@@ -259,25 +506,24 @@
         inset: 0;
         z-index: 1;
         background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
-        /* FLEXBOX ZUR ZENTRIERUNG */
         display: flex;
         flex-direction: column;
-        justify-content: center; /* Vertikal mittig */
-        align-items: center;     /* Horizontal mittig */
+        justify-content: center;
+        align-items: center;
         padding: 0 1.5rem;
     }
 
     .testimonial-slider-container {
         width: 100%;
         max-width: 800px;
-        height: 150px; /* Reduziert, damit Text kompakter ist */
+        /* KORREKTUR: Höhe erhöht */
+        height: 200px;
         position: relative;
         overflow: hidden;
-        /* margin: 0 auto;  wird durch Flexbox oben erledigt */
     }
 
-    /* Gleicher Slider Code wie vorher für Testimonials (Text) */
     .ts-slide {
+        /* ... (Restliche Slider-Regeln unverändert) ... */
         position: absolute;
         width: 100%;
         top: 0;
@@ -289,7 +535,6 @@
         font-weight: 500;
         color: #fff;
         text-align: center;
-        /* Vertikale Zentrierung im Slide selbst falls nötig */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -299,48 +544,80 @@
         display: block;
         margin-top: 1rem;
         font-weight: 700;
-        color: #f5821f; /* Auch hier das neue Orange */
+        color: var(--kbg-orange);
     }
     .ts-slide.active { left: 0; opacity: 1; }
     .ts-slide.exit-left { left: -100%; opacity: 0; }
 
-
-    /* --- MENU SPLIT --- */
-    .menu-split-layout { display: flex; align-items: center; gap: 2rem; padding: 2rem 0; }
-    .menu-side-img { flex: 1; display: flex; justify-content: center; }
-    .menu-center-text { flex: 2; padding: 0 1rem; }
-    .full-height-img { height: 300px; width: 100%; object-fit: cover; }
-
-    @media (max-width: 900px) {
-        .menu-split-layout { flex-direction: column; }
-        .menu-side-img, .menu-center-text { width: 100%; flex: auto; }
-        .full-height-img { height: 250px; }
+    /* "Wer wir sind" – immer mittig zentrieren (alle Größen) */
+    #about-section .two-column {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
     }
+    #about-section .two-column .col {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
 </style>
 
 
-<!-- ========== SCRIPTS ========== -->
+<!-- ========== SCRIPTS (Optimiert für Robustheit) ========== -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // 1. SLIDER "WER WIR SIND" (Schiebe-Effekt / Slide)
-    const track = document.getElementById('aboutSliderTrack');
-    if(track) {
+    // Helper-Funktion für alle automatischen Slider
+    function initAutoSlider(trackId, slideCount, intervalTime) {
+        const track = document.getElementById(trackId);
+        // Prüft, ob der Track existiert und die CSS-Regeln für Sliding greifen (z.B. width: 200%/400%)
+        if (!track) return;
+
+        let currentSlide = 0;
+        const totalSlides = slideCount;
+        const slideWidthPercentage = 100 / totalSlides;
+
+        function nextSlide() {
+            // Nur sliden, wenn der Track tatsächlich breiter als 100% ist (Mobile-Modus)
+            // Die Laufzeitprüfung hier ist schwierig, daher vertrauen wir auf das Intervall im Hintergrund
+            currentSlide = (currentSlide + 1) % totalSlides;
+            const transformValue = -currentSlide * slideWidthPercentage;
+            track.style.transform = `translateX(${transformValue}%)`;
+        }
+
+        // Startet das Interval
+        // HINWEIS: Wir starten das Intervall immer, die CSS Media Query verhindert den Effekt,
+        // wenn die Breite des Tracks auf 100% gesetzt ist (Tablet/Desktop).
+        setInterval(nextSlide, intervalTime);
+    }
+
+    // 1. SLIDER "WER WIR SIND" (Schiebe-Effekt / Slide) - Unverändert
+    const aboutTrack = document.getElementById('aboutSliderTrack');
+    if(aboutTrack) {
         let isSlide1 = true;
         setInterval(() => {
             if(isSlide1) {
-                // Zeige Bild 2 (Track nach links schieben um 50%)
-                track.style.transform = "translateX(-50%)";
+                aboutTrack.style.transform = "translateX(-50%)";
             } else {
-                // Zeige Bild 1 (Zurück zum Anfang)
-                track.style.transform = "translateX(0%)";
+                aboutTrack.style.transform = "translateX(0%)";
             }
             isSlide1 = !isSlide1;
-        }, 5000); // Alle 5 Sekunden
+        }, 5000);
     }
 
 
-    // 2. TESTIMONIAL TEXT SLIDER
+    // 2. MENÜ MOBILE SLIDER (NEU & ROBUST)
+    // Wird immer initialisiert, aber nur im Mobile-Modus (< 640px) sliden die Bilder tatsächlich durch die CSS-Breite des Tracks.
+    initAutoSlider('menuSliderTrack', 2, 2000); // 2 Slides, alle 2 Sekunden
+
+
+    // 3. CATERING MOBILE SLIDER (NEU & ROBUST)
+    // Wird immer initialisiert, aber nur im Mobile-Modus (< 640px) sliden die Bilder tatsächlich durch die CSS-Breite des Tracks.
+    initAutoSlider('cateringSliderTrack', 4, 2000); // 4 Slides, alle 2 Sekunden
+
+
+    // 4. TESTIMONIAL TEXT SLIDER - Unverändert
     const tsSlides = document.querySelectorAll('.ts-slide');
     if (tsSlides.length > 0) {
         let currentTs = 0;
