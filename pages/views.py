@@ -16,6 +16,9 @@ def menu_view(request):
 def bestellen_view(request):
     return render(request, "pages/bestellen.html")
 
+def impressum(request):
+    return render(request, "pages/impressum.html")
+
 def catering_view(request):
     if request.method == "POST":
         CateringRequest.objects.create(
