@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from urllib.request import localhost
+
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,13 +30,16 @@ def env_bool(name: str, default: bool = False) -> bool:
 SECRET_KEY = os.getenv("SECRET_KEY") or "dev-secret-key"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env_bool("DEBUG", True)
+"""DEBUG = env_bool("DEBUG", True)
 
 allowed_hosts = os.getenv("ALLOWED_HOSTS")
 if allowed_hosts:
     ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(",") if host.strip()]
 else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]"""
+
+DEBUG=False
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
