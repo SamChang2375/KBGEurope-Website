@@ -15,7 +15,7 @@
     <div id="caption"></div>
 </div>
 
-<section class="section section-light" style="min-height: 80vh;">
+<section class="section section-light" style="min-height: 80vh; overflow-x: hidden;">
     <div class="container">
 
         <!-- DASHBOARD HEADER -->
@@ -51,34 +51,34 @@
             <!-- PANELS -->
             <div class="dashboard-panels">
 
-                <!-- 1. STATISTIKEN (Altes Design wiederhergestellt) -->
+                <!-- 1. STATISTIKEN -->
                 <div id="statistiken" class="dashboard-panel">
                     <div class="stats-header mb-4">
                         <h2>Website Performance</h2>
                         <p style="color:#777; font-size:0.9rem;">Daten der letzten 30 Tage</p>
                     </div>
 
-                    <!-- Key Metrics (Grid Layout) -->
+                    <!-- Key Metrics -->
                     <div class="stats-grid-top">
                         <div class="stat-card">
-                            <div class="stat-icon" style="background:#e0f2f1; color:#007755;">👥</div>
+                            <div class="stat-icon">👥</div>
                             <div class="stat-info">
-                                <h3>{{ stats.total_visits|default:"0" }}</h3>
-                                <p>Seitenaufrufe</p>
+                                <span class="stat-label">Seitenaufrufe</span>
+                                <span class="stat-value">{{ stats.total_visits|default:"0" }}</span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon" style="background:#e8f5e9; color:#2e7d32;">🖱️</div>
+                            <div class="stat-icon">🖱️</div>
                             <div class="stat-info">
-                                <h3>{{ stats.unique_visitors|default:"0" }}</h3>
-                                <p>Eindeutige Besucher</p>
+                                <span class="stat-label">Eindeutige Besucher</span>
+                                <span class="stat-value">{{ stats.unique_visitors|default:"0" }}</span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon" style="background:#fff3e0; color:#f57c00;">📅</div>
+                            <div class="stat-icon">📅</div>
                             <div class="stat-info">
-                                <h3>{{ stats.today_visits|default:"0" }}</h3>
-                                <p>Aufrufe Heute</p>
+                                <span class="stat-label">Aufrufe heute</span>
+                                <span class="stat-value">{{ stats.today_visits|default:"0" }}</span>
                             </div>
                         </div>
                     </div>
@@ -87,30 +87,39 @@
                     <div class="stats-grid-bottom mt-4">
 
                         <!-- Diagramm -->
-                        <div class="card p-4 shadow-sm" style="grid-column: span 2;">
-                            <h4 style="margin-bottom: 1rem; margin-top: 0;">Besucher-Trend (30 Tage)</h4>
-                            <div style="position: relative; height: 300px; width: 100%;">
+                        <div class="card shadow-sm stats-card-large">
+                            <div class="card-header-title">
+                                Besucher-Trend (30 Tage)
+                            </div>
+                            <div class="card-body-inner">
                                 <canvas id="trafficChart"></canvas>
                             </div>
                         </div>
 
                         <!-- Tabelle -->
-                        <div class="card p-4 shadow-sm" style="grid-column: span 2;">
-                            <h4 style="margin-top: 0;">Beliebteste Seiten</h4>
-                            <table class="simple-table mt-3">
-                                <thead>
-                                    <tr><th>Seite (Pfad)</th><th>Aufrufe</th></tr>
-                                </thead>
-                                <tbody>
-                                    {% if stats.top_pages %}
-                                        {% for page in stats.top_pages %}
-                                        <tr><td>{{ page.path }}</td><td><strong>{{ page.count }}</strong></td></tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr><td colspan="2">Noch keine Daten verfügbar.</td></tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
+                        <div class="card shadow-sm stats-card-large">
+                            <div class="card-header-title">
+                                Beliebteste Seiten
+                            </div>
+                            <div class="card-body-inner">
+                                <table class="simple-table">
+                                    <thead>
+                                        <tr><th>Seite (Pfad)</th><th>Aufrufe</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if stats.top_pages %}
+                                            {% for page in stats.top_pages %}
+                                            <tr>
+                                                <td>{{ page.path }}</td>
+                                                <td><strong>{{ page.count }}</strong></td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="2">Noch keine Daten verfügbar.</td></tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,29 +127,91 @@
                 <!-- 2. ANFRAGEN -->
                 <div id="anfragen" class="dashboard-panel">
                     <h2>Anfragen Verwaltung</h2>
-                    <!-- (Hier deine Anfragen-Tabellen, Code gekürzt da unverändert) -->
+
+                    <!-- CATERING-ANFRAGEN -->
                     <div class="table-section">
                         <h3>Catering-Anfragen</h3>
                         <div class="table-responsive shadow-sm">
-                            <table class="modern-table">
-                                <thead><tr><th>Datum</th><th>Name</th><th>E-Mail</th><th>Status</th><th style="text-align: right;">Aktion</th></tr></thead>
+                            <table class="modern-table request-table">
+                                <colgroup>
+                                    <col style="width:16%;">
+                                    <col style="width:26%;">
+                                    <col style="width:32%;">
+                                    <col style="width:12%;">
+                                    <col style="width:14%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Name / Kontakt</th>
+                                        <th>Anfrage</th>
+                                        <th>Status</th>
+                                        <th style="text-align:right;">Aktion</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {% for req in catering_requests %}
                                     <tr>
-                                        <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
-                                        <td><strong>{{ req.contact_person }}</strong></td>
-                                        <td><a href="mailto:{{ req.email }}">{{ req.email }}</a></td>
-                                        <td>{% if req.status == "open" %}<span class="badge badge-open">Offen</span>{% else %}<span class="badge badge-done">Beantwortet</span>{% endif %}</td>
-                                        <td style="text-align: right;"><button type="button" class="btn-icon" onclick="toggleReply('catering-{{ req.id }}')">↩ Antworten</button></td>
+                                        <td>
+                                            {{ req.created_at|date:"d.m.Y" }}<br>
+                                            <small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small>
+                                        </td>
+                                        <td>
+                                            <strong>{{ req.contact_person }}</strong><br>
+                                            <a href="mailto:{{ req.email }}">{{ req.email }}</a>
+                                        </td>
+                                        <td>
+                                            <div class="request-preview">
+                                                {{ req.message }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if req.status == "open" %}
+                                                <span class="badge badge-open">Offen</span>
+                                            {% else %}
+                                                <span class="badge badge-done">Beantwortet</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <button type="button" class="btn-icon" onclick="toggleReply('catering-{{ req.id }}')">
+                                                Details & Antworten
+                                            </button>
+                                        </td>
                                     </tr>
                                     <tr id="reply-row-catering-{{ req.id }}" class="reply-row" style="display:none;">
                                         <td colspan="5">
-                                            <div class="reply-box">
+                                            <div class="details-box">
+                                                <div class="details-grid">
+                                                    <div>
+                                                        <p><strong>Firma:</strong> {{ req.company|default:"–" }}</p>
+                                                        <p><strong>Telefon:</strong>
+                                                            {% if req.phone %}
+                                                                <a href="tel:{{ req.phone|cut:' ' }}">{{ req.phone }}</a>
+                                                            {% else %}
+                                                                –
+                                                            {% endif %}
+                                                        </p>
+                                                        <p><strong>Lieferadresse:</strong> {{ req.address|default:"–" }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p><strong>Nachricht:</strong></p>
+                                                        <div class="details-message">
+                                                            {{ req.message }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <hr>
+
                                                 <form method="post" action="{% url 'answer_catering_request' req.id %}">
                                                     {% csrf_token %}
                                                     <label>Antwort an {{ req.email }}:</label>
                                                     <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                                    <div style="margin-top:.5rem; text-align: right;"><button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button></div>
+                                                    <div style="margin-top:.5rem; text-align: right;">
+                                                        <button type="submit" class="btn btn-primary btn-sm">
+                                                            Senden & Abschließen
+                                                        </button>
+                                                    </div>
                                                 </form>
                                             </div>
                                         </td>
@@ -152,29 +223,76 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- KONTAKT-ANFRAGEN -->
                     <div class="table-section mt-5">
                         <h3>Kontakt-Anfragen</h3>
-                        <!-- ... Kontakt Tabelle ... -->
-                         <div class="table-responsive shadow-sm">
-                            <table class="modern-table">
-                                <thead><tr><th>Datum</th><th>Name</th><th>Nachricht</th><th>Status</th><th style="text-align: right;">Aktion</th></tr></thead>
+                        <div class="table-responsive shadow-sm">
+                            <table class="modern-table request-table">
+                                <colgroup>
+                                    <col style="width:16%;">
+                                    <col style="width:26%;">
+                                    <col style="width:32%;">
+                                    <col style="width:12%;">
+                                    <col style="width:14%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Name / Kontakt</th>
+                                        <th>Anfrage</th>
+                                        <th>Status</th>
+                                        <th style="text-align:right;">Aktion</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {% for req in contact_requests %}
                                     <tr>
-                                        <td>{{ req.created_at|date:"d.m.Y" }}<br><small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small></td>
-                                        <td>{{ req.name }}<br><small>{{ req.email }}</small></td>
-                                        <td><div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ req.message }}</div></td>
-                                        <td>{% if req.status == "open" %}<span class="badge badge-open">Offen</span>{% else %}<span class="badge badge-done">Beantwortet</span>{% endif %}</td>
-                                        <td style="text-align: right;"><button type="button" class="btn-icon" onclick="toggleReply('contact-{{ req.id }}')">↩ Antworten</button></td>
+                                        <td>
+                                            {{ req.created_at|date:"d.m.Y" }}<br>
+                                            <small style="color:#888;">{{ req.created_at|date:"H:i" }} Uhr</small>
+                                        </td>
+                                        <td>
+                                            <strong>{{ req.name }}</strong><br>
+                                            <a href="mailto:{{ req.email }}">{{ req.email }}</a>
+                                        </td>
+                                        <td>
+                                            <div class="request-preview">
+                                                {{ req.message }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if req.status == "open" %}
+                                                <span class="badge badge-open">Offen</span>
+                                            {% else %}
+                                                <span class="badge badge-done">Beantwortet</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <button type="button" class="btn-icon" onclick="toggleReply('contact-{{ req.id }}')">
+                                                Details & Antworten
+                                            </button>
+                                        </td>
                                     </tr>
                                     <tr id="reply-row-contact-{{ req.id }}" class="reply-row" style="display:none;">
                                         <td colspan="5">
-                                            <div class="reply-box">
+                                            <div class="details-box">
+                                                <p><strong>Nachricht:</strong></p>
+                                                <div class="details-message">
+                                                    {{ req.message }}
+                                                </div>
+
+                                                <hr>
+
                                                 <form method="post" action="{% url 'answer_contact_request' req.id %}">
                                                     {% csrf_token %}
                                                     <label>Antwort an {{ req.email }}:</label>
                                                     <textarea name="reply_text" class="form-control reply-textarea">{% if req.reply_text %}{{ req.reply_text }}{% endif %}</textarea>
-                                                    <div style="margin-top:.5rem; text-align: right;"><button type="submit" class="btn btn-primary btn-sm">Senden & Abschließen</button></div>
+                                                    <div style="margin-top:.5rem; text-align: right;">
+                                                        <button type="submit" class="btn btn-primary btn-sm">
+                                                            Senden & Abschließen
+                                                        </button>
+                                                    </div>
                                                 </form>
                                             </div>
                                         </td>
@@ -191,8 +309,8 @@
                 <!-- 3. MEDIEN -->
                 <div id="medien" class="dashboard-panel">
                     <!-- Header mit Save Button rechts -->
-                    <div class="media-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                        <h2 style="margin:0;">Medien & Inhalte Verwaltung</h2>
+                    <div class="media-header">
+                        <h2>Medien & Inhalte Verwaltung</h2>
                         <button type="button" class="btn btn-primary" onclick="saveAllMedia()">
                             💾 Alle Änderungen speichern
                         </button>
@@ -212,7 +330,6 @@
                     <div id="media-home" class="media-subpanel active">
                         <h3>Startseite</h3>
                         {% include "admin_dashboard/includes/media_row.html" with key="home_hero" label="Hero Bild" desc="Großes Bild ganz oben." img_obj=site_images.home_hero %}
-                        <!-- ... restliche Home Items ... -->
                         {% include "admin_dashboard/includes/media_row.html" with key="home_about_image" label="Wer wir sind (Slider 1)" desc="Slider Bild 1." img_obj=site_images.home_about_image %}
                         {% include "admin_dashboard/includes/media_row.html" with key="home_about_image_2" label="Wer wir sind (Slider 2)" desc="Slider Bild 2." img_obj=site_images.home_about_image_2 %}
                         <hr style="margin: 1.5rem 0;">
@@ -229,63 +346,62 @@
 
                     <!-- MENU SUB-TAB -->
                     <div id="media-menu" class="media-subpanel">
-                        <!-- ... Menu Code ... -->
-                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div class="media-section-header">
                             <div>
                                 <h3>Menü Seite verwalten</h3>
-                                <p style="color:#666; margin:0;">Bearbeite Bilder, Texte und Hintergründe der Menü-Blöcke.</p>
+                                <p class="media-section-subtitle">Bearbeite Bilder, Texte und Hintergründe der Menü-Blöcke.</p>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="document.getElementById('new-menu-item-form').style.display='block';">
                                 + Neuer Menü-Block
                             </button>
                         </div>
-                        <div style="background:#f9f9f9; padding:1rem; border-radius:8px; margin-bottom:2rem; border:1px solid #eee;">
-                            <h4 style="margin-top:0;">Header Bild</h4>
+
+                        <div class="card media-info-card">
+                            <h4>Header Bild</h4>
                             {% include "admin_dashboard/includes/media_row.html" with key="menu_hero" label="Menu Hero" desc="Hintergrundbild Header." img_obj=site_images.menu_hero %}
                         </div>
-                        <hr>
+
                         <div id="menu-items-list">
                             {% for item in menu_items %}
-                            <!-- Menu Items Loop (unverändert) -->
-                            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #ddd; position: relative;">
-                                <form method="post" action="{% url 'dashboard_menu_item_delete' item.id %}" onsubmit="return confirm('Block wirklich löschen?');" style="position: absolute; top: 1rem; right: 1rem;">
+                            <div class="card menu-item-card">
+                                <form method="post" action="{% url 'dashboard_menu_item_delete' item.id %}" onsubmit="return confirm('Block wirklich löschen?');" class="menu-item-delete-form">
                                     {% csrf_token %}
                                     <button type="submit" class="btn-icon delete" title="Löschen">🗑</button>
                                 </form>
-                                <h4 style="margin-top:0; color:var(--kbg-green);">Block {{ forloop.counter }}: {{ item.name }}</h4>
+                                <h4 class="menu-item-title">Block {{ forloop.counter }}: {{ item.name }}</h4>
                                 <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_update' item.id %}" class="media-upload-form">
                                     {% csrf_token %}
-                                    <div style="display: grid; grid-template-columns: 100px 1fr 1fr; gap: 1.5rem; align-items: start;">
+                                    <div class="menu-item-grid">
                                         <!-- Bild -->
-                                        <div style="text-align: center;">
+                                        <div class="menu-item-image">
                                             {% if item.image %}
-                                                <img src="{{ item.image.url }}" onclick="openModal(this.src)" style="width:100px; height:100px; object-fit:cover; border-radius:6px; cursor:pointer; border:1px solid #ccc;">
+                                                <img src="{{ item.image.url }}" onclick="openModal(this.src)" alt="" />
                                             {% else %}
-                                                <div style="width:100px; height:100px; background:#eee; border-radius:6px; display:flex; align-items:center; justify-content:center;">Kein Bild</div>
+                                                <div class="menu-item-placeholder">Kein Bild</div>
                                             {% endif %}
-                                            <input type="file" name="image" style="font-size:0.75rem; margin-top:0.5rem; width:100%;">
+                                            <input type="file" name="image" class="form-control file-input">
                                         </div>
                                         <!-- Texte -->
-                                        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                        <div class="menu-item-text">
                                             <input type="text" name="dish_id" class="form-control" value="{{ item.dish_id }}" placeholder="Nummer (z.B. 1)">
                                             <input type="text" name="name" class="form-control" value="{{ item.name }}" placeholder="Name" style="font-weight:bold;">
                                             <input type="text" name="subtitle" class="form-control" value="{{ item.subtitle }}" placeholder="Untertitel">
                                             <textarea name="description_de" class="form-control" rows="2" placeholder="Beschreibung DE">{{ item.description_de }}</textarea>
                                             <textarea name="description_en" class="form-control" rows="2" placeholder="Beschreibung EN">{{ item.description_en }}</textarea>
                                         </div>
-                                        <!-- Design & Optionen -->
-                                        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                        <!-- Optionen & Design -->
+                                        <div class="menu-item-design">
                                             <textarea name="options_text" class="form-control" rows="5" placeholder="Optionen (z.B. 1A Bulgogi)">{{ item.options_text }}</textarea>
-                                            <div style="background:#f5f5f5; padding:0.8rem; border-radius:6px;">
-                                                <label style="font-size:0.8rem; font-weight:bold;">Hintergrund</label>
-                                                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                                                    <input type="color" value="{{ item.background_color }}" onchange="this.nextElementSibling.value = this.value" style="height:35px; width:40px; padding:0; border:none;">
-                                                    <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}" style="margin:0;">
+                                            <div class="bg-config">
+                                                <label>Hintergrundfarbe</label>
+                                                <div class="bg-config-row">
+                                                    <input type="color" value="{{ item.background_color }}" onchange="this.nextElementSibling.value = this.value">
+                                                    <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}">
                                                 </div>
-                                                <div style="margin-top:0.8rem;">
-                                                    <input type="file" name="background_image" style="font-size:0.75rem;">
+                                                <div class="bg-config-row" style="margin-top:0.8rem;">
+                                                    <input type="file" name="background_image" class="form-control file-input">
                                                     {% if item.background_image %}
-                                                    <label style="font-size:0.75rem; display:block; margin-top:4px;"><input type="checkbox" name="delete_bg_image"> Bild entfernen</label>
+                                                    <label class="checkbox-inline"><input type="checkbox" name="delete_bg_image"> Bild entfernen</label>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -296,16 +412,19 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <div id="new-menu-item-form" style="display:none; margin-top:3rem; border:2px dashed #ccc; padding:2rem; border-radius:8px; background:#fff;">
+
+                        <div id="new-menu-item-form" class="new-menu-item-card" style="display:none;">
                             <h3 style="margin-top:0;">Neuen Menü-Block hinzufügen</h3>
                             <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_create' %}">
                                 {% csrf_token %}
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="new-menu-grid">
                                     <div>
                                         <label>Bild *</label>
                                         <input type="file" name="image" class="form-control" required>
-                                        <input type="text" name="dish_id" class="form-control" placeholder="Nummer (z.B. 10)" style="margin-top:1rem;">
-                                        <input type="text" name="name" class="form-control" required placeholder="Gericht Name" style="margin-top:1rem;">
+                                        <label style="margin-top:1rem;">Nummer</label>
+                                        <input type="text" name="dish_id" class="form-control" placeholder="Nummer (z.B. 10)">
+                                        <label style="margin-top:1rem;">Gericht Name *</label>
+                                        <input type="text" name="name" class="form-control" required placeholder="Gericht Name">
                                     </div>
                                     <div>
                                         <label>Hintergrundfarbe</label>
@@ -337,7 +456,7 @@
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_philosophie_img" label="Bild: Philosophie" desc="Bild links neben 'So isst man zusammen'." img_obj=site_images.contact_philosophie_img %}
                         <hr style="margin: 1.5rem 0;">
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_mission_img" label="Bild: Mission" desc="Bild rechts neben 'Harmonie aus der Natur'." img_obj=site_images.contact_mission_img %}
-                        <hr style="margin: 1.5rem 0;">
+                        <hr style="margin: 1.5rem 0%;">
                         {% include "admin_dashboard/includes/media_row.html" with key="contact_bottom_bg" label="Hintergrund Kontaktformular" desc="Bild hinter dem Formular unten." img_obj=site_images.contact_bottom_bg %}
                     </div>
 
@@ -345,33 +464,32 @@
                     <div id="media-order" class="media-subpanel">
                         <h3>Seite: Bestellen & Abholen</h3>
                         {% include "admin_dashboard/includes/media_row.html" with key="order_hero" label="Hintergrundbild" desc="Das große Bild im Hintergrund." img_obj=site_images.order_hero %}
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
+                        <hr class="media-divider">
                         <h3>Buttons verwalten</h3>
-                        <!-- Form code wie gehabt -->
                         <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
                             {% csrf_token %}
                             <input type="hidden" name="address" value="{{ site_settings.address }}">
                             <input type="hidden" name="opening_hours" value="{{ site_settings.opening_hours }}">
                             <input type="hidden" name="phone" value="{{ site_settings.phone }}">
                             <input type="hidden" name="email" value="{{ site_settings.email }}">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: var(--kbg-green); margin-top:0;">Abholen</h5>
+                            <div class="order-buttons-grid">
+                                <div class="card p-3 order-card">
+                                    <h5 class="order-title order-title-green">Abholen</h5>
                                     <input type="text" name="btn_pickup_text" class="form-control" value="{{ site_settings.btn_pickup_text }}" placeholder="Text">
                                     <input type="text" name="btn_pickup_link" class="form-control" value="{{ site_settings.btn_pickup_link }}" placeholder="Link">
                                 </div>
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #3f7dbb; margin-top:0;">Wolt</h5>
+                                <div class="card p-3 order-card">
+                                    <h5 class="order-title order-title-blue">Wolt</h5>
                                     <input type="text" name="btn_wolt_text" class="form-control" value="{{ site_settings.btn_wolt_text }}" placeholder="Text">
                                     <input type="text" name="btn_wolt_link" class="form-control" value="{{ site_settings.btn_wolt_link }}" placeholder="Link">
                                 </div>
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #c88a27; margin-top:0;">Lieferando</h5>
+                                <div class="card p-3 order-card">
+                                    <h5 class="order-title order-title-orange">Lieferando</h5>
                                     <input type="text" name="btn_lieferando_text" class="form-control" value="{{ site_settings.btn_lieferando_text }}" placeholder="Text">
                                     <input type="text" name="btn_lieferando_link" class="form-control" value="{{ site_settings.btn_lieferando_link }}" placeholder="Link">
                                 </div>
-                                <div class="card p-3" style="background: #fdfdfd; border: 1px solid #eee;">
-                                    <h5 style="color: #2e6a57; margin-top:0;">Uber Eats</h5>
+                                <div class="card p-3 order-card">
+                                    <h5 class="order-title order-title-darkgreen">Uber Eats</h5>
                                     <input type="text" name="btn_uber_text" class="form-control" value="{{ site_settings.btn_uber_text }}" placeholder="Text">
                                     <input type="text" name="btn_uber_link" class="form-control" value="{{ site_settings.btn_uber_link }}" placeholder="Link">
                                 </div>
@@ -385,7 +503,9 @@
                         {% include "admin_dashboard/includes/media_row.html" with key="global_logo" label="Logo Header" desc="Hauptlogo." img_obj=site_images.global_logo %}
                         {% include "admin_dashboard/includes/media_row.html" with key="instagram_icon" label="Instagram Icon" desc="Für Footer & Tabs." img_obj=site_images.instagram_icon %}
                         {% include "admin_dashboard/includes/media_row.html" with key="email_icon" label="Email Icon" desc="Für Footer & Tabs." img_obj=site_images.email_icon %}
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 2.5rem 0;">
+
+                        <hr class="media-divider">
+
                         <h3>Footer Informationen</h3>
                         <form method="post" action="{% url 'dashboard_settings_update' %}" class="media-upload-form">
                             {% csrf_token %}
@@ -398,22 +518,23 @@
                             <input type="hidden" name="btn_lieferando_link" value="{{ site_settings.btn_lieferando_link }}">
                             <input type="hidden" name="btn_uber_text" value="{{ site_settings.btn_uber_text }}">
                             <input type="hidden" name="btn_uber_link" value="{{ site_settings.btn_uber_link }}">
-                            <div class="card" style="padding: 2rem; background:#ffffff; border: 1px solid #eee; border-radius: 8px;">
+
+                            <div class="card footer-settings-card">
                                 <div class="form-group mb-3">
-                                    <label style="font-weight:600; color:#444;">Adresse</label>
+                                    <label>Adresse</label>
                                     <input type="text" name="address" class="form-control" value="{{ site_settings.address }}">
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label style="font-weight:600; color:#444;">Öffnungszeiten</label>
+                                    <label>Öffnungszeiten</label>
                                     <input type="text" name="opening_hours" class="form-control" value="{{ site_settings.opening_hours }}">
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="footer-settings-grid">
                                     <div class="form-group mb-3">
-                                        <label style="font-weight:600; color:#444;">Telefonnummer</label>
+                                        <label>Telefonnummer</label>
                                         <input type="text" name="phone" class="form-control" value="{{ site_settings.phone }}">
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label style="font-weight:600; color:#444;">E-Mail Adresse</label>
+                                        <label>E-Mail Adresse</label>
                                         <input type="email" name="email" class="form-control" value="{{ site_settings.email }}">
                                     </div>
                                 </div>
@@ -425,11 +546,10 @@
                 <!-- 4. KARRIERE / JOBS (Haupt-Tab) -->
                 <div id="karriere" class="dashboard-panel">
 
-                    <!-- Header mit Save Button -->
-                    <div class="media-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <!-- Header -->
+                    <div class="media-header">
                         <h2>Karriere / Jobs Management</h2>
-                        <!-- Der Button speichert Job Inhalte UND Franchise Slider -->
-                        <div class="save-btn-container" style="display:none;" id="save-jobs-btn">
+                        <div class="save-btn-container" id="save-jobs-btn" style="display:none;">
                             <button type="button" class="btn btn-primary" onclick="saveAllMedia()">
                                 💾 Alle Änderungen speichern
                             </button>
@@ -447,20 +567,76 @@
                         <h3>Eingegangene Bewerbungen</h3>
                         <div class="table-responsive shadow-sm">
                             <table class="modern-table">
-                                <thead><tr><th>Datum</th><th>Name</th><th>Stelle</th><th>Dateien</th><th>Status / Kontakt</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Bewerber</th>
+                                        <th>Stelle</th>
+                                        <th>Dateien</th>
+                                        <th style="text-align:right;">Status / Kontakt</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {% for app in applications %}
                                     <tr style="{% if app.status == 'new' %}background-color:#f0fdf4;{% endif %}">
                                         <td>{{ app.created_at|date:"d.m.Y H:i" }}</td>
-                                        <td>{{ app.first_name }} {{ app.last_name }}</td>
-                                        <td><span class="badge" style="background:#eee; color:#333;">{{ app.job_type }}</span></td>
                                         <td>
-                                            {% if app.cover_letter %}<a href="{{ app.cover_letter.url }}" target="_blank">📄 Anschreiben</a><br>{% endif %}
-                                            {% if app.cv %}<a href="{{ app.cv.url }}" target="_blank">📄 Lebenslauf</a>{% endif %}
+                                            <strong>{{ app.first_name }} {{ app.last_name }}</strong><br>
+                                            <a href="mailto:{{ app.email }}">{{ app.email }}</a>
+                                            {% if app.phone %}
+                                                <br><a href="tel:{{ app.phone|cut:' ' }}">{{ app.phone }}</a>
+                                            {% endif %}
                                         </td>
                                         <td>
-                                            <a href="mailto:{{ app.email }}?subject=Bewerbung bei KBG&body=Hallo {{ app.first_name }}," class="btn btn-primary btn-sm" onclick="markProcessed({{ app.id }})" target="_blank">✉️ Antworten</a>
-                                            <div style="margin-top:5px; font-size:0.8rem;">Status: <span id="status-text-{{ app.id }}" style="font-weight:bold; color:{% if app.status == 'new' %}#c0392b{% else %}#27ae60{% endif %};">{% if app.status == 'new' %}Unbearbeitet{% else %}Bearbeitet{% endif %}</span></div>
+                                            <span class="badge" style="background:#eee; color:#333;">{{ app.job_type }}</span>
+                                        </td>
+                                        <td>
+                                            {% if app.cover_letter %}
+                                                <a href="{{ app.cover_letter.url }}" target="_blank" class="file-link">📄 Anschreiben</a><br>
+                                            {% endif %}
+                                            {% if app.cv %}
+                                                <a href="{{ app.cv.url }}" target="_blank" class="file-link">📄 Lebenslauf</a>
+                                            {% endif %}
+                                            <div style="margin-top:0.5rem;">
+                                                <button type="button" class="btn-icon" onclick="toggleReply('application-{{ app.id }}')">
+                                                    Details
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <a href="mailto:{{ app.email }}?subject=Bewerbung bei KBG&body=Hallo {{ app.first_name }}," class="btn btn-primary btn-sm" onclick="markProcessed({{ app.id }})" target="_blank">
+                                                ✉️ Antworten
+                                            </a>
+                                            <div style="margin-top:5px; font-size:0.8rem;">
+                                                Status:
+                                                <span id="status-text-{{ app.id }}" style="font-weight:bold; color:{% if app.status == 'new' %}#c0392b{% else %}#27ae60{% endif %};">
+                                                    {% if app.status == 'new' %}Unbearbeitet{% else %}Bearbeitet{% endif %}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="reply-row-application-{{ app.id }}" class="reply-row" style="display:none;">
+                                        <td colspan="5">
+                                            <div class="details-box">
+                                                <div class="details-grid">
+                                                    <div>
+                                                        <p><strong>Name:</strong> {{ app.first_name }} {{ app.last_name }}</p>
+                                                        <p><strong>E-Mail:</strong> <a href="mailto:{{ app.email }}">{{ app.email }}</a></p>
+                                                        <p><strong>Telefon:</strong>
+                                                            {% if app.phone %}
+                                                                <a href="tel:{{ app.phone|cut:' ' }}">{{ app.phone }}</a>
+                                                            {% else %} – {% endif %}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p><strong>Stelle:</strong> {{ app.job_type }}</p>
+                                                        <p><strong>Dateien:</strong><br>
+                                                            {% if app.cover_letter %}<a href="{{ app.cover_letter.url }}" target="_blank">📄 Anschreiben</a><br>{% endif %}
+                                                            {% if app.cv %}<a href="{{ app.cv.url }}" target="_blank">📄 Lebenslauf</a>{% endif %}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% empty %}
@@ -473,64 +649,69 @@
 
                     <!-- B) Inhalte (Jobs + Franchise) -->
                     <div id="job-content" class="job-subpanel">
-                        <h3>Inhalte der 3 Job-Karten</h3>
+                        <h3>Inhalte der Job-Karten</h3>
                         <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_job_content_update' %}" class="media-upload-form">
                             {% csrf_token %}
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+                            <div class="job-content-grid">
                                 <!-- MANAGER -->
-                                <div class="card p-3 shadow-sm">
-                                    <h4 style="color:var(--kbg-green);">Shopleiter</h4>
+                                <div class="card shadow-sm job-card">
+                                    <h4 class="job-card-title">Shopleiter</h4>
+                                    {% if job_contents.manager.image %}
+                                        <img src="{{ job_contents.manager.image.url }}" class="job-card-image" alt="">
+                                    {% endif %}
                                     <label>Bild</label>
-                                    {% if job_contents.manager.image %}<img src="{{ job_contents.manager.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
-                                    <input type="file" name="manager_image" class="form-control">
-                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <input type="file" name="manager_image" class="form-control file-input">
+                                    <label class="job-card-label">Listenpunkte</label>
                                     <textarea name="manager_short_desc" class="form-control" rows="4">{{ job_contents.manager.short_description }}</textarea>
                                     <hr>
-                                    <label>Popup Titel</label>
+                                    <label class="job-card-label">Popup Titel</label>
                                     <input type="text" name="manager_popup_title" class="form-control" value="{{ job_contents.manager.popup_title }}">
-                                    <label>Popup Text</label>
+                                    <label class="job-card-label">Popup Text</label>
                                     <textarea name="manager_popup_text" class="form-control" rows="8">{{ job_contents.manager.popup_text }}</textarea>
                                 </div>
+
                                 <!-- SERVICE -->
-                                <div class="card p-3 shadow-sm">
-                                    <h4 style="color:var(--kbg-green);">Service</h4>
+                                <div class="card shadow-sm job-card">
+                                    <h4 class="job-card-title">Service</h4>
+                                    {% if job_contents.service.image %}
+                                        <img src="{{ job_contents.service.image.url }}" class="job-card-image" alt="">
+                                    {% endif %}
                                     <label>Bild</label>
-                                    {% if job_contents.service.image %}<img src="{{ job_contents.service.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
-                                    <input type="file" name="service_image" class="form-control">
-                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <input type="file" name="service_image" class="form-control file-input">
+                                    <label class="job-card-label">Listenpunkte</label>
                                     <textarea name="service_short_desc" class="form-control" rows="4">{{ job_contents.service.short_description }}</textarea>
                                     <hr>
-                                    <label>Popup Titel</label>
+                                    <label class="job-card-label">Popup Titel</label>
                                     <input type="text" name="service_popup_title" class="form-control" value="{{ job_contents.service.popup_title }}">
-                                    <label>Popup Text</label>
+                                    <label class="job-card-label">Popup Text</label>
                                     <textarea name="service_popup_text" class="form-control" rows="8">{{ job_contents.service.popup_text }}</textarea>
                                 </div>
+
                                 <!-- COOK -->
-                                <div class="card p-3 shadow-sm">
-                                    <h4 style="color:var(--kbg-green);">Koch</h4>
+                                <div class="card shadow-sm job-card">
+                                    <h4 class="job-card-title">Koch</h4>
+                                    {% if job_contents.cook.image %}
+                                        <img src="{{ job_contents.cook.image.url }}" class="job-card-image" alt="">
+                                    {% endif %}
                                     <label>Bild</label>
-                                    {% if job_contents.cook.image %}<img src="{{ job_contents.cook.image.url }}" style="height:120px; width:100%; object-fit:cover; display:block; margin-bottom:5px; border-radius:6px;">{% endif %}
-                                    <input type="file" name="cook_image" class="form-control">
-                                    <label style="margin-top:1rem;">Listenpunkte</label>
+                                    <input type="file" name="cook_image" class="form-control file-input">
+                                    <label class="job-card-label">Listenpunkte</label>
                                     <textarea name="cook_short_desc" class="form-control" rows="4">{{ job_contents.cook.short_description }}</textarea>
                                     <hr>
-                                    <label>Popup Titel</label>
+                                    <label class="job-card-label">Popup Titel</label>
                                     <input type="text" name="cook_popup_title" class="form-control" value="{{ job_contents.cook.popup_title }}">
-                                    <label>Popup Text</label>
+                                    <label class="job-card-label">Popup Text</label>
                                     <textarea name="cook_popup_text" class="form-control" rows="8">{{ job_contents.cook.popup_text }}</textarea>
                                 </div>
                             </div>
                         </form>
 
-                        <hr>
-
-                        <!-- Franchise Slider -->
-                        <div class="card p-4 shadow-sm" style="margin-top: 2rem;">
-                            <h3 style="margin-top:0;">Franchise Slider</h3>
-                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_1" label="Slider Bild 1" desc="." img_obj=site_images.career_franchise_1 %}
-                            <hr>
-                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_2" label="Slider Bild 2" desc="." img_obj=site_images.career_franchise_2 %}
+                        <div class="card p-4 shadow-sm franchise-card">
+                            <h3 class="franchise-card-title">Franchise Slider</h3>
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_1" label="Slider Bild 1" desc="Erstes Sliderbild." img_obj=site_images.career_franchise_1 %}
+                            <hr class="media-divider">
+                            {% include "admin_dashboard/includes/media_row.html" with key="career_franchise_2" label="Slider Bild 2" desc="Zweites Sliderbild." img_obj=site_images.career_franchise_2 %}
                         </div>
                     </div>
                 </div>
@@ -556,33 +737,48 @@
                 {% if user.is_superuser %}
                 <div id="benutzer" class="dashboard-panel">
                     <h2>Benutzer Management</h2>
+
                     <div class="user-layout">
-                        <!-- Tabelle -->
+                        <!-- Liste -->
                         <div class="user-list">
-                            <h3>Registrierte Benutzer</h3>
-                            <table class="modern-table shadow-sm">
-                                <thead><tr><th>Name</th><th>E-Mail</th><th>Rolle</th><th></th></tr></thead>
-                                <tbody>
-                                    {% for u in users %}
-                                    <tr>
-                                        <td>{{ u.username }}</td><td>{{ u.email }}</td>
-                                        <td>{% if u.is_superuser %}<span class="badge badge-admin">Admin</span>{% else %}<span class="badge badge-user">User</span>{% endif %}</td>
-                                        <td style="text-align:right;">
-                                            {% if u != user %}
-                                            <form method="post" action="{% url 'dashboard_delete_user' u.id %}" onsubmit="return confirm('Löschen?');">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn-icon delete big-delete">🗑</button>
-                                            </form>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                            <div class="table-section">
+                                <h3>Registrierte Benutzer</h3>
+                                <div class="table-responsive shadow-sm">
+                                    <table class="modern-table">
+                                        <thead>
+                                            <tr><th>Name</th><th>E-Mail</th><th>Rolle</th><th></th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for u in users %}
+                                            <tr>
+                                                <td>{{ u.username }}</td>
+                                                <td>{{ u.email }}</td>
+                                                <td>
+                                                    {% if u.is_superuser %}
+                                                        <span class="badge badge-admin">Admin</span>
+                                                    {% else %}
+                                                        <span class="badge badge-user">User</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    {% if u != user %}
+                                                    <form method="post" action="{% url 'dashboard_delete_user' u.id %}" onsubmit="return confirm('Löschen?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn-icon delete big-delete">🗑</button>
+                                                    </form>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
+
                         <!-- Erstellen -->
                         <div class="user-create">
-                            <div class="card p-4 shadow-sm">
+                            <div class="card p-4 shadow-sm user-create-card">
                                 <h3>Neuen Benutzer</h3>
                                 <form method="post" action="{% url 'dashboard_create_user' %}">
                                     {% csrf_token %}
@@ -609,6 +805,7 @@
                 </div>
                 {% endif %}
 
+
             </div>
         </div>
 
@@ -625,9 +822,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const lastMediaTab = localStorage.getItem("activeMediaTab") || "media-home";
     openMediaSubTab(lastMediaTab);
 
-    // Change Detection for AJAX Save
+    // Change Detection für AJAX Save
     document.querySelectorAll('.media-upload-form input, .media-upload-form textarea').forEach(input => {
-        if(input.type !== 'file' && input.type !== 'hidden') input.setAttribute('data-original', input.value);
+        if (input.type !== 'file' && input.type !== 'hidden') {
+            input.setAttribute('data-original', input.value);
+        }
     });
 
     // Chart.js
@@ -635,16 +834,32 @@ document.addEventListener("DOMContentLoaded", function() {
     const chartLabels = {{ stats.chart_labels|default:"[]"|safe }};
     const chartData = {{ stats.chart_data|default:"[]"|safe }};
 
-    if(ctx && chartLabels.length > 0) {
+    if (ctx && chartLabels.length > 0) {
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: chartLabels,
                 datasets: [{
-                    label: 'Seitenaufrufe', data: chartData, borderColor: '#007755', backgroundColor: 'rgba(0, 119, 85, 0.1)', borderWidth: 2, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#007755', fill: true
+                    label: 'Seitenaufrufe',
+                    data: chartData,
+                    borderColor: '#007755',
+                    backgroundColor: 'rgba(0, 119, 85, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#007755',
+                    fill: true
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { x: {grid: {display:false}, ticks: {maxTicksLimit: 10}}, y: {beginAtZero: true, grid: {color: '#f0f0f0'}} } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display:false } },
+                scales: {
+                    x: { grid: { display:false }, ticks: { maxTicksLimit: 10 } },
+                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } }
+                }
+            }
         });
     } else if (ctx) {
         ctx.style.display = 'none';
@@ -654,47 +869,61 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function openTab(tabId) {
     document.querySelectorAll('.dashboard-panel').forEach(p => p.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
+    const active = document.getElementById(tabId);
+    if (active) active.style.display = 'block';
+
     document.querySelectorAll('.dashboard-tab-btn').forEach(b => b.classList.remove('active'));
-    const btns = document.querySelectorAll('.dashboard-tab-btn');
-    btns.forEach(b => { if(b.getAttribute('onclick').includes(tabId)) b.classList.add('active'); });
+    document.querySelectorAll('.dashboard-tab-btn').forEach(b => {
+        if (b.getAttribute('onclick').includes(tabId)) {
+            b.classList.add('active');
+        }
+    });
     localStorage.setItem("activeDashboardTab", tabId);
 }
 
 function openMediaSubTab(tabId) {
     document.querySelectorAll('.media-subpanel').forEach(p => p.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
+    const active = document.getElementById(tabId);
+    if (active) active.classList.add('active');
+
     document.querySelectorAll('.media-subtab-btn').forEach(b => b.classList.remove('active'));
-    const btns = document.querySelectorAll('.media-subtab-btn');
-    btns.forEach(b => { if(b.getAttribute('onclick').includes(tabId)) b.classList.add('active'); });
+    document.querySelectorAll('.media-subtab-btn').forEach(b => {
+        if (b.getAttribute('onclick').includes(tabId)) {
+            b.classList.add('active');
+        }
+    });
     localStorage.setItem("activeMediaTab", tabId);
 }
 
 function openJobSubTab(id) {
     document.querySelectorAll('.job-subpanel').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    const active = document.getElementById(id);
+    if (active) active.classList.add('active');
 
     const btns = document.querySelectorAll('#karriere .media-subtab-btn');
     btns.forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    btns.forEach(b => {
+        if (b.getAttribute('onclick').includes(id)) {
+            b.classList.add('active');
+        }
+    });
 
-    // Save Button nur bei Content zeigen
     const saveBtn = document.getElementById('save-jobs-btn');
-    if (id === 'job-content') saveBtn.style.display = 'block';
-    else saveBtn.style.display = 'none';
+    if (saveBtn) {
+        saveBtn.style.display = (id === 'job-content') ? 'block' : 'none';
+    }
 }
 
 function toggleReply(id) {
     const row = document.getElementById(`reply-row-${id}`);
-    row.style.display = (row.style.display === "none") ? "table-row" : "none";
+    if (!row) return;
+    row.style.display = (row.style.display === "none" || row.style.display === "") ? "table-row" : "none";
 }
 
 function saveAllMedia() {
-    // Logik: Finde aktives Panel (egal ob Media oder Karriere)
     let activePanel = document.querySelector('.dashboard-panel[style*="block"]');
     if (!activePanel) return;
 
-    // Falls Medien oder Karriere, suche aktives Subpanel
     const activeSub = activePanel.querySelector('.media-subpanel.active, .job-subpanel.active');
     const container = activeSub ? activeSub : activePanel;
 
@@ -705,8 +934,9 @@ function saveAllMedia() {
         const inputs = form.querySelectorAll('input, textarea');
         let isChanged = false;
         inputs.forEach(input => {
-            if (input.type === 'file') { if (input.files.length > 0) isChanged = true; }
-            else if (input.type !== 'hidden' && input.type !== 'submit') {
+            if (input.type === 'file') {
+                if (input.files.length > 0) isChanged = true;
+            } else if (input.type !== 'hidden' && input.type !== 'submit') {
                 const original = input.getAttribute('data-original');
                 if (original !== null && input.value !== original) isChanged = true;
             }
@@ -714,20 +944,32 @@ function saveAllMedia() {
         if (isChanged) changedForms.push(form);
     });
 
-    if (changedForms.length === 0) { showToast("Keine Änderungen.", "info"); return; }
+    if (changedForms.length === 0) {
+        showToast("Keine Änderungen.", "info");
+        return;
+    }
 
-    // Sucht den Save Button im Header oder im Container
     const btn = document.querySelector('.media-header .btn-primary') || container.querySelector('.btn-primary');
     const originalText = btn ? btn.innerText : "";
-    if(btn) { btn.innerText = "Speichere..."; btn.disabled = true; }
+    if (btn) {
+        btn.innerText = "Speichere...";
+        btn.disabled = true;
+    }
 
     const promises = changedForms.map(form => {
         const formData = new FormData(form);
-        return fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(r => r.ok);
+        return fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(r => r.ok);
     });
 
     Promise.all(promises).then(() => {
-        if(btn) { btn.innerText = originalText; btn.disabled = false; }
+        if (btn) {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
         showToast("Gespeichert!");
         setTimeout(() => location.reload(), 1000);
     });
@@ -736,80 +978,850 @@ function saveAllMedia() {
 function markProcessed(appId) {
     fetch(`/dashboard/application/${appId}/processed/`).then(() => {
         const span = document.getElementById(`status-text-${appId}`);
-        span.innerText = "Bearbeitet"; span.style.color = "#27ae60";
-        span.closest('tr').style.backgroundColor = "transparent";
+        if (!span) return;
+        span.innerText = "Bearbeitet";
+        span.style.color = "#27ae60";
+        const tr = span.closest('tr');
+        if (tr) tr.style.backgroundColor = "transparent";
     });
 }
 
 function showToast(msg, type="success") {
     const toast = document.getElementById("toast");
+    if (!toast) return;
     toast.innerText = msg;
     toast.className = "toast show";
     toast.style.backgroundColor = (type === "info") ? "#333" : "var(--kbg-green)";
-    setTimeout(() => toast.className = toast.className.replace("show", ""), 3000);
+    setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+    }, 3000);
 }
 
 function openModal(src) {
     const m = document.getElementById("imageModal");
+    if (!m) return;
     document.getElementById("modalImg").src = src;
     m.style.display = "flex";
 }
-function closeModal() { document.getElementById("imageModal").style.display = "none"; }
+function closeModal() {
+    const m = document.getElementById("imageModal");
+    if (m) m.style.display = "none";
+}
 </script>
 
 <style>
-    :root { --kbg-green: #007755; --kbg-green-hover: #005a41; }
-    .btn-primary { background-color: var(--kbg-green) !important; border-color: var(--kbg-green) !important; color: #fff; }
-    .btn-primary:hover { background-color: var(--kbg-green-hover) !important; }
+    :root {
+        --kbg-green: #007755;
+        --kbg-green-hover: #005a41;
+    }
 
-    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
-    .header-actions { display: flex; gap: 1rem; }
-    .dashboard-tabs { display: flex; gap: 5px; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
-    .dashboard-tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1rem; cursor: pointer; color: #666; border-bottom: 2px solid transparent; transition: 0.2s; }
-    .dashboard-tab-btn.active { color: var(--kbg-green); border-bottom: 2px solid var(--kbg-green); font-weight: bold; }
-    .dashboard-panel { display: none; animation: fadeIn 0.3s ease; }
+    .btn-primary {
+        background-color: var(--kbg-green) !important;
+        border-color: var(--kbg-green) !important;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background-color: var(--kbg-green-hover) !important;
+    }
 
-    .media-subtabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .media-subtab-btn { background: #eee; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; color: #555; }
-    .media-subtab-btn.active { background: var(--kbg-green); color: #fff; }
-    .media-subpanel, .job-subpanel { display: none; }
-    .media-subpanel.active, .job-subpanel.active { display: block; }
+    /* Layout Grundstruktur */
+    .dashboard-layout {
+        display: block;
+    }
 
-    .media-row-container { display: grid; grid-template-columns: 80px 2fr 1.5fr 1.5fr; gap: 1.5rem; align-items: center; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1rem; border: 1px solid #f0f0f0; }
-    .media-thumb { order: -1; } .media-info { order: 1; } .media-alt { order: 2; } .media-file { order: 3; }
-    .media-thumb img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #eee; transition: 0.2s; }
-    .media-thumb img:hover { transform: scale(1.1); }
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
 
-    /* Statistiken Grid Fix */
-    .stats-grid-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-    .stats-grid-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .stat-card { display: flex; align-items: center; gap: 1.5rem; }
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
 
-    .table-responsive { background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
-    .modern-table { width: 100%; border-collapse: collapse; }
-    .modern-table th { background: #f8f9fa; text-align: left; padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; }
-    .modern-table td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-    .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .badge-open { background: #fff3cd; color: #856404; } .badge-done { background: #d4edda; color: #155724; }
-    .badge-admin { background: #cce5ff; color: #004085; } .badge-user { background: #e2e3e5; color: #383d41; }
+    .dashboard-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #eee;
+        flex-wrap: wrap;
+    }
+    .dashboard-tab-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        color: #666;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    .dashboard-tab-btn.active {
+        color: var(--kbg-green);
+        border-bottom: 2px solid var(--kbg-green);
+        font-weight: bold;
+    }
 
-    .reply-box { padding: 1rem; border-left: 3px solid var(--kbg-green); margin: 1rem; background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .user-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .user-list { flex: 2; min-width: 300px; } .user-create { flex: 1; min-width: 280px; }
-    .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box; }
+    .dashboard-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
 
-    /* Utility */
-    .shadow-sm { box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; background: #fff; border-radius: 8px; }
-    .card { background: #fff; border-radius: 8px; }
+    @keyframes fadeIn {
+        from { opacity:0; transform: translateY(4px); }
+        to { opacity:1; transform: translateY(0); }
+    }
 
-    .image-modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
-    .modal-content { max-width: 90%; max-height: 90vh; }
-    .close-modal { position: absolute; top: 20px; right: 40px; color: #fff; font-size: 50px; cursor: pointer; }
-    .toast { visibility: hidden; min-width: 250px; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    /* Media Subtabs */
+    .media-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:1.5rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .media-subtabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .media-subtab-btn {
+        background: #eee;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: #555;
+    }
+    .media-subtab-btn.active {
+        background: var(--kbg-green);
+        color: #fff;
+    }
+
+    .media-subpanel,
+    .job-subpanel {
+        display: none;
+    }
+    .media-subpanel.active,
+    .job-subpanel.active {
+        display: block;
+    }
+
+    /* ============= MEDIEN-REIHEN – Thumbnail links, rechts alles andere ============= */
+
+    .media-row-container {
+        display: grid;
+        grid-template-columns: 80px 1fr; /* Handy: 1 Spalte rechts */
+        grid-template-areas:
+            "thumb info"
+            "thumb alt"
+            "thumb file";  /* Alt-Text und Neues Bild wählen untereinander in der rechten Spalte */
+        gap: 1rem;
+        align-items: flex-start;
+        background: #fff;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .media-thumb {
+        grid-area: thumb;
+    }
+
+    .media-info  {
+        grid-area: info;
+    }
+
+    .media-alt   {
+        grid-area: alt;
+    }
+
+    .media-file  {
+        grid-area: file;
+    }
+
+    /* Desktop: rechts 2 Spalten – oben Info über beide, darunter Alt links, Neues Bild rechts */
+    @media (min-width: 900px) {
+        .media-row-container {
+            grid-template-columns: 90px 1.4fr 1.4fr;
+            grid-template-areas:
+                "thumb info info"
+                "thumb alt  file";  /* Alt-Text und Neues Bild wählen NEBENEINANDER */
+        }
+    }
+
+    /* Thumbnail */
+    .media-thumb img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 2px solid #eee;
+        transition: 0.2s;
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    .media-thumb img:hover {
+        transform: scale(1.06);
+    }
+
+    /* Texte links neben den Feldern */
+    .media-row-container h5,
+    .media-row-container p {
+        margin: 0;
+    }
+
+    .media-row-container h5 {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .media-desc {
+        font-size: 0.85rem;
+        color: #777;
+    }
+
+    /* ALT-Text Block */
+    .media-alt label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+    }
+
+    .media-alt input[type="text"],
+    .media-alt textarea {
+        width: 100%;
+        min-height: 38px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+    }
+
+    /* Datei-Auswahl („Neues Bild wählen“) */
+    .media-file {
+        align-self: center;        /* Button sitzt mittig zur Zeile */
+    }
+
+    .media-file label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+    }
+
+    .media-file input[type="file"] {
+        width: 100%;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Auf Desktop: Button braucht nicht volle Breite */
+    @media (min-width: 900px) {
+        .media-file input[type="file"] {
+            width: auto;
+        }
+    }
+
+
+
+
+    .media-section-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        margin-bottom:1.5rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .media-section-subtitle {
+        color:#666;
+        margin:0;
+        font-size:0.9rem;
+    }
+    .media-info-card {
+        background:#f9f9f9;
+        padding:1.5rem;
+        border-radius:10px;
+        margin-bottom:2rem;
+        border:1px solid #eee;
+    }
+
+    .media-divider {
+        border: 0;
+        border-top: 1px solid #eee;
+        margin: 2rem 0;
+    }
+
+    /* Statistiken */
+    .stats-grid-top {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background:#ffffff;
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+        display:flex;
+        align-items:center;
+        gap:1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f0;
+    }
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 999px;
+        background:#e0f2f1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.6rem;
+        flex-shrink:0;
+    }
+    .stat-info {
+        display:flex;
+        flex-direction:column;
+        gap:0.1rem;
+    }
+    .stat-label {
+        font-size:0.85rem;
+        color:#777;
+    }
+    .stat-value {
+        font-size:1.4rem;
+        font-weight:700;
+        color:#222;
+    }
+
+    .stats-grid-bottom {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .stats-card-large {
+        padding: 1.5rem 1.75rem;
+    }
+    .card-header-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
+    .card-body-inner {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    /* =========================================
+       FIX: TABELLEN SCROLLBARS (NEU)
+       ========================================= */
+    .table-section {
+        margin-top: 1.5rem;
+    }
+
+    /* WICHTIG: Erzwingt Scrollbalken im Container statt Overflow */
+    .table-responsive {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+        display: block;
+        width: 100%;
+        overflow-x: auto; /* Erzwingt horizontalen Scroll */
+        -webkit-overflow-scrolling: touch; /* Smooth Scroll iOS */
+
+        overflow-y: auto;
+        max-height: 420px;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px; /* Mindestbreite, damit Scrollen nötig wird */
+    }
+    .modern-table th {
+        background: #f8f9fa;
+        text-align: left;
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        color: #555;
+        white-space: nowrap;
+    }
+    .modern-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+        font-size: 0.9rem;
+    }
+
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .badge-open { background: #fff3cd; color: #856404; }
+    .badge-done { background: #d4edda; color: #155724; }
+    .badge-admin { background: #cce5ff; color: #004085; }
+    .badge-user { background: #e2e3e5; color: #383d41; }
+
+    .btn-icon {
+        background: #f3f4f6;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        padding: 5px 14px;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+    .btn-icon:hover {
+        background:#e5e7eb;
+    }
+
+    .reply-box,
+    .details-box {
+        padding: 1rem;
+        border-left: 3px solid var(--kbg-green);
+        margin: 0.5rem 0;
+        background: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .details-grid {
+        display:grid;
+        grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
+        gap:1rem;
+        margin-bottom:0.75rem;
+    }
+
+    .details-message {
+        background: #f5f5f5;
+        border-radius: 6px;
+        padding: 0.75rem 0.9rem;
+        border: 1px solid #e5e5e5;
+        margin-top: 0.35rem;
+        font-size: 0.9rem;
+        white-space: pre-line;
+    }
+
+    .request-preview {
+        max-width: 320px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Im Benutzer-Tab: Tabelle wie bei den Anfragen über die volle Breite */
+    #benutzer .user-layout {
+        display: flex;
+        flex-direction: column;   /* Standard: untereinander */
+        gap: 2rem;
+        align-items: stretch;
+    }
+
+    /* Beide erst mal volle Breite */
+    #benutzer .user-list,
+    #benutzer .user-create {
+        width: 100%;
+    }
+
+    /* Auf Handy / klein: "Neuen Benutzer" ÜBER der Tabelle */
+    #benutzer .user-create {
+        order: -1;   /* steht vor der Tabelle */
+    }
+    #benutzer .user-list {
+        order: 0;
+    }
+
+    /* Ab 1024px: wie ursprünglich – Tabelle links, Formular rechts mit fester Breite */
+    @media (min-width: 1024px) {
+        #benutzer .user-layout {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        /* Tabelle links, nimmt restliche Breite */
+        #benutzer .user-list {
+            flex: 1 1 auto;
+            min-width: 0;
+            order: 0;
+        }
+
+        /* Formular rechts mit fester Pixelbreite */
+        #benutzer .user-create {
+            flex: 0 0 360px;   /* hier kannst du z.B. 320 / 360 / 400px einstellen */
+            width: 360px;
+            order: 1;
+        }
+    }
+
+    .user-create-card {
+        padding: 2rem !important;
+    }
+    .user-create-card h3 {
+        margin-top:0;
+        margin-bottom:1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        margin-top: 4px;
+        box-sizing: border-box;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+        background: #fff;
+        border-radius: 8px;
+    }
+    .card {
+        background: #fff;
+        border-radius: 8px;
+    }
+
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        inset: 0;
+        background: rgba(0,0,0,0.9);
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+    }
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: #fff;
+        font-size: 50px;
+        cursor: pointer;
+    }
+
+    .toast {
+        visibility: hidden;
+        min-width: 250px;
+        color: #fff;
+        text-align: center;
+        border-radius: 4px;
+        padding: 16px;
+        position: fixed;
+        z-index: 999;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .toast.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
     @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-    @media (max-width: 1100px) { .media-row-container { grid-template-columns: 1fr; text-align: center; gap: 1rem; } .media-thumb { margin: 0 auto; } }
-    @media (max-width: 900px) { .user-layout { flex-direction: column; } .stats-grid-top, .stats-grid-bottom { grid-template-columns: 1fr; } }
+
+    /* Menü Items */
+    .menu-item-card {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    .menu-item-delete-form {
+        position:absolute;
+        top:1rem;
+        right:1rem;
+    }
+    .menu-item-title {
+        margin-top:0;
+        color:var(--kbg-green);
+        margin-bottom:1rem;
+    }
+    .menu-item-grid {
+        display:grid;
+        grid-template-columns: 120px 1.4fr 1.4fr;
+        gap:1.5rem;
+        align-items:flex-start;
+    }
+    .menu-item-image img {
+        width:100px;
+        height:100px;
+        object-fit:cover;
+        border-radius:6px;
+        cursor:pointer;
+        border:1px solid #ccc;
+        display:block;
+        margin-bottom:0.5rem;
+    }
+    .menu-item-placeholder {
+        width:100px;
+        height:100px;
+        background:#eee;
+        border-radius:6px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:0.8rem;
+        color:#777;
+        margin-bottom:0.5rem;
+    }
+    .file-input {
+        font-size:0.8rem;
+    }
+    .menu-item-text,
+    .menu-item-design {
+        display:flex;
+        flex-direction:column;
+        gap:0.7rem;
+    }
+    .bg-config {
+        background:#f5f5f5;
+        padding:0.8rem;
+        border-radius:6px;
+        margin-bottom:0.5rem;
+    }
+    .bg-config-row {
+        display:flex;
+        gap:0.5rem;
+        align-items:center;
+    }
+    .bg-config-row input[type="color"] {
+        height:35px;
+        width:40px;
+        padding:0;
+        border:none;
+    }
+    .checkbox-inline {
+        font-size:0.75rem;
+        display:block;
+        margin-top:4px;
+    }
+
+    .new-menu-item-card {
+        margin-top:3rem;
+        border:2px dashed #ccc;
+        padding:2rem;
+        border-radius:8px;
+        background:#fff;
+    }
+    .new-menu-grid {
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:1.5rem;
+    }
+
+    /* Job Content Cards */
+    .job-content-grid {
+        display:grid;
+        grid-template-columns: repeat(3, minmax(0,1fr));
+        gap:1.5rem;
+        margin-bottom:2.5rem;
+    }
+    .job-card {
+        border: 1px solid #eee;
+        padding: 1.75rem 1.75rem 1.5rem !important;
+        border-radius: 10px;
+    }
+    .job-card textarea {
+        font-family: inherit;
+        line-height: 1.4;
+    }
+    .job-card-title {
+        margin-top:0;
+        margin-bottom:0.75rem;
+        color:var(--kbg-green);
+    }
+    .job-card-image {
+        width:100%;
+        height:140px;
+        object-fit:cover;
+        border-radius:6px;
+        margin-bottom:0.5rem;
+    }
+    .job-card-label {
+        margin-top:0.75rem;
+        font-size:0.85rem;
+        font-weight:600;
+        color:#444;
+    }
+
+    .franchise-card {
+        margin-top:2rem;
+    }
+    .franchise-card-title {
+        margin-top:0;
+        margin-bottom:1rem;
+    }
+
+    .order-buttons-grid {
+        display:grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap:1.5rem;
+    }
+    .order-card {
+        background:#fdfdfd;
+        border:1px solid #eee;
+    }
+    .order-title {
+        margin-top:0;
+        margin-bottom:0.5rem;
+        font-weight:600;
+    }
+    .order-title-green { color:#2e7d32; }
+    .order-title-blue { color:#3f7dbb; }
+    .order-title-orange { color:#c88a27; }
+    .order-title-darkgreen { color:#2e6a57; }
+
+    .footer-settings-card {
+        padding: 2rem;
+        background:#ffffff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+    }
+    .footer-settings-card label {
+        font-weight:600;
+        color:#444;
+    }
+    .footer-settings-grid {
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:1.5rem;
+    }
+
+    .file-link {
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+        .stats-grid-top,
+        .stats-grid-bottom {
+            grid-template-columns: 1fr;
+        }
+
+        .job-content-grid {
+            grid-template-columns: repeat(2,minmax(0,1fr));
+        }
+
+        .menu-item-grid {
+            grid-template-columns: 120px 1fr;
+            grid-template-rows:auto auto;
+        }
+        .menu-item-design {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .header-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .header-actions .btn,
+        .header-actions form .btn {
+            width: 100%;
+            text-align:center;
+        }
+
+        .dashboard-tabs {
+            flex-wrap: wrap;
+        }
+        .dashboard-tab-btn {
+            flex: 1 0 48%;
+            text-align:center;
+        }
+
+        /* FIX: Tabelle auf Mobile */
+        .table-responsive {
+            max-height: 260px;
+        }
+
+        .user-layout {
+            flex-direction: column;
+        }
+        .user-create {
+            order: -1; /* oben */
+        }
+        .user-list {
+            order: 2;  /* darunter */
+        }
+
+        .job-content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .order-buttons-grid {
+            grid-template-columns:1fr;
+        }
+
+        .footer-settings-grid {
+            grid-template-columns:1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .details-grid {
+            grid-template-columns:1fr;
+        }
+        .new-menu-grid {
+            grid-template-columns:1fr;
+        }
+        .menu-item-grid {
+            grid-template-columns:1fr;
+        }
+        .menu-item-image {
+            order:-1;
+            margin-bottom:0.5rem;
+        }
+        .modern-table {
+            min-width:600px;
+        }
+    }
+
+    /* Benutzer-Tabelle: gleiche Scroll-Logik wie Anfragen */
+    #benutzer .table-responsive {
+        max-height: 420px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    @media (max-width: 900px) {
+        #benutzer .table-responsive {
+            max-height: 260px;
+        }
+    }
+
 </style>
 {% endblock %}

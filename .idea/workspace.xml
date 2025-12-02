@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Datenschutzerklärung gemacht">
-      <change afterPath="$PROJECT_DIR$/static/img/admin.jpg" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Login Webseite ist bissl hübscher mit Hintergrundbild jetzt + Respnosive">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nextsteps.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -290,7 +289,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764637477053</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Admin Webseite ist bissl hübscher mit Hintergrundbild jetzt :)">
+      <option name="closed" value="true" />
+      <created>1764668661920</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1764668661920</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Login Webseite ist bissl hübscher mit Hintergrundbild jetzt + Respnosive">
+      <option name="closed" value="true" />
+      <created>1764668681632</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1764668681632</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -305,8 +320,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="First Commit - Building the sites" />
-    <MESSAGE value="Aktuelle Version, aber bisschen broken" />
     <MESSAGE value="Alles repariert!&#10;Dashboard fertig eingerichtet." />
     <MESSAGE value="Bilder hochladen und aktualisieren funktioniert! Jetzt muss das skaliert werden, aber für MVP reicht stand jetzt" />
     <MESSAGE value="Benutzermanagement erstellt." />
@@ -330,6 +343,8 @@
     <MESSAGE value="Jobs.html ist responsive!" />
     <MESSAGE value="Impressum erstellt" />
     <MESSAGE value="Datenschutzerklärung gemacht" />
-    <option name="LAST_COMMIT_MESSAGE" value="Datenschutzerklärung gemacht" />
+    <MESSAGE value="Admin Webseite ist bissl hübscher mit Hintergrundbild jetzt :)" />
+    <MESSAGE value="Login Webseite ist bissl hübscher mit Hintergrundbild jetzt + Respnosive" />
+    <option name="LAST_COMMIT_MESSAGE" value="Login Webseite ist bissl hübscher mit Hintergrundbild jetzt + Respnosive" />
   </component>
 </project>
