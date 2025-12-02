@@ -34,11 +34,12 @@
         margin-bottom: 1rem;
     }
 
-    /* 2. JOB GRID */
+    /* 2. JOB GRID (Desktop + <640px) */
     .jobs-list-section {
         background-color: #fff;
         padding: 4rem 0;
     }
+
     .jobs-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -47,12 +48,15 @@
         margin: 0 auto;
         padding: 0 1.5rem;
     }
+
     .job-card {
         background: #f0f0f0;
         display: flex;
         flex-direction: column;
-        transition: transform 0.2s;
-        border-radius: 0; /* Eckig laut Design */
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 16px;
+        overflow: visible;          /* war: hidden */
+        margin: 0;
     }
     .job-card:hover {
         transform: translateY(-5px);
@@ -62,6 +66,8 @@
         width: 100%;
         height: 250px;
         object-fit: cover;
+        display: block;
+        border-radius: 16px 16px 0 0;   /* NEU: oben rund, unten gerade */
     }
     .job-content {
         padding: 1.5rem;
@@ -98,6 +104,86 @@
         font-size: 1rem;
     }
     .btn-job:hover { background-color: var(--kbg-green-hover); }
+
+    /* ========== JOB SLIDER (nur 640–899px) ========== */
+    .jobs-grid-slider {
+        display: none; /* default: aus, wird nur im Breakpoint gezeigt */
+    }
+
+    .jobs-slider-window {
+        position: relative;
+        overflow: hidden;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 8px 1.5rem 0;  /* bisschen Luft nach oben + Seiten-Padding wie .container */
+    }
+
+    /* Track: horizontales Karussell */
+    .jobs-slider-track {
+        display: flex;
+        transition: transform 0.4s ease;
+    }
+
+    /* Ein Frame = eine „Seite“ mit 2 Karten */
+    .jobs-slider-frame {
+        min-width: 100%;
+        display: flex;              /* FLEX statt grid -> einfacher zu kontrollieren */
+        gap: 2.5rem;                /* MEHR ABSTAND zwischen den beiden Karten */
+        padding: 0 0.75rem;         /* links/rechts etwas Raum zum Rand */
+        box-sizing: border-box;
+    }
+
+    /* Karten im Slider: füllen den verfügbaren Platz gleichmäßig */
+    .jobs-slider-frame .job-card {
+        flex: 1 1 0;
+        margin: 0;                  /* im Slider selbst keine Extra-Margins mehr */
+    }
+
+    /* Navigation unter dem Slider */
+    .jobs-slider-controls {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    /* Schöne runde Buttons im KBG-Style */
+    .jobs-slider-btn {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: none;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;          /* Größe der Pfeile */
+        font-weight: 600;
+        color: #444;
+        cursor: pointer;
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    .jobs-slider-btn:hover {
+        background-color: var(--kbg-green);
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+    }
+
+    /* Optional: schöner Fokusrahmen für Tastatur-Nutzer */
+    .jobs-slider-btn:focus-visible {
+        outline: 2px solid var(--kbg-green);
+        outline-offset: 3px;
+    }
+
+
+
 
     /* 3. FRANCHISE (Beige) */
     .franchise-section {
@@ -140,9 +226,8 @@
     .franchise-title { color: #222; font-size: 2.5rem; margin-bottom: 1rem; }
     .franchise-desc { color: #555; line-height: 1.7; margin-bottom: 2rem; }
 
-    /* MODAL STYLES */
+    /* MODAL STYLES mit Transition */
     .job-modal {
-        display: none;
         position: fixed;
         z-index: 2000;
         left: 0;
@@ -151,8 +236,17 @@
         height: 100%;
         background-color: rgba(0,0,0,0.6);
         backdrop-filter: blur(4px);
-        overflow-y: auto; /* Scrollbar falls Modal zu hoch */
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
     }
+
+    .job-modal.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
     .job-modal-content {
         background-color: #fff;
         margin: 5% auto;
@@ -164,7 +258,16 @@
         grid-template-columns: 1fr 1fr; /* Split Layout */
         overflow: hidden;
         box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        transform: translateY(20px) scale(0.98);
+        opacity: 0;
+        transition: transform 1s ease, opacity 1s ease; /* 1s Transition */
     }
+
+    .job-modal.is-visible .job-modal-content {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
     .close-modal {
         position: absolute;
         top: 15px;
@@ -223,13 +326,45 @@
         text-align: center;
     }
 
+    /* ========== RESPONSIVE ========== */
+
+    /* Gemeinsame Sachen für <900px */
     @media (max-width: 900px) {
-        .jobs-grid { grid-template-columns: 1fr; }
-        .franchise-grid { grid-template-columns: 1fr; display: flex; flex-direction: column-reverse; }
+        .franchise-grid {
+            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column-reverse;
+        }
         .franchise-slider-window { height: 300px; }
 
-        .job-modal-content { grid-template-columns: 1fr; margin: 0; width: 100%; border-radius: 0; min-height: 100vh; }
+        .job-modal-content {
+            grid-template-columns: 1fr;
+            margin: 0;
+            width: 100%;
+            border-radius: 0;
+            min-height: 100vh;
+        }
         .modal-left, .modal-right { padding: 1.5rem; }
+    }
+
+    /* 640–899px: Slider aktiv, Grid aus */
+    @media (min-width: 640px) and (max-width: 899px) {
+        .jobs-grid {
+            display: none;
+        }
+        .jobs-grid-slider {
+            display: block;
+        }
+    }
+
+    /* <640px: Grid 1-spaltig, Slider aus */
+    @media (max-width: 639px) {
+        .jobs-grid {
+            grid-template-columns: 1fr;
+        }
+        .jobs-grid-slider {
+            display: none;
+        }
     }
 </style>
 
@@ -248,6 +383,7 @@
         <h2 style="font-size:2rem; margin:0;">Wir suchen</h2>
     </div>
 
+    <!-- Desktop + <640px Version (Grid) -->
     <div class="jobs-grid">
 
         <!-- JOB 1: Shopleiter -->
@@ -262,7 +398,7 @@
                         <li>Bitte Punkte im Dashboard hinzufügen.</li>
                     {% endfor %}
                 </ul>
-                <button class="btn-job" onclick="openJobModal('manager')">Zur Bewerbung</button>
+                <button class="btn-job" type="button" onclick="openJobModal('manager')">Zur Bewerbung</button>
             </div>
         </div>
 
@@ -278,7 +414,7 @@
                         <li>Bitte Punkte im Dashboard hinzufügen.</li>
                     {% endfor %}
                 </ul>
-                <button class="btn-job" onclick="openJobModal('service')">Zur Bewerbung</button>
+                <button class="btn-job" type="button" onclick="openJobModal('service')">Zur Bewerbung</button>
             </div>
         </div>
 
@@ -294,11 +430,197 @@
                         <li>Bitte Punkte im Dashboard hinzufügen.</li>
                     {% endfor %}
                 </ul>
-                <button class="btn-job" onclick="openJobModal('cook')">Zur Bewerbung</button>
+                <button class="btn-job" type="button" onclick="openJobModal('cook')">Zur Bewerbung</button>
             </div>
         </div>
 
     </div>
+
+    <!-- 2b. JOB SLIDER für 640–899px -->
+    <div class="jobs-grid-slider">
+        <div class="jobs-slider-window">
+            <div class="jobs-slider-track" id="jobsSliderTrack">
+                <!-- CLONE LAST FRAME: Koch + Shopleiter -->
+                <div class="jobs-slider-frame" data-clone="last">
+                    <!-- Koch -->
+                    <div class="job-card">
+                        <img src="{% if jobs.cook.image %}{{ jobs.cook.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Koch">
+                        <div class="job-content">
+                            <h3 class="job-title">Koch (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.cook.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('cook')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                    <!-- Shopleiter -->
+                    <div class="job-card">
+                        <img src="{% if jobs.manager.image %}{{ jobs.manager.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Shopleiter">
+                        <div class="job-content">
+                            <h3 class="job-title">Shopleiter (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.manager.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('manager')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FRAME 0: Shopleiter + Service -->
+                <div class="jobs-slider-frame">
+                    <!-- Shopleiter -->
+                    <div class="job-card">
+                        <img src="{% if jobs.manager.image %}{{ jobs.manager.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Shopleiter">
+                        <div class="job-content">
+                            <h3 class="job-title">Shopleiter (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.manager.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('manager')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                    <!-- Service -->
+                    <div class="job-card">
+                        <img src="{% if jobs.service.image %}{{ jobs.service.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Service">
+                        <div class="job-content">
+                            <h3 class="job-title">Service (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.service.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('service')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FRAME 1: Service + Koch -->
+                <div class="jobs-slider-frame">
+                    <!-- Service -->
+                    <div class="job-card">
+                        <img src="{% if jobs.service.image %}{{ jobs.service.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Service">
+                        <div class="job-content">
+                            <h3 class="job-title">Service (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.service.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('service')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                    <!-- Koch -->
+                    <div class="job-card">
+                        <img src="{% if jobs.cook.image %}{{ jobs.cook.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Koch">
+                        <div class="job-content">
+                            <h3 class="job-title">Koch (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.cook.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('cook')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FRAME 2: Koch + Shopleiter -->
+                <div class="jobs-slider-frame">
+                    <!-- Koch -->
+                    <div class="job-card">
+                        <img src="{% if jobs.cook.image %}{{ jobs.cook.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Koch">
+                        <div class="job-content">
+                            <h3 class="job-title">Koch (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.cook.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('cook')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                    <!-- Shopleiter -->
+                    <div class="job-card">
+                        <img src="{% if jobs.manager.image %}{{ jobs.manager.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Shopleiter">
+                        <div class="job-content">
+                            <h3 class="job-title">Shopleiter (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.manager.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('manager')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLONE FIRST FRAME: Shopleiter + Service -->
+                <div class="jobs-slider-frame" data-clone="first">
+                    <!-- Shopleiter -->
+                    <div class="job-card">
+                        <img src="{% if jobs.manager.image %}{{ jobs.manager.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Shopleiter">
+                        <div class="job-content">
+                            <h3 class="job-title">Shopleiter (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.manager.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('manager')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                    <!-- Service -->
+                    <div class="job-card">
+                        <img src="{% if jobs.service.image %}{{ jobs.service.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="job-img" alt="Service">
+                        <div class="job-content">
+                            <h3 class="job-title">Service (m/w)</h3>
+                            <ul class="job-list">
+                                {% for point in jobs.service.get_points %}
+                                    <li>{{ point }}</li>
+                                {% empty %}
+                                    <li>Bitte Punkte im Dashboard hinzufügen.</li>
+                                {% endfor %}
+                            </ul>
+                            <button class="btn-job" type="button" onclick="openJobModal('service')">Zur Bewerbung</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="jobs-slider-controls">
+            <button class="jobs-slider-btn prev" type="button" aria-label="Vorherige Jobs">&larr;</button>
+            <button class="jobs-slider-btn next" type="button" aria-label="Nächste Jobs">&rarr;</button>
+        </div>
+    </div>
+
+
+
 </section>
 
 <!-- 3. FRANCHISE SLIDER -->
@@ -419,55 +741,144 @@
 
 <!-- JAVASCRIPT LOGIK -->
 <script>
-    // Franchise Slider
-    document.addEventListener("DOMContentLoaded", function() {
-        const track = document.getElementById('franchiseTrack');
-        if(track) {
-            let isSlide1 = true;
-            setInterval(() => {
-                track.style.transform = isSlide1 ? "translateX(-50%)" : "translateX(0%)";
-                isSlide1 = !isSlide1;
-            }, 5000);
-        }
-    });
+  // WIRD AUSGEFÜHRT, WENN DOM GELADEN IST
+  document.addEventListener("DOMContentLoaded", function () {
+      /* =========================
+         1) FRANCHISE SLIDER (Auto)
+         ========================= */
+      const franchiseTrack = document.getElementById('franchiseTrack');
+      if (franchiseTrack) {
+          let isSlide1 = true;
+          setInterval(function () {
+              franchiseTrack.style.transform = isSlide1
+                  ? "translateX(-50%)"
+                  : "translateX(0)";
+              isSlide1 = !isSlide1;
+          }, 5000);
+      }
 
-    // Daten für Modal (kommen aus Django View)
-    // Wir nutzen escapejs um Zeilenumbrüche sicher zu machen
-    const jobData = {
-        'manager': {
-            title: "{{ jobs.manager.popup_title|escapejs }}",
-            text: `{{ jobs.manager.popup_text|escapejs }}`,
-            label: "Shopleiter"
-        },
-        'service': {
-            title: "{{ jobs.service.popup_title|escapejs }}",
-            text: `{{ jobs.service.popup_text|escapejs }}`,
-            label: "Service"
-        },
-        'cook': {
-            title: "{{ jobs.cook.popup_title|escapejs }}",
-            text: `{{ jobs.cook.popup_text|escapejs }}`,
-            label: "Koch"
-        }
-    };
+      /* ==========================================
+         2) JOB SLIDER – 2 Karten, weiches Karussell
+         ========================================== */
+      const track = document.getElementById('jobsSliderTrack');
+      if (track) {
+          const frames = track.querySelectorAll('.jobs-slider-frame');
+          const totalFrames = frames.length;          // inkl. Klone
+          const firstRealIndex = 1;                   // nach clone-last
+          const lastRealIndex  = totalFrames - 2;     // vor clone-first
 
-    function openJobModal(type) {
-        const data = jobData[type];
-        if(data) {
-            document.getElementById('modalTitle').innerText = data.title;
-            document.getElementById('modalText').innerText = data.text;
-            document.getElementById('jobTypeInput').value = data.label;
+          let currentIndex = firstRealIndex;
+          let isAnimating = false;
 
-            document.getElementById('applicationModal').style.display = 'block';
-            // Body Scroll lock
-            document.body.style.overflow = 'hidden';
-        }
-    }
+          // Startposition: erstes echtes Frame (Shopleiter + Service)
+          track.style.transition = 'none';
+          track.style.transform  = `translateX(-${currentIndex * 100}%)`;
+          requestAnimationFrame(() => {
+              track.style.transition = 'transform 0.4s ease';
+          });
 
-    function closeJobModal() {
-        document.getElementById('applicationModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
+          const nextBtn = document.querySelector('.jobs-slider-btn.next');
+          const prevBtn = document.querySelector('.jobs-slider-btn.prev');
+
+          function goTo(index) {
+              isAnimating = true;
+              currentIndex = index;
+              track.style.transition = 'transform 0.4s ease';
+              track.style.transform  = `translateX(-${currentIndex * 100}%)`;
+          }
+
+          if (nextBtn && prevBtn) {
+              nextBtn.addEventListener('click', function () {
+                  if (!isAnimating) {
+                      goTo(currentIndex + 1);
+                  }
+              });
+
+              prevBtn.addEventListener('click', function () {
+                  if (!isAnimating) {
+                      goTo(currentIndex - 1);
+                  }
+              });
+          }
+
+          track.addEventListener('transitionend', function () {
+              // Wenn wir auf einem Clone landen, sofort (ohne Animation) auf echtes Frame springen
+              if (currentIndex === totalFrames - 1) {
+                  // clone-first -> echtes erstes Frame
+                  track.style.transition = 'none';
+                  currentIndex = firstRealIndex;
+                  track.style.transform  = `translateX(-${currentIndex * 100}%)`;
+                  void track.offsetWidth; // Reflow forcieren
+                  track.style.transition = 'transform 0.4s ease';
+              } else if (currentIndex === 0) {
+                  // clone-last -> letztes echtes Frame
+                  track.style.transition = 'none';
+                  currentIndex = lastRealIndex;
+                  track.style.transform  = `translateX(-${currentIndex * 100}%)`;
+                  void track.offsetWidth;
+                  track.style.transition = 'transform 0.4s ease';
+              }
+              isAnimating = false;
+          });
+      }
+  });
+
+  /* ==========================
+     3) JOB-MODAL (global nötig,
+        weil onclick im HTML)
+     ========================== */
+
+  const jobData = {
+      'manager': {
+          title: "{{ jobs.manager.popup_title|escapejs }}",
+          text: `{{ jobs.manager.popup_text|escapejs }}`,
+          label: "Shopleiter"
+      },
+      'service': {
+          title: "{{ jobs.service.popup_title|escapejs }}",
+          text: `{{ jobs.service.popup_text|escapejs }}`,
+          label: "Service"
+      },
+      'cook': {
+          title: "{{ jobs.cook.popup_title|escapejs }}",
+          text: `{{ jobs.cook.popup_text|escapejs }}`,
+          label: "Koch"
+      }
+  };
+
+  function openJobModal(type) {
+      const data = jobData[type];
+      if (!data) return;
+
+      const titleEl = document.getElementById('modalTitle');
+      const textEl  = document.getElementById('modalText');
+      const hidden  = document.getElementById('jobTypeInput');
+      const modal   = document.getElementById('applicationModal');
+
+      if (titleEl) titleEl.innerText = data.title;
+      if (textEl)  textEl.innerText  = data.text;
+      if (hidden)  hidden.value      = data.label;
+
+      if (modal) {
+          modal.classList.add('is-visible');
+          document.body.style.overflow = 'hidden';
+      }
+  }
+
+  function closeJobModal() {
+      const modal = document.getElementById('applicationModal');
+      if (modal) {
+          modal.classList.remove('is-visible');
+          document.body.style.overflow = 'auto';
+      }
+  }
+
+  // ESC schließt Modal
+  document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+          closeJobModal();
+      }
+  });
 </script>
 
 {% endblock %}
