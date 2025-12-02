@@ -19,6 +19,9 @@ def bestellen_view(request):
 def impressum(request):
     return render(request, "pages/impressum.html")
 
+def datenschutz(request):
+    return render(request, "pages/datenschutz.html")
+
 def catering_view(request):
     if request.method == "POST":
         CateringRequest.objects.create(

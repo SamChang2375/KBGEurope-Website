@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Jobs.html ist responsive!">
-      <change afterPath="$PROJECT_DIR$/templates/pages/impressum.html" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Impressum erstellt">
+      <change afterPath="$PROJECT_DIR$/templates/pages/datenschutz.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/views.py" afterDir="false" />
@@ -275,7 +275,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764636738421</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Impressum erstellt">
+      <option name="closed" value="true" />
+      <created>1764637201047</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1764637201047</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -313,6 +321,7 @@
     <MESSAGE value="base.html über alle Seiten responsive + bestellen.html responsive!" />
     <MESSAGE value="404.html ist responsive, Catering auch" />
     <MESSAGE value="Jobs.html ist responsive!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Jobs.html ist responsive!" />
+    <MESSAGE value="Impressum erstellt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Impressum erstellt" />
   </component>
 </project>
