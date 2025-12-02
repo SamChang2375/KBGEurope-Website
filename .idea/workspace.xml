@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Impressum erstellt">
-      <change afterPath="$PROJECT_DIR$/templates/pages/datenschutz.html" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Datenschutzerklärung gemacht">
+      <change afterPath="$PROJECT_DIR$/static/img/admin.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +282,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764637201047</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Datenschutzerklärung gemacht">
+      <option name="closed" value="true" />
+      <created>1764637477053</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1764637477053</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -322,6 +329,7 @@
     <MESSAGE value="404.html ist responsive, Catering auch" />
     <MESSAGE value="Jobs.html ist responsive!" />
     <MESSAGE value="Impressum erstellt" />
-    <option name="LAST_COMMIT_MESSAGE" value="Impressum erstellt" />
+    <MESSAGE value="Datenschutzerklärung gemacht" />
+    <option name="LAST_COMMIT_MESSAGE" value="Datenschutzerklärung gemacht" />
   </component>
 </project>
