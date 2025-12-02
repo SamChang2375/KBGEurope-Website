@@ -108,7 +108,7 @@ def dashboard_home(request):
     }
 
     # 6. MENÜ ITEMS LADEN
-    menu_items = MenuItem.objects.all().order_by('order')
+    menu_items = MenuItem.objects.all().order_by('dish_id')
 
     # 7. JOBS LADEN
     # a) Die dynamische Liste

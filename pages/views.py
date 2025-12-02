@@ -10,7 +10,7 @@ def home_view(request):
     return render(request, "pages/home.html")
 
 def menu_view(request):
-    menu_items = MenuItem.objects.all().order_by('order')
+    menu_items = MenuItem.objects.all().order_by('dish_id')
     return render(request, "pages/menu.html", {"menu_items": menu_items})
 
 def bestellen_view(request):

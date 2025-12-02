@@ -37,6 +37,26 @@
     .menu-option-code { color: #f28c1a; font-style: italic; font-weight: 600; margin-right: 0.3rem; }
 
     @media (max-width: 900px) { .menu-row { grid-template-columns: 1fr; } }
+
+    /* Optionen aus dem Editor: keine Abstände zwischen den Zeilen */
+    .menu-options-list p {
+        margin: 0;
+        padding-bottom: 10px;
+        line-height: 1.1;  /* evtl. auf 1.0 stellen, wenn du es noch tighter willst */
+    }
+
+    .menu-item-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.35rem;
+        display: block;
+    }
+
+    .menu-item-text .menu-item-label:first-child,
+    .menu-item-image .menu-item-label:first-child,
+    .menu-item-design .menu-item-label:first-child {
+        margin-top: 0;
+    }
 </style>
 
 <!-- Hero (Statisch, via SiteImage wie gehabt) -->
@@ -92,14 +112,10 @@
                 <!-- Optionen Liste -->
                 {% if item.options_text %}
                 <div class="menu-options-list" style="margin-top: 0.75rem; font-size: 0.95rem;">
-                    {% for opt in item.get_options_list %}
-                        <div class="menu-option-item" style="margin-bottom: 0.2rem;">
-                            {% if opt.code %}<span class="menu-option-code">{{ opt.code }}</span>{% endif %}
-                            <span class="menu-option-label">{{ opt.label }}</span>
-                        </div>
-                    {% endfor %}
+                    {{ item.options_text|safe }}
                 </div>
                 {% endif %}
+
             </div>
         </div>
     </div>

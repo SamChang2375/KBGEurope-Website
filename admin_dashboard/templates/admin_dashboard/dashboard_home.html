@@ -7,6 +7,8 @@
 {% block content %}
 <!-- Chart.js Bibliothek laden -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
 <!-- Modal für Bildvorschau -->
 <div id="imageModal" class="image-modal" onclick="closeModal()">
@@ -362,6 +364,65 @@
                         </div>
 
                         <div id="menu-items-list">
+                            <div id="new-menu-item-form" class="new-menu-item-card" style="display:none;">
+                                <h3 style="margin-top:0;">Neuen Menü-Block hinzufügen</h3>
+                                <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_create' %}">
+                                    {% csrf_token %}
+                                    <div class="menu-item-grid">
+                                        <!-- Bild-Spalte -->
+                                        <div class="menu-item-image">
+                                            <div class="menu-item-placeholder">Kein Bild</div>
+
+                                            <label class="menu-item-label">Bild *</label>
+                                            <input type="file" name="image" class="form-control file-input" required>
+                                        </div>
+
+                                        <!-- Text-Spalte -->
+                                        <div class="menu-item-text">
+                                            <label class="menu-item-label">Nummer</label>
+                                            <input type="text" name="dish_id" class="form-control" placeholder="Nummer (z.B. 10)">
+
+                                            <label class="menu-item-label">Gericht Name *</label>
+                                            <input type="text" name="name" class="form-control" required placeholder="Gericht Name">
+
+                                            <label class="menu-item-label">Untertitel</label>
+                                            <input type="text" name="subtitle" class="form-control" placeholder="Untertitel">
+
+                                            <label class="menu-item-label">Beschreibung (DE)</label>
+                                            <input type="text" name="description_de" class="form-control" placeholder="Kurzbeschreibung DE">
+
+                                            <label class="menu-item-label">Beschreibung (EN)</label>
+                                            <input type="text" name="description_en" class="form-control" placeholder="Kurzbeschreibung EN">
+                                        </div>
+
+                                        <!-- Optionen & Design-Spalte -->
+                                        <div class="menu-item-design">
+                                            <label class="menu-item-label">Optionen</label>
+                                            <div class="options-editor-wrapper" data-editor-id="new">
+                                                <div id="options-editor-new" class="options-editor"></div>
+                                                <input type="text" name="options_text" id="options-input-new" style="display:none;">
+                                            </div>
+
+                                            <div class="bg-config" style="margin-top:0.75rem;">
+                                                <label class="menu-item-label">Hintergrund</label>
+                                                <div class="bg-config-row">
+                                                    <input type="color" value="#ffffff">
+                                                    <input type="text" name="background_color" class="form-control" value="#ffffff">
+                                                </div>
+                                                <div class="bg-config-row" style="margin-top:0.8rem;">
+                                                    <input type="file" name="background_image" class="form-control file-input">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:1.5rem; text-align:right;">
+                                        <button type="button" class="btn" onclick="document.getElementById('new-menu-item-form').style.display='none'">Abbrechen</button>
+                                        <button type="submit" class="btn btn-primary">Erstellen</button>
+                                    </div>
+                                </form>
+                            </div>
+
                             {% for item in menu_items %}
                             <div class="card menu-item-card">
                                 <form method="post" action="{% url 'dashboard_menu_item_delete' item.id %}" onsubmit="return confirm('Block wirklich löschen?');" class="menu-item-delete-form">
@@ -383,21 +444,46 @@
                                         </div>
                                         <!-- Texte -->
                                         <div class="menu-item-text">
-                                            <input type="text" name="dish_id" class="form-control" value="{{ item.dish_id }}" placeholder="Nummer (z.B. 1)">
-                                            <input type="text" name="name" class="form-control" value="{{ item.name }}" placeholder="Name" style="font-weight:bold;">
-                                            <input type="text" name="subtitle" class="form-control" value="{{ item.subtitle }}" placeholder="Untertitel">
-                                            <textarea name="description_de" class="form-control" rows="2" placeholder="Beschreibung DE">{{ item.description_de }}</textarea>
-                                            <textarea name="description_en" class="form-control" rows="2" placeholder="Beschreibung EN">{{ item.description_en }}</textarea>
+                                            <label class="menu-item-label">Nummer</label>
+                                            <input type="text" name="dish_id" class="form-control"
+                                                   value="{{ item.dish_id }}" placeholder="Nummer (z.B. 1)">
+
+                                            <label class="menu-item-label">Gericht Name</label>
+                                            <input type="text" name="name" class="form-control"
+                                                   value="{{ item.name }}" placeholder="Gericht Name" style="font-weight:bold;">
+
+                                            <label class="menu-item-label">Untertitel</label>
+                                            <input type="text" name="subtitle" class="form-control"
+                                                   value="{{ item.subtitle }}" placeholder="Untertitel">
+
+                                            <label class="menu-item-label">Beschreibung (DE)</label>
+                                            <input type="text" name="description_de" class="form-control"
+                                                   value="{{ item.description_de }}" placeholder="Kurzbeschreibung DE">
+
+                                            <label class="menu-item-label">Beschreibung (EN)</label>
+                                            <input type="text" name="description_en" class="form-control"
+                                                   value="{{ item.description_en }}" placeholder="Kurzbeschreibung EN">
                                         </div>
+
                                         <!-- Optionen & Design -->
                                         <div class="menu-item-design">
-                                            <textarea name="options_text" class="form-control" rows="5" placeholder="Optionen (z.B. 1A Bulgogi)">{{ item.options_text }}</textarea>
-                                            <div class="bg-config">
+                                            <label style="font-size:0.85rem;font-weight:600;">Optionen</label>
+                                            <div class="options-editor-wrapper" data-editor-id="{{ item.id }}">
+                                                <div id="options-editor-{{ item.id }}" class="options-editor"></div>
+                                                <!-- Hidden-Input (eigentlich type="text", damit das Change-Tracking funktioniert) -->
+                                                <input type="text"
+                                                       name="options_text"
+                                                       id="options-input-{{ item.id }}"
+                                                       value="{{ item.options_text|escape }}"
+                                                       style="display:none;">
+                                            </div>
+
+                                            <div class="bg-config" style="margin-top:0.75rem;">
                                                 <label>Hintergrundfarbe</label>
                                                 <div class="bg-config-row">
-                                                    <input type="color" value="{{ item.background_color }}" onchange="this.nextElementSibling.value = this.value">
-                                                    <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}">
-                                                </div>
+                                                <input type="color" value="{{ item.background_color|default:'#ffffff' }}">
+                                                <input type="text" name="background_color" class="form-control" value="{{ item.background_color }}">
+                                            </div>
                                                 <div class="bg-config-row" style="margin-top:0.8rem;">
                                                     <input type="file" name="background_image" class="form-control file-input">
                                                     {% if item.background_image %}
@@ -405,39 +491,13 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                            <input type="number" name="order" class="form-control" value="{{ item.order }}" placeholder="Reihenfolge">
+
+                                            <!-- Reihenfolge-Feld entfernt -->
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             {% endfor %}
-                        </div>
-
-                        <div id="new-menu-item-form" class="new-menu-item-card" style="display:none;">
-                            <h3 style="margin-top:0;">Neuen Menü-Block hinzufügen</h3>
-                            <form method="post" enctype="multipart/form-data" action="{% url 'dashboard_menu_item_create' %}">
-                                {% csrf_token %}
-                                <div class="new-menu-grid">
-                                    <div>
-                                        <label>Bild *</label>
-                                        <input type="file" name="image" class="form-control" required>
-                                        <label style="margin-top:1rem;">Nummer</label>
-                                        <input type="text" name="dish_id" class="form-control" placeholder="Nummer (z.B. 10)">
-                                        <label style="margin-top:1rem;">Gericht Name *</label>
-                                        <input type="text" name="name" class="form-control" required placeholder="Gericht Name">
-                                    </div>
-                                    <div>
-                                        <label>Hintergrundfarbe</label>
-                                        <input type="text" name="background_color" class="form-control" value="#ffffff">
-                                        <label style="margin-top:1rem;">Beschreibung (DE)</label>
-                                        <textarea name="description_de" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div style="margin-top:1.5rem; text-align:right;">
-                                    <button type="button" class="btn" onclick="document.getElementById('new-menu-item-form').style.display='none'">Abbrechen</button>
-                                    <button type="submit" class="btn btn-primary">Erstellen</button>
-                                </div>
-                            </form>
                         </div>
                     </div>
 
@@ -829,6 +889,70 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Quill Editor für Optionen (farbiger Text)
+    if (window.Quill) {
+        document.querySelectorAll('.options-editor-wrapper').forEach(function(wrapper) {
+            const editorId   = wrapper.getAttribute('data-editor-id');
+            const editorEl   = wrapper.querySelector('.options-editor');
+            const hiddenInput = document.getElementById('options-input-' + editorId);
+
+            if (!editorEl || !hiddenInput) return;
+
+            const quill = new Quill(editorEl, {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic'],
+                        [{ 'color': [] }],  // Color-Picker
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Initialen Wert aus dem Hidden-Input laden
+            if (hiddenInput.value) {
+                quill.root.innerHTML = hiddenInput.value;
+            }
+
+            // Bei Änderungen HTML zurück in das Hidden-Feld schreiben
+            quill.on('text-change', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+        });
+    }
+
+    // Hintergrundfarbe: Color-Picker <-> Textfeld synchron halten
+    document.querySelectorAll('.bg-config-row').forEach(function(row) {
+        const colorInput = row.querySelector('input[type="color"]');
+        const textInput  = row.querySelector('input[name="background_color"]');
+
+        if (!colorInput || !textInput) return; // nur Zeilen mit beiden Feldern
+
+        // Initial: Wert aus Textfeld übernehmen (kommt aus der DB)
+        if (textInput.value) {
+            try {
+                colorInput.value = textInput.value;
+            } catch (e) {
+                // wenn z.B. #fff drinsteht, ignorieren wir das einfach
+            }
+        } else {
+            textInput.value = colorInput.value || '#ffffff';
+        }
+
+        // Wenn mit dem Color-Picker gewählt wird -> Textfeld updaten
+        colorInput.addEventListener('input', function () {
+            textInput.value = colorInput.value;
+        });
+
+        // Wenn im Textfeld getippt wird -> Picker updaten (nur bei gültigem Hex)
+        textInput.addEventListener('input', function () {
+            const v = textInput.value.trim();
+            if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+                colorInput.value = v;
+            }
+        });
+    });
+
     // Chart.js
     const ctx = document.getElementById('trafficChart');
     const chartLabels = {{ stats.chart_labels|default:"[]"|safe }};
@@ -865,6 +989,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ctx.style.display = 'none';
         ctx.parentElement.innerHTML += '<p style="text-align:center; color:#999; padding-top:100px;">Keine Daten.</p>';
     }
+
+
 });
 
 function openTab(tabId) {
@@ -1551,7 +1677,33 @@ function closeModal() {
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
     @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
+    /* Optionen-Editor (Quill) */
+    .options-editor-wrapper {
+        margin-top: 0.25rem;
+    }
+    .options-editor-wrapper .ql-toolbar.ql-snow {
+        border-radius: 6px 6px 0 0;
+        border-color: #ccc;
+    }
+    .options-editor-wrapper .ql-container.ql-snow {
+        border-radius: 0 0 6px 6px;
+        border-color: #ccc;
+        min-height: 110px;
+    }
+
     /* Menü Items */
+    .menu-item-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: block;
+        margin-top: 0.15rem;
+        margin-bottom: 1px !important;  /* ganz wenig Abstand nach unten */
+    }
+
+    /* In Menü-Karten: Abstand Label -> Feld kleiner machen */
+    .menu-item-card .form-control {
+        margin-top: 2px !important;  /* statt global 4px */
+    }
     .menu-item-card {
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -1575,18 +1727,19 @@ function closeModal() {
         align-items:flex-start;
     }
     .menu-item-image img {
-        width:100px;
-        height:100px;
-        object-fit:cover;
-        border-radius:6px;
-        cursor:pointer;
-        border:1px solid #ccc;
-        display:block;
-        margin-bottom:0.5rem;
+        width: 100%;          /* gleiche Breite wie der File-Input */
+        height: auto;
+        object-fit: cover;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        display: block;
+        margin-bottom: 0.5rem;
     }
+
     .menu-item-placeholder {
-        width:100px;
-        height:100px;
+        width: 100%;          /* auch Platzhalter auf volle Breite */
+        height: 100px;
         background:#eee;
         border-radius:6px;
         display:flex;
@@ -1596,6 +1749,7 @@ function closeModal() {
         color:#777;
         margin-bottom:0.5rem;
     }
+
     .file-input {
         font-size:0.8rem;
     }
@@ -1634,6 +1788,7 @@ function closeModal() {
         padding:2rem;
         border-radius:8px;
         background:#fff;
+        margin-bottom: 3rem;
     }
     .new-menu-grid {
         display:grid;
