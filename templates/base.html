@@ -16,7 +16,6 @@
     <!-- CSS laden (mit Versions-Trick gegen Cache) -->
     <link href="{% static 'css/style.css' %}?v=3" rel="stylesheet">
     <link href="{% static 'css/cookie_banner.css' %}?v=2" rel="stylesheet">
-    <script src="{% static 'js/cookie_banner.js' %}?v=2" defer></script>
 
     <!-- HEADER ANPASSUNGEN (Größe & Logo + Mobile Menü) -->
     <style>
@@ -264,7 +263,7 @@
                 <!-- Rechte Spalte: MAP IFRAME -->
                 <div class="footer-map" data-gmaps-host>
                   <div data-gmaps-placeholder
-                       style="background:#eee; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center; padding:1.2rem; text-align:center;">
+                       style="color: black; background:#eee; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center; padding:1.2rem; text-align:center;">
                     <div>
                       <strong>Google Maps ist deaktiviert.</strong><br>
                       Bitte akzeptieren Sie <em>Externe Medien</em>, um die Karte zu laden.<br>
@@ -424,5 +423,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% include "partials/cookie_banner.html" %}
+    <script src="{% static 'js/cookie_banner.js' %}?v=4" defer></script>
 </body>
 </html>

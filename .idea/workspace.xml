@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Favicon erstellt!">
-      <change afterPath="$PROJECT_DIR$/static/css/cookie_banner.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/cookie_banner.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/partials/cookie_banner.html" afterDir="false" />
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Cookie banner erstellt, aber noch nicht wirklich fuktionsfähig; Individuelle Datenschutzpräferenzen funktionieren nicht, checkboxen funktionieren auch nicht.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/cookie_banner.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/cookie_banner.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/cookie_banner.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/cookie_banner.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/cookie_banner.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/cookie_banner.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -355,7 +355,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764938604101</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Cookie banner erstellt, aber noch nicht wirklich fuktionsfähig; Individuelle Datenschutzpräferenzen funktionieren nicht, checkboxen funktionieren auch nicht.">
+      <option name="closed" value="true" />
+      <created>1764949549126</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1764949549126</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -370,7 +378,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Home Seite fertig" />
     <MESSAGE value="Footer Edit Bereich im Admin board hinzugefügt. &#10;Kritische Fehler (doppelte dashboard funktion im view) behoben, Admin funktioniert jetzt einwandfrei." />
     <MESSAGE value="Korrektur des Header-Bereiches. Logo bisschen größer gemacht. Iframe wieder hinzugefügt." />
     <MESSAGE value="Einführung des CMS - Systems für die Menü Seite. Funktioniert rudimentär, ist der größte Block und dumme arbeit, wird später gemacht :)" />
@@ -395,6 +402,7 @@
     <MESSAGE value="Umstellung auf Google Analytics ist erfolgt; jetzt nur noch Looker Studio bauen, als Iframe einfügen" />
     <MESSAGE value="Header jetzt überall gleich breit - einheitliche Container-Logik" />
     <MESSAGE value="Favicon erstellt!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Favicon erstellt!" />
+    <MESSAGE value="Cookie banner erstellt, aber noch nicht wirklich fuktionsfähig; Individuelle Datenschutzpräferenzen funktionieren nicht, checkboxen funktionieren auch nicht." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cookie banner erstellt, aber noch nicht wirklich fuktionsfähig; Individuelle Datenschutzpräferenzen funktionieren nicht, checkboxen funktionieren auch nicht." />
   </component>
 </project>
