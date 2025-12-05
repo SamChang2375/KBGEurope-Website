@@ -1,0 +1,303 @@
+{% load static %}
+{% load media_tags %}
+
+{# Favicon-Logo wie gewünscht #}
+{% site_image_url "kbg_favicon" "img/favicon.png" as FAVICON_URL %}
+
+<div id="cookieModal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
+  <div class="cookie-modal__panel">
+
+    <button class="cookie-modal__close" type="button" aria-label="Schließen" data-cookie-close>
+      &times;
+    </button>
+
+    <div class="cookie-modal__header">
+      <img class="cookie-modal__logo" src="{{ FAVICON_URL }}" alt="KBG">
+      <h2 id="cookieTitle">Datenschutz-Präferenz</h2>
+    </div>
+
+    <div class="cookie-modal__body">
+
+      {# ========= VIEW 1: Kurz/Standard ========= #}
+      <div class="cookie-view cookie-view--main" data-cookie-view="main">
+
+        <div class="cookie-scroll">
+          <p>
+              Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern.
+              Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder die Messung von Anzeigen und Inhalten.
+              Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer
+              <a href="{% url 'datenschutz' %}" target="_blank" rel="noopener">Datenschutzerklärung</a>.
+              Es besteht keine Verpflichtung, in die Verarbeitung Ihrer Daten einzuwilligen, um dieses Angebot zu nutzen.
+              Sie können Ihre Auswahl jederzeit unter <a href="#" data-cookie-open> Einstellungen</a> widerrufen oder anpassen.
+              Bitte beachten Sie, dass aufgrund individueller Einstellungen möglicherweise nicht alle Funktionen der Website verfügbar sind.
+          </p>
+          <hr>
+
+          <p class="cookie-muted">
+            Einige Services verarbeiten personenbezogene Daten in den USA. Mit Ihrer Einwilligung zur Nutzung dieser Services
+            willigen Sie auch in die Verarbeitung Ihrer Daten in den USA gemäß Art. 49 (1) lit. a GDPR ein.
+            Der EuGH stuft die USA als ein Land mit unzureichendem Datenschutz nach EU-Standards ein. Es besteht beispielsweise
+            die Gefahr, dass US-Behörden personenbezogene Daten in Überwachungsprogrammen verarbeiten, ohne dass für
+            Europäerinnen und Europäer eine Klagemöglichkeit besteht.
+          </p>
+
+          <div class="cookie-category-list">
+
+              <div class="cookie-category">
+                <div class="cookie-category__head">
+                  <div>
+                    <div class="cookie-category__title">Essenziell</div>
+                    <div class="cookie-category__desc">
+                      Diese Cookies sind für grundlegende Funktionen der Website erforderlich.
+                    </div>
+                  </div>
+                  <input type="checkbox" checked disabled>
+                </div>
+              </div>
+
+              <div class="cookie-category">
+                <label class="cookie-category__head cookie-category__head--label" for="consent-statistics-main">
+                  <div>
+                    <div class="cookie-category__title">Statistik</div>
+                    <div class="cookie-category__desc">
+                      Statistik-Cookies sammeln Nutzungsdaten, die uns Aufschluss darüber geben,
+                      wie unsere Besucher mit unserer Website umgehen.
+                    </div>
+                  </div>
+                  <input id="consent-statistics-main" type="checkbox" data-consent-toggle="statistics">
+                </label>
+              </div>
+
+              <div class="cookie-category">
+                <label class="cookie-category__head cookie-category__head--label" for="consent-marketing-main">
+                  <div>
+                    <div class="cookie-category__title">Marketing</div>
+                    <div class="cookie-category__desc">
+                      Marketing Services werden von Drittanbietern oder Herausgebern genutzt, um personalisierte Werbung anzuzeigen.
+                      Sie tun dies, indem sie Besucher über Websites hinweg verfolgen.
+                    </div>
+                  </div>
+                  <input id="consent-marketing-main" type="checkbox" data-consent-toggle="marketing">
+                </label>
+              </div>
+
+              <div class="cookie-category">
+                <label class="cookie-category__head cookie-category__head--label" for="consent-external-main">
+                  <div>
+                    <div class="cookie-category__title">Externe Medien</div>
+                    <div class="cookie-category__desc">
+                      Inhalte von Videoplattformen und Social-Media-Plattformen werden standardmäßig blockiert.
+                      Wenn externe Services akzeptiert werden, ist für den Zugriff auf diese Inhalte keine manuelle
+                      Einwilligung mehr erforderlich.
+                    </div>
+                  </div>
+                  <input id="consent-external-main" type="checkbox" data-consent-toggle="external_media">
+                </label>
+              </div>
+
+            </div>
+        </div>
+
+        <div class="cookie-actions">
+          <button class="cookie-btn cookie-btn--primary" type="button" data-cookie-accept-all>
+            Ich akzeptiere alle
+          </button>
+          <button class="cookie-btn" type="button" data-cookie-accept-essential>
+            Nur essenzielle Cookies akzeptieren
+          </button>
+          <button class="cookie-btn" type="button" data-cookie-open-details>
+            Individuelle Datenschutz-Präferenzen
+          </button>
+        </div>
+
+      </div>
+
+      {# ========= VIEW 2: Details/Accordion ========= #}
+      <div class="cookie-view cookie-view--details" data-cookie-view="details" hidden>
+
+        <div class="cookie-scroll">
+
+          <div class="cookie-accordion">
+
+            {# STATISTIK #}
+            <div class="cookie-acc-item">
+              <div class="cookie-acc-head">
+                <button class="cookie-acc-trigger" type="button" data-acc-trigger="statistics">
+                  <span>Statistik</span>
+                  <span class="cookie-acc-toggle-text" data-acc-toggle-text="statistics">Ausklappen</span>
+                </button>
+
+                <label class="cookie-switch" for="consent-statistics-details">
+                  <input id="consent-statistics-details" type="checkbox" data-consent-toggle="statistics">
+                  <span class="cookie-switch__ui"></span>
+                </label>
+              </div>
+
+              <div class="cookie-acc-panel" data-acc-panel="statistics" hidden>
+                <div class="cookie-service">
+                  <div class="cookie-service__title">Google Analytics</div>
+                  <div class="cookie-service__status">Aus</div>
+
+                  <table class="cookie-table">
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Google Analytics ist ein Webanalysedienst von Google, der unseren Website-Verkehr nachverfolgt und analysiert.
+                        Er ermöglicht Einblicke in das Nutzerverhalten auf unserer Website und unterstützt uns dabei,
+                        unsere Zielgruppe besser zu verstehen sowie unsere Online-Aktivitäten zu optimieren.
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Hosts</th>
+                      <td>www.googletagmanager.com, www.google-analytics.com</td>
+                    </tr>
+                  </table>
+
+                  <div class="cookie-subtitle">Provider-Informationen</div>
+                  <table class="cookie-table">
+                    <tr><th>Provider-Name</th><td>Google</td></tr>
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Google LLC, die Dachgesellschaft aller Google-Dienste, ist ein Technologieunternehmen,
+                        das verschiedene Dienstleistungen anbietet und sich mit der Entwicklung von Hardware und Software beschäftigt.
+                      </td>
+                    </tr>
+                    <tr><th>Adresse</th><td>Gordon House, Barrow Street, Dublin 4, Ireland</td></tr>
+                    <tr><th>URL der Datenschutzerklärung</th><td>https://policies.google.com/privacy</td></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {# MARKETING #}
+            <div class="cookie-acc-item">
+              <div class="cookie-acc-head">
+                <button class="cookie-acc-trigger" type="button" data-acc-trigger="marketing">
+                  <span>Marketing</span>
+                  <span class="cookie-acc-toggle-text" data-acc-toggle-text="marketing">Ausklappen</span>
+                </button>
+
+                <label class="cookie-switch" for="consent-marketing-details">
+                  <input id="consent-marketing-details" type="checkbox" data-consent-toggle="marketing">
+                  <span class="cookie-switch__ui"></span>
+                </label>
+              </div>
+
+              <div class="cookie-acc-panel" data-acc-panel="marketing" hidden>
+                <div class="cookie-service">
+                  <div class="cookie-service__title">Meta Pixel</div>
+                  <div class="cookie-service__status">Aus</div>
+
+                  <table class="cookie-table">
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Meta Pixel ist ein von Meta angebotener Webanalysedienst, der unseren Website-Verkehr nachverfolgt und analysiert.
+                        Er gibt Aufschluss darüber, wie Nutzer mit unserer Website interagieren, und hilft uns,
+                        unser Publikum zu verstehen und unsere Online-Präsenz und die Ausrichtung von Anzeigen zu optimieren.
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Cookie(s)</th>
+                      <td>
+                        <strong>_fbc</strong> – Tracking (Sitzung)<br>
+                        <strong>_fbp</strong> – Tracking (Sitzung)
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Hosts</th>
+                      <td>connect.facebook.net</td>
+                    </tr>
+                  </table>
+
+                  <div class="cookie-subtitle">Provider-Informationen</div>
+                  <table class="cookie-table">
+                    <tr><th>Provider-Name</th><td>Meta</td></tr>
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Meta Platforms Ireland Ltd ist ein Technologieunternehmen für soziale Netzwerke,
+                        Kommunikation und Virtual-Reality-Erfahrungen.
+                      </td>
+                    </tr>
+                    <tr><th>Adresse</th><td>4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland</td></tr>
+                    <tr><th>URL der Datenschutzerklärung</th><td>https://www.facebook.com/privacy/policy</td></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {# EXTERNE MEDIEN #}
+            <div class="cookie-acc-item">
+              <div class="cookie-acc-head">
+                <button class="cookie-acc-trigger" type="button" data-acc-trigger="external_media">
+                  <span>Externe Medien</span>
+                  <span class="cookie-acc-toggle-text" data-acc-toggle-text="external_media">Ausklappen</span>
+                </button>
+
+                <label class="cookie-switch" for="consent-external-details">
+                  <input id="consent-external-details" type="checkbox" data-consent-toggle="external_media">
+                  <span class="cookie-switch__ui"></span>
+                </label>
+              </div>
+
+              <div class="cookie-acc-panel" data-acc-panel="external_media" hidden>
+                <div class="cookie-service">
+                  <div class="cookie-service__title">Google Maps</div>
+                  <div class="cookie-service__status">Aus</div>
+
+                  <table class="cookie-table">
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Google Maps ist eine Internet-Kartenplattform, die detaillierte geografische Informationen liefert.
+                        Wenn Sie diesem Dienst einwilligen, werden Inhalte von dieser Plattform auf dieser Website angezeigt.
+                      </td>
+                    </tr>
+                  </table>
+
+                  <div class="cookie-subtitle">Provider-Informationen</div>
+                  <table class="cookie-table">
+                    <tr><th>Provider-Name</th><td>Google</td></tr>
+                    <tr>
+                      <th>Beschreibung</th>
+                      <td>
+                        Google LLC ist ein Technologieunternehmen, das verschiedene Dienstleistungen anbietet
+                        und sich mit der Entwicklung von Hardware und Software beschäftigt.
+                      </td>
+                    </tr>
+                    <tr><th>Adresse</th><td>Gordon House, Barrow Street, Dublin 4, Ireland</td></tr>
+                    <tr><th>URL der Datenschutzerklärung</th><td>https://policies.google.com/privacy?hl=de</td></tr>
+                    <tr><th>Cookie-URL</th><td>https://policies.google.com/technologies/cookies?hl=de</td></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="cookie-actions">
+          <button class="cookie-btn cookie-btn--primary" type="button" data-cookie-save>
+            Einwilligung speichern
+          </button>
+          <button class="cookie-btn" type="button" data-cookie-back>
+            Zurück
+          </button>
+          <button class="cookie-btn" type="button" data-cookie-accept-essential>
+            Nur essenzielle Cookies akzeptieren
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="cookie-modal__footer">
+      <a href="{% url 'impressum' %}" target="_blank" rel="noopener">Impressum</a>
+      <span>·</span>
+      <a href="{% url 'datenschutz' %}" target="_blank" rel="noopener">Datenschutzerklärung</a>
+    </div>
+
+  </div>
+</div>

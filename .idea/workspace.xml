@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Header jetzt überall gleich breit - einheitliche Container-Logik">
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Favicon erstellt!">
+      <change afterPath="$PROJECT_DIR$/static/css/cookie_banner.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/cookie_banner.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/cookie_banner.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -346,7 +347,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764937068414</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Favicon erstellt!">
+      <option name="closed" value="true" />
+      <created>1764938604101</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1764938604101</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -361,7 +370,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Plan ..." />
     <MESSAGE value="Home Seite fertig" />
     <MESSAGE value="Footer Edit Bereich im Admin board hinzugefügt. &#10;Kritische Fehler (doppelte dashboard funktion im view) behoben, Admin funktioniert jetzt einwandfrei." />
     <MESSAGE value="Korrektur des Header-Bereiches. Logo bisschen größer gemacht. Iframe wieder hinzugefügt." />
@@ -386,6 +394,7 @@
     <MESSAGE value="Backend Responsive + Menü Funktionalitäten, on the way" />
     <MESSAGE value="Umstellung auf Google Analytics ist erfolgt; jetzt nur noch Looker Studio bauen, als Iframe einfügen" />
     <MESSAGE value="Header jetzt überall gleich breit - einheitliche Container-Logik" />
-    <option name="LAST_COMMIT_MESSAGE" value="Header jetzt überall gleich breit - einheitliche Container-Logik" />
+    <MESSAGE value="Favicon erstellt!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Favicon erstellt!" />
   </component>
 </project>

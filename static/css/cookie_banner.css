@@ -1,0 +1,311 @@
+:root{
+  --cookie-pad: 1.4rem;
+}
+
+/* Overlay bleibt wie gehabt mit Fade */
+.cookie-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  z-index: 2147483647;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .5s ease, visibility 0s linear .5s;
+}
+.cookie-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .5s ease, visibility 0s;
+}
+
+/* ===== Panel: dünner + flex layout ===== */
+.cookie-modal__panel {
+  width: min(720px, 96vw);     /* (4) Desktop schmaler */
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 22px 60px rgba(0,0,0,0.25);
+  position: relative;
+  overflow: hidden;
+
+  display: flex;              /* statt grid */
+  flex-direction: column;
+
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.cookie-modal.is-open .cookie-modal__panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Close */
+.cookie-modal__close{
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+  color: #c62828;
+  z-index: 2;
+}
+
+/* Header zentriert */
+.cookie-modal__header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 0.65rem;
+  padding: 1.1rem var(--cookie-pad) 0.85rem var(--cookie-pad);
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+.cookie-modal__logo{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.cookie-modal__header h2{
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+/* ===== Body wird flexibel ===== */
+.cookie-modal__body{
+  flex: 1;
+  overflow: hidden;
+  padding: 0;                 /* wichtig: Padding in Views */
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+/* Jede View = Spalte mit Scroll + Actions */
+.cookie-view{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scroll bekommt gleiche Breite wie Actions */
+.cookie-scroll{
+  flex: 1;
+  overflow: auto;
+  padding: 1rem var(--cookie-pad) 0 var(--cookie-pad);
+}
+
+/* (2) Buttons gleiche Breite wie Text */
+.cookie-actions{
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem var(--cookie-pad) 1.25rem var(--cookie-pad);
+}
+
+.cookie-btn{
+  width: 100%;
+  border: 1px solid #ddd;
+  background: #f1f1f1;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.cookie-btn--primary{
+  background: #007755;
+  border-color: #007755;
+  color: #fff;
+}
+
+/* Footer immer sichtbar */
+.cookie-modal__footer{
+  flex: 0 0 auto;
+  display:flex;
+  gap: 0.5rem;
+  justify-content:center;
+  padding: 0.9rem var(--cookie-pad) 1.1rem var(--cookie-pad);
+  border-top: 1px solid #eee;
+  color: #444;
+  font-size: 0.95rem;
+}
+.cookie-modal__footer a{ color: inherit; }
+
+/* Kategorien */
+.cookie-category-list{
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1.1rem;
+}
+.cookie-category{
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: #fafafa;
+}
+
+/* (5) Label-Head macht ganze Zeile klickbar */
+.cookie-category__head{
+  display:flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items:flex-start;
+}
+.cookie-category__head--label{
+  cursor: pointer;
+}
+
+.cookie-category__title{
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+.cookie-category__desc{
+  color:#555;
+  font-size: 0.92rem;
+}
+
+.cookie-category__head input[type="checkbox"]{
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin-top: 0.2rem;
+}
+
+/* ===== Accordion Head neu (kein Label in Button!) ===== */
+.cookie-accordion{
+  display: grid;
+  gap: 0.75rem;
+}
+.cookie-acc-item{
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Head = Button + Switch nebeneinander */
+.cookie-acc-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #f7f7f7;
+  padding: 0.95rem 1rem;
+}
+
+.cookie-acc-trigger{
+  flex: 1;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-weight:700;
+  text-align: left;
+}
+
+.cookie-acc-toggle-text{
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  white-space: nowrap;
+}
+
+.cookie-acc-panel{
+  padding: 1rem;
+}
+
+/* Switch */
+.cookie-switch{
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+.cookie-switch input{
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.cookie-switch__ui{
+  position:absolute;
+  inset:0;
+  background:#ddd;
+  border-radius: 999px;
+  transition: .2s;
+}
+.cookie-switch__ui::after{
+  content:"";
+  position:absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background:#fff;
+  border-radius: 50%;
+  transition: .2s;
+}
+.cookie-switch input:checked + .cookie-switch__ui{
+  background:#007755;
+}
+.cookie-switch input:checked + .cookie-switch__ui::after{
+  transform: translateX(20px);
+}
+
+/* Tables */
+.cookie-service__title{ font-weight:700; margin-bottom: 0.25rem; }
+.cookie-service__status{ color:#666; font-size: 0.85rem; margin-bottom: 0.75rem; }
+.cookie-subtitle{ font-weight:700; margin: 1rem 0 0.5rem 0; }
+.cookie-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.cookie-table th,
+.cookie-table td{
+  border: 1px solid #eee;
+  padding: 0.6rem 0.7rem;
+  vertical-align: top;
+}
+.cookie-table th{
+  width: 170px;
+  background:#fafafa;
+}
+
+@media (max-width: 640px){
+  .cookie-table th{ width: 120px; }
+  .cookie-modal__header h2{ font-size: 1.2rem; }
+}
+
+/* Panel soll IMMER klickbar sein, wenn offen */
+.cookie-modal__panel {
+  pointer-events: auto;
+}
+
+/* Sicherstellen, dass Scrollbereich wirklich scrollt */
+.cookie-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Labels dürfen nicht von irgendwas "überdeckt" werden */
+.cookie-category__head--label {
+  display: flex;
+  width: 100%;
+}
+.cookie-category__head--label input[type="checkbox"]{
+  pointer-events: auto;
+}
+

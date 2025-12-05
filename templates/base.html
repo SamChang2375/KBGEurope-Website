@@ -13,16 +13,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}KBG Europe – Korean BBQ Grill{% endblock %}</title>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9VW6BK2ZWT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-9VW6BK2ZWT');
-    </script>
     <!-- CSS laden (mit Versions-Trick gegen Cache) -->
     <link href="{% static 'css/style.css' %}?v=3" rel="stylesheet">
+    <link href="{% static 'css/cookie_banner.css' %}?v=2" rel="stylesheet">
+    <script src="{% static 'js/cookie_banner.js' %}?v=2" defer></script>
 
     <!-- HEADER ANPASSUNGEN (Größe & Logo + Mobile Menü) -->
     <style>
@@ -245,7 +239,8 @@
 
                     <p class="footer-links">
                         <a href="{% url 'impressum' %}">Impressum</a> ·
-                        <a href="{% url 'datenschutz' %}">Datenschutzerklärung</a>
+                        <a href="{% url 'datenschutz' %}">Datenschutzerklärung</a> ·
+                        <a href="#" data-cookie-open>Cookie-Einstellungen</a>
                     </p>
 
                     <div class="social-icons">
@@ -267,15 +262,27 @@
                 </div>
 
                 <!-- Rechte Spalte: MAP IFRAME -->
-                <div class="footer-map">
-                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2525.3205515385193!2d7.094813577371475!3d50.73254327164749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bee171ed33712f%3A0xa7dada2bd8ce5093!2sKorean%20BBQ%20Grill!5e0!3m2!1sen!2sde!4v1764531373453!5m2!1sen!2sde"
-                           width="100%"
-                           height="100%"
-                           style="border:0; min-height: 300px; border-radius: 12px;"
-                           allowfullscreen=""
-                           loading="lazy"
-                           referrerpolicy="no-referrer-when-downgrade">
-                   </iframe>
+                <div class="footer-map" data-gmaps-host>
+                  <div data-gmaps-placeholder
+                       style="background:#eee; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center; padding:1.2rem; text-align:center;">
+                    <div>
+                      <strong>Google Maps ist deaktiviert.</strong><br>
+                      Bitte akzeptieren Sie <em>Externe Medien</em>, um die Karte zu laden.<br>
+                      <a href="#" data-cookie-open> Einstellungen öffnen</a>
+                    </div>
+                  </div>
+
+                  <iframe data-gmaps-iframe
+                          hidden
+                          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2525.3205515385193!2d7.094813577371475!3d50.73254327164749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bee171ed33712f%3A0xa7dada2bd8ce5093!2sKorean%20BBQ%20Grill!5e0!3m2!1sen!2sde!4v1764531373453!5m2!1sen!2sde"
+                          width="100%"
+                          height="100%"
+                          style="border:0; min-height: 300px; border-radius: 12px;"
+                          allowfullscreen=""
+                          loading="lazy"
+                          referrerpolicy="no-referrer-when-downgrade">
+                  </iframe>
+
                 </div>
 
             </div>
@@ -416,6 +423,6 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    {% include "partials/cookie_banner.html" %}
 </body>
 </html>
