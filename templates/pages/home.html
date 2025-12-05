@@ -213,30 +213,6 @@
     .section-kicker { color: var(--kbg-green) !important; }
     .section-kicker.green { color: var(--kbg-green) !important; }
 
-    /* --- BASIS-CONTAINER: Stellt sicher, dass an den Rändern immer Platz ist --- */
-    /* Korrektur: Einheitliches Padding und auto Margin für perfekte Symmetrie und Zentrierung */
-    .container {
-        width: 100%;
-        padding-left: 1.5rem; /* Basis-Padding für Mobile */
-        padding-right: 1.5rem;
-        margin-left: auto;
-        margin-right: auto;
-        box-sizing: border-box; /* Wichtig, damit Padding zur Breite hinzukommt und nicht subtrahiert */
-    }
-    /* sm: 40rem (640px) */
-    @media (width >= 40rem) {
-        .container { padding-left: 2rem; padding-right: 2rem; }
-    }
-    /* lg: 64rem (1024px) */
-    @media (width >= 64rem) {
-        .container { max-width: 1024px; }
-    }
-    /* xl: 80rem (1280px) */
-    @media (width >= 80rem) {
-        .container { max-width: 1280px; }
-    }
-
-
     /* --- HERO SECTION (KORREKTUREN) --- */
     .hero-section {
         position: relative;
