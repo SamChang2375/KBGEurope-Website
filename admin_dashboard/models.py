@@ -47,16 +47,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profil für {self.user.username}"
-
-class PageVisit(models.Model):
-    path = models.CharField(max_length=255)  # z.B. "/" oder "/menu"
-    timestamp = models.DateTimeField(auto_now_add=True)
-    # Optional: Session Key für Unique Visitors (einfach gehalten)
-    session_key = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.path} at {self.timestamp}"
-
-
-class JobContent:
-    pass

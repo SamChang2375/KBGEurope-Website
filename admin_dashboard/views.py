@@ -25,7 +25,7 @@ from pages.models import (
     JobContent,
     JobApplication
 )
-from .models import UserProfile, PageVisit
+from .models import UserProfile
 
 User = get_user_model()
 
@@ -67,46 +67,6 @@ def dashboard_home(request):
     # 4. Settings laden
     site_settings, _ = SiteSettings.objects.get_or_create(id=1)
 
-    # 5. STATISTIKEN BERECHNEN
-    now = timezone.now()
-    last_30_days = now - timedelta(days=30)
-    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-
-    visits_qs = PageVisit.objects.filter(timestamp__gte=last_30_days)
-
-    total_visits = visits_qs.count()
-    unique_visitors = visits_qs.values('session_key').distinct().count()
-    today_visits = PageVisit.objects.filter(timestamp__gte=today_start).count()
-
-    top_pages = (visits_qs.values('path')
-    .annotate(count=Count('id'))
-    .order_by('-count')[:5])
-
-    # Diagramm-Daten
-    daily_data = (visits_qs
-                  .annotate(date=TruncDate('timestamp'))
-                  .values('date')
-                  .annotate(count=Count('id'))
-                  .order_by('date'))
-
-    daily_dict = {item['date']: item['count'] for item in daily_data}
-    chart_labels = []
-    chart_data = []
-
-    for i in range(30):
-        d = (now - timedelta(days=29 - i)).date()
-        chart_labels.append(d.strftime("%d.%m."))
-        chart_data.append(daily_dict.get(d, 0))
-
-    stats = {
-        "total_visits": total_visits,
-        "unique_visitors": unique_visitors,
-        "today_visits": today_visits,
-        "top_pages": top_pages,
-        "chart_labels": chart_labels,
-        "chart_data": chart_data,
-    }
-
     # 6. MENÜ ITEMS LADEN
     menu_items = MenuItem.objects.all().order_by('dish_id')
 
@@ -129,7 +89,6 @@ def dashboard_home(request):
         "users": users,
         "site_images": site_images,
         "site_settings": site_settings,
-        "stats": stats,
         "menu_items": menu_items,
         "jobs": jobs,  # Für die Liste der Stellenanzeigen
         "job_contents": job_contents,  # Für die 3 Karten (Bild/Text/Popup)
