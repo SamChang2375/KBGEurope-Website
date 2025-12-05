@@ -1,6 +1,12 @@
 {% load static %}
 {% load media_tags %}
 
+{# Favicon aus dem Dashboard-Slot, fallback auf static #}
+{% site_image_url "kbg_favicon" "img/favicon.png" as FAVICON_URL %}
+
+<link rel="icon" href="{{ FAVICON_URL }}">
+<link rel="apple-touch-icon" href="{{ FAVICON_URL }}">
+
 <!DOCTYPE html>
 <html lang="de">
 <head>

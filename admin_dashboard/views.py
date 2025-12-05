@@ -112,7 +112,13 @@ def dashboard_media_update(request):
         messages.error(request, "Fehler: Kein Media-Key.")
         return redirect("dashboard_home")
 
-    obj, created = SiteImage.objects.get_or_create(key=media_key)
+    obj = SiteImage.objects.filter(key=media_key).first()
+
+    if not obj:
+        if not image_file:
+            messages.error(request, f"Bitte zuerst ein Bild für '{media_key}' hochladen.")
+            return redirect("dashboard_home")
+        obj = SiteImage(key=media_key)
 
     if image_file:
         obj.image = image_file
@@ -121,11 +127,11 @@ def dashboard_media_update(request):
     obj.save()
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # reicht ein leeres OK – du nutzt das Response-HTML nicht
         return render(request, "admin_dashboard/dashboard_home.html", {})
 
     messages.success(request, f"Gespeichert: {media_key}")
     return redirect("dashboard_home")
-
 
 # --- SETTINGS UPDATE ---
 @login_required

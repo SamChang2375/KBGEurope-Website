@@ -508,7 +508,10 @@
                     <!-- LAYOUT SUB-TAB -->
                     <div id="media-layout" class="media-subpanel">
                         <h3>Layout & Logos</h3>
+                        <!-- NEU: Browser Tab Icon / Favicon -->
+                        {% include "admin_dashboard/includes/media_row.html" with key="kbg_favicon" label="Favicon / Tab-Icon"  desc="Logo im Browser-Tab, Lesezeichen und ggf"  img_obj=site_images.kbg_favicon %}
                         {% include "admin_dashboard/includes/media_row.html" with key="global_logo" label="Logo Header" desc="Hauptlogo." img_obj=site_images.global_logo %}
+
                         {% include "admin_dashboard/includes/media_row.html" with key="instagram_icon" label="Instagram Icon" desc="Für Footer & Tabs." img_obj=site_images.instagram_icon %}
                         {% include "admin_dashboard/includes/media_row.html" with key="email_icon" label="Email Icon" desc="Für Footer & Tabs." img_obj=site_images.email_icon %}
 

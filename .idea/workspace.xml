@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Umstellung auf Google Analytics ist erfolgt; jetzt nur noch Looker Studio bauen, als Iframe einfügen">
+    <list default="true" id="4ec5163c-e775-455e-b422-e3908895b97a" name="Changes" comment="Header jetzt überall gleich breit - einheitliche Container-Logik">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/templates/admin_dashboard/dashboard_home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pages/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -338,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764936565627</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Header jetzt überall gleich breit - einheitliche Container-Logik">
+      <option name="closed" value="true" />
+      <created>1764937068414</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1764937068414</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -353,7 +361,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Alles mal bisschen hübscher gemacht. &#10;Medien Upload Funktioniert. &#10;Webseite Statistiken eingerichtet. &#10;Iframe und Social-Media-Icons Fehler behoben. Login und Admin Seite hübsch gemnacht." />
     <MESSAGE value="Plan ..." />
     <MESSAGE value="Home Seite fertig" />
     <MESSAGE value="Footer Edit Bereich im Admin board hinzugefügt. &#10;Kritische Fehler (doppelte dashboard funktion im view) behoben, Admin funktioniert jetzt einwandfrei." />
@@ -378,6 +385,7 @@
     <MESSAGE value="Backend Responsive + Menü Funktionalitäten" />
     <MESSAGE value="Backend Responsive + Menü Funktionalitäten, on the way" />
     <MESSAGE value="Umstellung auf Google Analytics ist erfolgt; jetzt nur noch Looker Studio bauen, als Iframe einfügen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Umstellung auf Google Analytics ist erfolgt; jetzt nur noch Looker Studio bauen, als Iframe einfügen" />
+    <MESSAGE value="Header jetzt überall gleich breit - einheitliche Container-Logik" />
+    <option name="LAST_COMMIT_MESSAGE" value="Header jetzt überall gleich breit - einheitliche Container-Logik" />
   </component>
 </project>
